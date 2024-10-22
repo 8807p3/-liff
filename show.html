@@ -1,17 +1,117 @@
 <!DOCTYPE html>
 <html>
-<!-- head 和 style 部分保持不變 -->
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>活動列表</title>
     <style>
-        /* 原有的 CSS 保持不變 */
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 15px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .edit-note {
+            cursor: pointer;
+            color: blue;
+            text-decoration: underline;
+        }
+        .empty-note {
+            color: #999;
+            font-style: italic;
+        }
+        #loading {
+            text-align: center;
+            padding: 20px;
+            display: none;
+        }
+        .error {
+            color: red;
+            text-align: center;
+            padding: 10px;
+            display: none;
+            margin: 10px 0;
+            background-color: #fff3f3;
+            border: 1px solid #ffa7a7;
+            border-radius: 4px;
+        }
+        @media screen and (max-width: 600px) {
+            table, thead, tbody, th, td, tr {
+                display: block;
+            }
+            thead tr {
+                position: absolute;
+                top: -9999px;
+                left: -9999px;
+            }
+            tr {
+                border: 1px solid #ccc;
+                margin-bottom: 10px;
+            }
+            td {
+                border: none;
+                position: relative;
+                padding-left: 50%;
+            }
+            td:before {
+                position: absolute;
+                top: 6px;
+                left: 6px;
+                width: 45%;
+                padding-right: 10px;
+                white-space: nowrap;
+                content: attr(data-label);
+                font-weight: bold;
+            }
+        }
+        #refresh-btn {
+            display: block;
+            margin: 10px auto;
+            padding: 8px 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        #refresh-btn:hover {
+            background-color: #45a049;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>活動列表（今日及未來）</h1>
+        <button id="refresh-btn" onclick="loadData()">重新整理</button>
         <div id="loading">載入中...</div>
         <div id="error" class="error"></div>
         <div id="data-container"></div>
@@ -75,9 +175,8 @@
             var newNote = prompt("編輯備註:", currentNote);
 
             if (newNote !== null && newNote !== currentNote) {
-                // 使用 GET 請求來更新備註
                 const updateUrl = `${GAS_WEBAPP_URL}?action=updateNote&row=${originalRow}&note=${encodeURIComponent(newNote)}`;
-                
+
                 fetch(updateUrl)
                     .then(response => response.json())
                     .then(result => {
@@ -96,10 +195,12 @@
                     })
                     .catch(err => {
                         alert('更新失敗：' + err.message);
+                        console.error('Update Error:', err);
                     });
             }
         }
 
+        // 初始載入
         window.onload = loadData;
     </script>
 </body>

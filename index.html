@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LIFF User Profile</title>
+    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <script>
+      // 請將 'YOUR_LIFF_ID' 替換為您的實際 LIFF ID
+      const liffId = 'YOUR_LIFF_ID';
+      
+      window.onerror = function(message, source, lineno, colno, error) {
+        logMessage('全局錯誤: ' + message);
+        return false;
+      };
+
+      async function initializeLiff() {
+        try {
+          logMessage('開始初始化 LIFF');
+          if (!liff) {
+            throw new Error('LIFF SDK 未正確載入');
+          }
+          logMessage('LIFF SDK 已載入');
+          
+          if (!liffId) {
+            throw new Error('LIFF ID 未提供');
+          }
+          logMessage('LIFF ID: ' + liffId);
+          
+          logMessage('調用 liff.init()');
+          const initPromise = liff.init({ liffId: liffId });
+          
+          // 添加超時機制
+          const timeoutPromise = new Promise((_, reject) => 
+            setTimeout(() => reject(new Error('LIFF 初始化超時')), 10000)
+          );
+          
+          await Promise.race([initPromise, timeoutPromise]);
+          
+          logMessage('LIFF 初始化成功');
+          
+          await checkLIFFEnvironment();
+          await checkLoginStatus();
+        } catch (error) {
+          displayError('LIFF 初始化失敗: ' + error.message);
+          logMessage('LIFF 初始化失敗: ' + error.message);
+          logMessage('錯誤詳情: ' + JSON.stringify(error));
+        }
+      }
+
+      async function checkLoginStatus() {
+        try {
+          logMessage('檢查登錄狀態');
+          if (liff.isLoggedIn()) {
+            logMessage('用戶已登錄，嘗試獲取資料');
+            await getProfile();
+          } else {
+            logMessage('用戶未登錄，嘗試登錄');
+            liff.login();
+          }
+        } catch (error) {
+          logMessage('檢查登錄狀態時發生錯誤: ' + error.message);
+        }
+      }
+
+      async function getProfile() {
+        try {
+          const profile = await liff.getProfile();
+          logMessage('成功獲取用戶資料');
+          document.getElementById('userId').textContent = profile.userId;
+          document.getElementById('displayName').textContent = profile.displayName;
+          document.getElementById('pictureUrl').src = profile.pictureUrl;
+          document.getElementById('statusMessage').textContent = profile.statusMessage;
+          logMessage('用戶資料已顯示');
+        } catch (error) {
+          displayError('獲取用戶資料時發生錯誤: ' + error.message);
+          logMessage('獲取用戶資料失敗: ' + error.message);
+        }
+      }
+
+      function displayError(message) {
+        const errorDiv = document.getElementById('errorMessage');
+        errorDiv.textContent = message;
+        errorDiv.style.display = 'block';
+      }
+
+      function logMessage(message) {
+        const logDiv = document.getElementById('log');
+        logDiv.innerHTML += message + '<br>';
+        console.log(message);
+      }
+
+      async function checkLIFFEnvironment() {
+        try {
+          logMessage('檢查 LIFF 環境');
+          logMessage('LIFF SDK 版本: ' + liff.getVersion());
+          if (liff.isInClient()) {
+            logMessage('LIFF 在 LINE 應用內運行');
+          } else {
+            logMessage('LIFF 在外部瀏覽器中運行');
+          }
+          logMessage('是否登錄: ' + liff.isLoggedIn());
+          logMessage('LIFF 語言: ' + liff.getLanguage());
+          logMessage('LIFF OS: ' + liff.getOS());
+        } catch (error) {
+          logMessage('檢查 LIFF 環境時發生錯誤: ' + error.message);
+        }
+      }
+    </script>
+    <style>
+      #errorMessage {
+        display: none;
+        color: red;
+        background-color: #ffeeee;
+        border: 1px solid red;
+        padding: 10px;
+        margin-top: 10px;
+      }
+      #log {
+        background-color: #f0f0f0;
+        border: 1px solid #ccc;
+        padding: 10px;
+        margin-top: 10px;
+        font-family: monospace;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>LIFF User Profile</h1>
+    <div id="errorMessage"></div>
+    <p>User ID: <span id="userId"></span></p>
+    <p>Display Name: <span id="displayName"></span></p>
+    <p>Status Message: <span id="statusMessage"></span></p>
+    <img id="pictureUrl" width="200px" />
+    <h2>日誌</h2>
+    <div id="log"></div>
+    <script>
+      window.onload = function() {
+        logMessage('頁面加載完成');
+        initializeLiff().catch(error => {
+          logMessage('初始化過程中發生錯誤: ' + error.message);
+        });
+      };
+    </script>
+  </body>
+</html>

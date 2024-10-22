@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>活動列表</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 15px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        .edit-note {
+            cursor: pointer;
+            color: blue;
+            text-decoration: underline;
+        }
+        .empty-note {
+            color: #999;
+            font-style: italic;
+        }
+        #loading {
+            text-align: center;
+            padding: 20px;
+            display: none;
+        }
+        .error {
+            color: red;
+            text-align: center;
+            padding: 10px;
+            display: none;
+        }
+        @media screen and (max-width: 600px) {
+            table, thead, tbody, th, td, tr {
+                display: block;
+            }
+            thead tr {
+                position: absolute;
+                top: -9999px;
+                left: -9999px;
+            }
+            tr {
+                border: 1px solid #ccc;
+                margin-bottom: 10px;
+            }
+            td {
+                border: none;
+                position: relative;
+                padding-left: 50%;
+            }
+            td:before {
+                position: absolute;
+                top: 6px;
+                left: 6px;
+                width: 45%;
+                padding-right: 10px;
+                white-space: nowrap;
+                content: attr(data-label);
+                font-weight: bold;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>活動列表（今日及未來）</h1>
+        <div id="loading">載入中...</div>
+        <div id="error" class="error"></div>
+        <div id="data-container"></div>
+    </div>
+
+    <script>
+        // 設定你的 Google Apps Script Web App URL
+        const GAS_WEBAPP_URL = 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL';
+
+        function loadData() {
+            const loading = document.getElementById('loading');
+            const error = document.getElementById('error');
+            loading.style.display = 'block';
+            error.style.display = 'none';
+
+            fetch(GAS_WEBAPP_URL)
+                .then(response => response.json())
+                .then(data => {
+                    loading.style.display = 'none';
+                    renderTable(data);
+                })
+                .catch(err => {
+                    loading.style.display = 'none';
+                    error.textContent = '載入失敗：' + err.message;
+                    error.style.display = 'block';
+                });
+        }
+
+        function renderTable(data) {
+            var tableHtml = '<table><thead><tr><th>日期</th><th>時間</th><th>主題</th><th>備註</th></tr></thead><tbody>';
+
+            for (var i = 1; i < data.length; i++) {
+                var row = data[i];
+                var originalRow = row[row.length - 1];
+                tableHtml += '<tr>';
+                tableHtml += '<td data-label="日期">' + formatDate(row[0]) + '</td>';
+                tableHtml += '<td data-label="時間">' + row[1] + ' - ' + row[2] + '</td>';
+                tableHtml += '<td data-label="主題">' + row[3] + '</td>';
+                var noteText = row[4] || '點擊添加備註';
+                var noteClass = row[4] ? 'edit-note' : 'edit-note empty-note';
+                tableHtml += '<td data-label="備註"><span class="' + noteClass + '" onclick="editNote(' + originalRow + ', this)">' + noteText + '</span></td>';
+                tableHtml += '</tr>';
+            }
+
+            tableHtml += '</tbody></table>';
+            document.getElementById('data-container').innerHTML = tableHtml;
+        }
+
+        function formatDate(dateNum) {
+            var dateStr = dateNum.toString().padStart(4, '0');
+            var month = dateStr.substring(0, 2);
+            var day = dateStr.substring(2);
+            return month + '/' + day;
+        }
+
+        function editNote(originalRow, element) {
+            var currentNote = element.textContent;
+            if (currentNote === '點擊添加備註') {
+                currentNote = '';
+            }
+            var newNote = prompt("編輯備註:", currentNote);
+
+            if (newNote !== null && newNote !== currentNote) {
+                fetch(GAS_WEBAPP_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        action: 'updateNote',
+                        row: originalRow,
+                        note: newNote
+                    })
+                })
+                .then(response => response.json())
+                .then(result => {
+                    if (newNote === '') {
+                        element.textContent = '點擊添加備註';
+                        element.classList.add('empty-note');
+                    } else {
+                        element.textContent = newNote;
+                        element.classList.remove('empty-note');
+                    }
+                    alert(result.message);
+                })
+                .catch(err => {
+                    alert('更新失敗：' + err.message);
+                });
+            }
+        }
+
+        window.onload = loadData;
+    </script>
+</body>
+</html>

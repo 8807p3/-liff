@@ -1,207 +1,343 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="活動列表管理系統">
     <title>活動列表</title>
+    <script charset="utf-8" src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
     <style>
         * {
             box-sizing: border-box;
-        }
-        body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
             margin: 0;
             padding: 0;
         }
+        
+        :root {
+            --primary-color: #4CAF50;
+            --primary-hover: #45a049;
+            --error-color: #ff4444;
+            --border-color: #ddd;
+            --text-color: #333;
+            --bg-light: #f8f9fa;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+        }
+
         .container {
             width: 100%;
             max-width: 1200px;
             margin: 0 auto;
-            padding: 15px;
+            padding: 20px;
         }
+
         h1 {
             text-align: center;
-            color: #333;
+            color: var(--text-color);
+            margin-bottom: 1.5rem;
         }
-        table {
-            border-collapse: collapse;
-            width: 100%;
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
         }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
-        th {
-            background-color: #f2f2f2;
-            font-weight: bold;
-        }
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-        .edit-note {
+
+        #refresh-btn {
+            padding: 10px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
             cursor: pointer;
-            color: blue;
-            text-decoration: underline;
+            transition: background-color 0.3s ease;
         }
-        .empty-note {
-            color: #999;
-            font-style: italic;
+
+        #refresh-btn:hover {
+            background-color: var(--primary-hover);
         }
-        #loading {
-            text-align: center;
+
+        #refresh-btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .loading {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.9);
             padding: 20px;
-            display: none;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
         }
+
         .error {
-            color: red;
+            color: var(--error-color);
             text-align: center;
-            padding: 10px;
-            display: none;
+            padding: 15px;
             margin: 10px 0;
             background-color: #fff3f3;
             border: 1px solid #ffa7a7;
             border-radius: 4px;
         }
-        @media screen and (max-width: 600px) {
-            table, thead, tbody, th, td, tr {
-                display: block;
-            }
-            thead tr {
-                position: absolute;
-                top: -9999px;
-                left: -9999px;
-            }
-            tr {
-                border: 1px solid #ccc;
-                margin-bottom: 10px;
-            }
-            td {
-                border: none;
-                position: relative;
-                padding-left: 50%;
-            }
-            td:before {
-                position: absolute;
-                top: 6px;
-                left: 6px;
-                width: 45%;
-                padding-right: 10px;
-                white-space: nowrap;
-                content: attr(data-label);
-                font-weight: bold;
-            }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
         }
-        #refresh-btn {
-            display: block;
-            margin: 10px auto;
-            padding: 8px 16px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 4px;
+
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border: 1px solid var(--border-color);
+        }
+
+        th {
+            background-color: var(--bg-light);
+            font-weight: 600;
+        }
+
+        .edit-note {
             cursor: pointer;
+            color: #0066cc;
+            text-decoration: none;
+            transition: color 0.3s ease;
         }
-        #refresh-btn:hover {
-            background-color: #45a049;
+
+        .edit-note:hover {
+            color: #004499;
+            text-decoration: underline;
+        }
+
+        .empty-note {
+            color: #999;
+            font-style: italic;
+        }
+
+        #user-info {
+            background-color: var(--bg-light);
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+        }
+
+        @media screen and (max-width: 768px) {
+            table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+
+            .controls {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
+
+        /* 添加動畫效果 */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease-in;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>活動列表（今日及未來）</h1>
-        <button id="refresh-btn" onclick="loadData()">重新整理</button>
-        <div id="loading">載入中...</div>
-        <div id="error" class="error"></div>
-        <div id="data-container"></div>
+        <div class="controls">
+            <button id="refresh-btn" onclick="loadData()">
+                <span class="btn-text">重新整理</span>
+                <span class="btn-loading" style="display: none;">載入中...</span>
+            </button>
+        </div>
+        <div id="loading" class="loading" style="display: none;">載入中...</div>
+        <div id="error" class="error" style="display: none;"></div>
+        <div id="data-container" class="fade-in"></div>
+        <div id="user-info" class="fade-in"></div>
     </div>
 
     <script>
         const GAS_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwL5_CNpbaiNpEPrjrz9xpGKldMuOe54WOPJU6UEed2uuOHyTNPTalUWE03ebUh15-S/exec';
+        const LIFF_ID = '2006477217-bz5ABrnv';
+        let isLoading = false;
 
-        function loadData() {
-            const loading = document.getElementById('loading');
-            const error = document.getElementById('error');
-            loading.style.display = 'block';
-            error.style.display = 'none';
-
-            fetch(GAS_WEBAPP_URL)
-                .then(response => response.json())
-                .then(data => {
-                    loading.style.display = 'none';
-                    renderTable(data);
-                })
-                .catch(err => {
-                    loading.style.display = 'none';
-                    error.textContent = '載入失敗：' + err.message;
-                    error.style.display = 'block';
-                    console.error('Error:', err);
-                });
+        // 防抖函數
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
         }
 
-        function renderTable(data) {
-            var tableHtml = '<table><thead><tr><th>日期</th><th>時間</th><th>主題</th><th>備註</th></tr></thead><tbody>';
+        // 初始化 LIFF
+        async function initializeLiff() {
+            try {
+                await liff.init({ liffId: LIFF_ID });
+                if (!liff.isLoggedIn()) {
+                    liff.login();
+                } else {
+                    await displayUserInfo();
+                }
+            } catch (err) {
+                handleError('LIFF 初始化失敗: ' + err.message);
+            }
+        }
 
-            for (var i = 1; i < data.length; i++) {
-                var row = data[i];
-                var originalRow = row[row.length - 1];
-                tableHtml += '<tr>';
-                tableHtml += '<td data-label="日期">' + formatDate(row[0]) + '</td>';
-                tableHtml += '<td data-label="時間">' + row[1] + ' - ' + row[2] + '</td>';
-                tableHtml += '<td data-label="主題">' + row[3] + '</td>';
-                var noteText = row[4] || '點擊添加備註';
-                var noteClass = row[4] ? 'edit-note' : 'edit-note empty-note';
-                tableHtml += '<td data-label="備註"><span class="' + noteClass + '" onclick="editNote(' + originalRow + ', this)">' + noteText + '</span></td>';
-                tableHtml += '</tr>';
+        // 顯示用戶資訊
+        async function displayUserInfo() {
+            try {
+                const profile = await liff.getProfile();
+                const userInfo = document.getElementById('user-info');
+                userInfo.innerHTML = `
+                    <p><strong>使用者名稱:</strong> ${profile.displayName}</p>
+                    <p><strong>使用者ID:</strong> ${profile.userId}</p>
+                `;
+            } catch (err) {
+                handleError('取得用戶資訊失敗: ' + err.message);
+            }
+        }
+
+        // 載入資料
+        async function loadData() {
+            if (isLoading) return;
+            
+            setLoading(true);
+            try {
+                const response = await fetch(GAS_WEBAPP_URL);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                renderTable(data);
+            } catch (err) {
+                handleError('載入失敗：' + err.message);
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        // 設置載入狀態
+        function setLoading(loading) {
+            isLoading = loading;
+            const loadingEl = document.getElementById('loading');
+            const refreshBtn = document.getElementById('refresh-btn');
+            const btnText = refreshBtn.querySelector('.btn-text');
+            const btnLoading = refreshBtn.querySelector('.btn-loading');
+
+            loadingEl.style.display = loading ? 'block' : 'none';
+            refreshBtn.disabled = loading;
+            btnText.style.display = loading ? 'none' : 'inline';
+            btnLoading.style.display = loading ? 'inline' : 'none';
+        }
+
+        // 處理錯誤
+        function handleError(message) {
+            const error = document.getElementById('error');
+            error.textContent = message;
+            error.style.display = 'block';
+            console.error(message);
+        }
+
+        // 格式化日期
+        function formatDate(dateNum) {
+            const dateStr = dateNum.toString().padStart(4, '0');
+            return `${dateStr.substring(0, 2)}/${dateStr.substring(2)}`;
+        }
+
+        // 編輯備註
+        const editNote = debounce(async function(originalRow, element) {
+            const currentNote = element.textContent === '點擊添加備註' ? '' : element.textContent;
+            const newNote = prompt("編輯備註:", currentNote);
+
+            if (newNote === null || newNote === currentNote) return;
+
+            try {
+                const updateUrl = `${GAS_WEBAPP_URL}?action=updateNote&row=${originalRow}&note=${encodeURIComponent(newNote)}`;
+                const response = await fetch(updateUrl);
+                const result = await response.json();
+
+                if (result.status === 'success' || result === "備註更新成功") {
+                    element.textContent = newNote || '點擊添加備註';
+                    element.classList.toggle('empty-note', !newNote);
+                    alert('備註更新成功');
+                } else {
+                    throw new Error(result.message || '更新失敗');
+                }
+            } catch (err) {
+                handleError('更新失敗：' + err.message);
+            }
+        }, 300);
+
+        // 渲染表格
+        function renderTable(data) {
+            const container = document.getElementById('data-container');
+            container.classList.remove('fade-in');
+
+            let tableHtml = `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>日期</th>
+                            <th>時間</th>
+                            <th>主題</th>
+                            <th>備註</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+
+            for (let i = 1; i < data.length; i++) {
+                const row = data[i];
+                const originalRow = row[row.length - 1];
+                const noteText = row[4] || '點擊添加備註';
+                const noteClass = `edit-note${row[4] ? '' : ' empty-note'}`;
+
+                tableHtml += `
+                    <tr>
+                        <td data-label="日期">${formatDate(row[0])}</td>
+                        <td data-label="時間">${row[1]} - ${row[2]}</td>
+                        <td data-label="主題">${row[3]}</td>
+                        <td data-label="備註">
+                            <span class="${noteClass}" onclick="editNote(${originalRow}, this)">${noteText}</span>
+                        </td>
+                    </tr>
+                `;
             }
 
             tableHtml += '</tbody></table>';
-            document.getElementById('data-container').innerHTML = tableHtml;
+            container.innerHTML = tableHtml;
+            
+            // 強制重繪後添加動畫
+            requestAnimationFrame(() => {
+                container.classList.add('fade-in');
+            });
         }
 
-        function formatDate(dateNum) {
-            var dateStr = dateNum.toString().padStart(4, '0');
-            var month = dateStr.substring(0, 2);
-            var day = dateStr.substring(2);
-            return month + '/' + day;
-        }
-
-        function editNote(originalRow, element) {
-            var currentNote = element.textContent;
-            if (currentNote === '點擊添加備註') {
-                currentNote = '';
-            }
-            var newNote = prompt("編輯備註:", currentNote);
-
-            if (newNote !== null && newNote !== currentNote) {
-                const updateUrl = `${GAS_WEBAPP_URL}?action=updateNote&row=${originalRow}&note=${encodeURIComponent(newNote)}`;
-
-                fetch(updateUrl)
-                    .then(response => response.json())
-                    .then(result => {
-                        if (result.status === 'success' || result === "備註更新成功") {
-                            if (newNote === '') {
-                                element.textContent = '點擊添加備註';
-                                element.classList.add('empty-note');
-                            } else {
-                                element.textContent = newNote;
-                                element.classList.remove('empty-note');
-                            }
-                            alert('備註更新成功');
-                        } else {
-                            throw new Error(result.message || '更新失敗');
-                        }
-                    })
-                    .catch(err => {
-                        alert('更新失敗：' + err.message);
-                        console.error('Update Error:', err);
-                    });
-            }
-        }
-
-        // 初始載入
-        window.onload = loadData;
+        // 初始化
+        window.onload = async function() {
+            await initializeLiff();
+            loadData();
+        };
     </script>
 </body>
 </html>

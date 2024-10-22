@@ -59,16 +59,6 @@
             text-align: center;
             padding: 10px;
             display: none;
-            margin: 10px 0;
-            background-color: #fff3f3;
-            border: 1px solid #ffa7a7;
-            border-radius: 4px;
-        }
-        #status {
-            text-align: center;
-            padding: 10px;
-            margin-bottom: 20px;
-            display: none;
         }
         @media screen and (max-width: 600px) {
             table, thead, tbody, th, td, tr {
@@ -104,68 +94,35 @@
 <body>
     <div class="container">
         <h1>活動列表（今日及未來）</h1>
-        <div id="status"></div>
         <div id="loading">載入中...</div>
         <div id="error" class="error"></div>
         <div id="data-container"></div>
     </div>
 
     <script>
-        // 設定 Google Apps Script Web App URL
         const GAS_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwL5_CNpbaiNpEPrjrz9xpGKldMuOe54WOPJU6UEed2uuOHyTNPTalUWE03ebUh15-S/exec';
 
-        function showStatus(message, isError = false) {
-            const statusDiv = document.getElementById('status');
-            statusDiv.style.display = 'block';
-            statusDiv.style.backgroundColor = isError ? '#fff3f3' : '#f0f8ff';
-            statusDiv.style.border = `1px solid ${isError ? '#ffa7a7' : '#a7d6ff'}`;
-            statusDiv.style.borderRadius = '4px';
-            statusDiv.textContent = message;
-            
-            if (!isError) {
-                setTimeout(() => {
-                    statusDiv.style.display = 'none';
-                }, 3000);
-            }
-        }
-
-        async function loadData() {
+        function loadData() {
             const loading = document.getElementById('loading');
             const error = document.getElementById('error');
             loading.style.display = 'block';
             error.style.display = 'none';
 
-            try {
-                console.log('開始載入數據...');
-                const response = await fetch(GAS_WEBAPP_URL);
-                console.log('收到回應:', response.status, response.statusText);
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                const result = await response.json();
-                console.log('解析數據:', result);
-                
-                loading.style.display = 'none';
-                
-                if (result.status === 'success') {
-                    renderTable(result.data);
-                    showStatus('數據載入成功！');
-                } else {
-                    throw new Error(result.message || '載入失敗');
-                }
-            } catch (err) {
-                console.error('載入錯誤:', err);
-                loading.style.display = 'none';
-                error.textContent = '載入失敗：' + err.message;
-                error.style.display = 'block';
-                showStatus('載入失敗，請稍後重試', true);
-            }
+            fetch(GAS_WEBAPP_URL)
+                .then(response => response.json())
+                .then(data => {
+                    loading.style.display = 'none';
+                    renderTable(data);
+                })
+                .catch(err => {
+                    loading.style.display = 'none';
+                    error.textContent = '載入失敗：' + err.message;
+                    error.style.display = 'block';
+                    console.error('Error:', err);
+                });
         }
 
         function renderTable(data) {
-            console.log('開始渲染表格，數據筆數:', data.length);
             var tableHtml = '<table><thead><tr><th>日期</th><th>時間</th><th>主題</th><th>備註</th></tr></thead><tbody>';
 
             for (var i = 1; i < data.length; i++) {
@@ -183,7 +140,6 @@
 
             tableHtml += '</tbody></table>';
             document.getElementById('data-container').innerHTML = tableHtml;
-            console.log('表格渲染完成');
         }
 
         function formatDate(dateNum) {
@@ -193,7 +149,7 @@
             return month + '/' + day;
         }
 
-        async function editNote(originalRow, element) {
+        function editNote(originalRow, element) {
             var currentNote = element.textContent;
             if (currentNote === '點擊添加備註') {
                 currentNote = '';
@@ -201,34 +157,20 @@
             var newNote = prompt("編輯備註:", currentNote);
 
             if (newNote !== null && newNote !== currentNote) {
-                try {
-                    console.log('開始更新備註...');
-                    showStatus('正在更新備註...');
-                    
-                    const response = await fetch(GAS_WEBAPP_URL, {
-                        method: 'POST',
-                        mode: 'cors',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Accept': 'application/json'
-                        },
-                        body: JSON.stringify({
-                            action: 'updateNote',
-                            row: originalRow,
-                            note: newNote
-                        })
-                    });
-
-                    console.log('收到更新回應:', response.status, response.statusText);
-
-                    if (!response.ok) {
-                        throw new Error(`HTTP error! status: ${response.status}`);
-                    }
-
-                    const result = await response.json();
-                    console.log('更新結果:', result);
-                    
-                    if (result.status === 'success') {
+                fetch(GAS_WEBAPP_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        action: 'updateNote',
+                        row: originalRow,
+                        note: newNote
+                    })
+                })
+                .then(response => response.json())
+                .then(result => {
+                    if (result.status === 'success' || result === "備註更新成功") {
                         if (newNote === '') {
                             element.textContent = '點擊添加備註';
                             element.classList.add('empty-note');
@@ -236,35 +178,18 @@
                             element.textContent = newNote;
                             element.classList.remove('empty-note');
                         }
-                        showStatus('備註更新成功！');
+                        alert('備註更新成功');
                     } else {
                         throw new Error(result.message || '更新失敗');
                     }
-                } catch (err) {
-                    console.error('更新錯誤:', err);
-                    showStatus('更新失敗：' + err.message, true);
-                }
+                })
+                .catch(err => {
+                    alert('更新失敗：' + err.message);
+                });
             }
         }
 
-        // 初始載入
         window.onload = loadData;
-
-        // 添加重新載入按鈕功能
-        function addReloadButton() {
-            const container = document.querySelector('.container');
-            const button = document.createElement('button');
-            button.textContent = '重新載入';
-            button.style.margin = '10px';
-            button.style.padding = '5px 15px';
-            button.onclick = loadData;
-            container.insertBefore(button, container.firstChild);
-        }
-
-        window.onload = function() {
-            loadData();
-            addReloadButton();
-        };
     </script>
 </body>
 </html>

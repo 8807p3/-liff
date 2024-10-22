@@ -214,40 +214,45 @@
             }
         }
 
-        const editNote = debounce(async function(originalRow, element) {
-            if (!currentUser) {
-                alert('無法獲取用戶資訊，請重新登入');
-                return;
-            }
+     const editNote = debounce(async function(originalRow, element) {
+    if (!currentUser) {
+        alert('無法獲取用戶資訊，請重新登入');
+        return;
+    }
 
-            const currentNoteText = element.textContent === '點擊添加備註' ? '' : element.textContent;
-            // 移除舊的修改者資訊（如果有的話）
-            const noteOnly = currentNoteText.split(' (修改者:')[0];
-            const newNote = prompt("編輯備註:", noteOnly);
+    const currentNoteText = element.textContent === '點擊添加備註' ? '' : element.textContent;
+    const noteOnly = currentNoteText.split('(')[0].trim();
+    const newNote = prompt("編輯備註:", noteOnly);
 
-            if (newNote === null || newNote === noteOnly) return;
+    if (newNote === null || newNote === noteOnly) return;
 
-            try {
-                // 加入修改者資訊
-                const now = new Date().toLocaleString('zh-TW');
-                const fullNote = newNote ? `${newNote} ( ${currentUser.displayName} ${now})` : '';
-                
-                const updateUrl = `${GAS_WEBAPP_URL}?action=updateNote&row=${originalRow}&note=${encodeURIComponent(fullNote)}`;
-                const response = await fetch(updateUrl);
-                const result = await response.json();
+    try {
+        const now = new Date();
+        const timeStr = now.toLocaleString('zh-TW', {
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false
+        }).replace(/\//g, '/').replace(' ', ' ');
+        
+        const fullNote = newNote ? `${newNote} (${currentUser.displayName} ${timeStr})` : '';
+        
+        const updateUrl = `${GAS_WEBAPP_URL}?action=updateNote&row=${originalRow}&note=${encodeURIComponent(fullNote)}`;
+        const response = await fetch(updateUrl);
+        const result = await response.json();
 
-                if (result.status === 'success' || result === "備註更新成功") {
-                    element.textContent = fullNote || '點擊添加備註';
-                    element.classList.toggle('empty-note', !fullNote);
-                    alert('備註更新成功');
-                } else {
-                    throw new Error(result.message || '更新失敗');
-                }
-            } catch (err) {
-                handleError('更新失敗：' + err.message);
-            }
-        }, 300);
-
+        if (result.status === 'success' || result === "備註更新成功") {
+            element.textContent = fullNote || '點擊添加備註';
+            element.classList.toggle('empty-note', !fullNote);
+            alert('備註更新成功');
+        } else {
+            throw new Error(result.message || '更新失敗');
+        }
+    } catch (err) {
+        handleError('更新失敗：' + err.message);
+    }
+}, 300);
         function renderTable(data) {
             const container = document.getElementById('data-container');
             container.classList.remove('fade-in');

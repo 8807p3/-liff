@@ -111,14 +111,19 @@
 
             fetch(GAS_WEBAPP_URL)
                 .then(response => response.json())
-                .then(data => {
+                .then(result => {
                     loading.style.display = 'none';
-                    renderTable(data);
+                    if (result.status === 'success') {
+                        renderTable(result.data);
+                    } else {
+                        throw new Error(result.message || '載入失敗');
+                    }
                 })
                 .catch(err => {
                     loading.style.display = 'none';
                     error.textContent = '載入失敗：' + err.message;
                     error.style.display = 'block';
+                    console.error('Error:', err);
                 });
         }
 
@@ -170,14 +175,18 @@
                 })
                 .then(response => response.json())
                 .then(result => {
-                    if (newNote === '') {
-                        element.textContent = '點擊添加備註';
-                        element.classList.add('empty-note');
+                    if (result.status === 'success') {
+                        if (newNote === '') {
+                            element.textContent = '點擊添加備註';
+                            element.classList.add('empty-note');
+                        } else {
+                            element.textContent = newNote;
+                            element.classList.remove('empty-note');
+                        }
+                        alert(result.message);
                     } else {
-                        element.textContent = newNote;
-                        element.classList.remove('empty-note');
+                        throw new Error(result.message);
                     }
-                    alert(result.message);
                 })
                 .catch(err => {
                     alert('更新失敗：' + err.message);

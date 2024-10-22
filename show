@@ -101,7 +101,7 @@
 
     <script>
         // 設定你的 Google Apps Script Web App URL
-        const GAS_WEBAPP_URL = 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL';
+        const GAS_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwL5_CNpbaiNpEPrjrz9xpGKldMuOe54WOPJU6UEed2uuOHyTNPTalUWE03ebUh15-S/exec';
 
         function loadData() {
             const loading = document.getElementById('loading');

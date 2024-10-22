@@ -124,12 +124,10 @@
             font-style: italic;
         }
 
-        #user-info {
-            background-color: var(--bg-light);
-            padding: 15px;
-            margin-top: 20px;
-            border-radius: 4px;
-            border: 1px solid var(--border-color);
+        .note-editor {
+            color: #666;
+            font-size: 0.9em;
+            font-style: italic;
         }
 
         @media screen and (max-width: 768px) {
@@ -145,7 +143,6 @@
             }
         }
 
-        /* 添加動畫效果 */
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
@@ -168,15 +165,15 @@
         <div id="loading" class="loading" style="display: none;">載入中...</div>
         <div id="error" class="error" style="display: none;"></div>
         <div id="data-container" class="fade-in"></div>
-        <div id="user-info" class="fade-in"></div>
+        <div id="user-info"></div>
     </div>
 
     <script>
         const GAS_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwL5_CNpbaiNpEPrjrz9xpGKldMuOe54WOPJU6UEed2uuOHyTNPTalUWE03ebUh15-S/exec';
-        const LIFF_ID = '2006477217-bz5ABrnv';
+        const LIFF_ID = 'YOUR_LIFF_ID';
         let isLoading = false;
+        let currentUser = null;
 
-        // 防抖函數
         function debounce(func, wait) {
             let timeout;
             return function executedFunction(...args) {
@@ -189,13 +186,14 @@
             };
         }
 
-        // 初始化 LIFF
         async function initializeLiff() {
             try {
                 await liff.init({ liffId: LIFF_ID });
                 if (!liff.isLoggedIn()) {
                     liff.login();
                 } else {
+                    const profile = await liff.getProfile();
+                    currentUser = profile;
                     await displayUserInfo();
                 }
             } catch (err) {
@@ -203,7 +201,6 @@
             }
         }
 
-        // 顯示用戶資訊
         async function displayUserInfo() {
             try {
                 const profile = await liff.getProfile();
@@ -217,68 +214,31 @@
             }
         }
 
-        // 載入資料
-        async function loadData() {
-            if (isLoading) return;
-            
-            setLoading(true);
-            try {
-                const response = await fetch(GAS_WEBAPP_URL);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const data = await response.json();
-                renderTable(data);
-            } catch (err) {
-                handleError('載入失敗：' + err.message);
-            } finally {
-                setLoading(false);
-            }
-        }
-
-        // 設置載入狀態
-        function setLoading(loading) {
-            isLoading = loading;
-            const loadingEl = document.getElementById('loading');
-            const refreshBtn = document.getElementById('refresh-btn');
-            const btnText = refreshBtn.querySelector('.btn-text');
-            const btnLoading = refreshBtn.querySelector('.btn-loading');
-
-            loadingEl.style.display = loading ? 'block' : 'none';
-            refreshBtn.disabled = loading;
-            btnText.style.display = loading ? 'none' : 'inline';
-            btnLoading.style.display = loading ? 'inline' : 'none';
-        }
-
-        // 處理錯誤
-        function handleError(message) {
-            const error = document.getElementById('error');
-            error.textContent = message;
-            error.style.display = 'block';
-            console.error(message);
-        }
-
-        // 格式化日期
-        function formatDate(dateNum) {
-            const dateStr = dateNum.toString().padStart(4, '0');
-            return `${dateStr.substring(0, 2)}/${dateStr.substring(2)}`;
-        }
-
-        // 編輯備註
         const editNote = debounce(async function(originalRow, element) {
-            const currentNote = element.textContent === '點擊添加備註' ? '' : element.textContent;
-            const newNote = prompt("編輯備註:", currentNote);
+            if (!currentUser) {
+                alert('無法獲取用戶資訊，請重新登入');
+                return;
+            }
 
-            if (newNote === null || newNote === currentNote) return;
+            const currentNoteText = element.textContent === '點擊添加備註' ? '' : element.textContent;
+            // 移除舊的修改者資訊（如果有的話）
+            const noteOnly = currentNoteText.split(' (修改者:')[0];
+            const newNote = prompt("編輯備註:", noteOnly);
+
+            if (newNote === null || newNote === noteOnly) return;
 
             try {
-                const updateUrl = `${GAS_WEBAPP_URL}?action=updateNote&row=${originalRow}&note=${encodeURIComponent(newNote)}`;
+                // 加入修改者資訊
+                const now = new Date().toLocaleString('zh-TW');
+                const fullNote = newNote ? `${newNote} (修改者: ${currentUser.displayName} ${now})` : '';
+                
+                const updateUrl = `${GAS_WEBAPP_URL}?action=updateNote&row=${originalRow}&note=${encodeURIComponent(fullNote)}`;
                 const response = await fetch(updateUrl);
                 const result = await response.json();
 
                 if (result.status === 'success' || result === "備註更新成功") {
-                    element.textContent = newNote || '點擊添加備註';
-                    element.classList.toggle('empty-note', !newNote);
+                    element.textContent = fullNote || '點擊添加備註';
+                    element.classList.toggle('empty-note', !fullNote);
                     alert('備註更新成功');
                 } else {
                     throw new Error(result.message || '更新失敗');
@@ -288,7 +248,6 @@
             }
         }, 300);
 
-        // 渲染表格
         function renderTable(data) {
             const container = document.getElementById('data-container');
             container.classList.remove('fade-in');
@@ -310,7 +269,7 @@
                 const row = data[i];
                 const originalRow = row[row.length - 1];
                 const noteText = row[4] || '點擊添加備註';
-                const noteClass = `edit-note${row[4] ? '' : ' empty-note'}`;
+                const noteClass = noteText === '點擊添加備註' ? 'empty-note' : '';
 
                 tableHtml += `
                     <tr>
@@ -318,7 +277,7 @@
                         <td data-label="時間">${row[1]} - ${row[2]}</td>
                         <td data-label="主題">${row[3]}</td>
                         <td data-label="備註">
-                            <span class="${noteClass}" onclick="editNote(${originalRow}, this)">${noteText}</span>
+                            <span class="edit-note ${noteClass}" onclick="editNote(${originalRow}, this)">${noteText}</span>
                         </td>
                     </tr>
                 `;
@@ -327,13 +286,54 @@
             tableHtml += '</tbody></table>';
             container.innerHTML = tableHtml;
             
-            // 強制重繪後添加動畫
             requestAnimationFrame(() => {
                 container.classList.add('fade-in');
             });
         }
 
-        // 初始化
+        function formatDate(dateNum) {
+            const dateStr = dateNum.toString().padStart(4, '0');
+            return `${dateStr.substring(0, 2)}/${dateStr.substring(2)}`;
+        }
+
+        async function loadData() {
+            if (isLoading) return;
+            
+            setLoading(true);
+            try {
+                const response = await fetch(GAS_WEBAPP_URL);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                renderTable(data);
+            } catch (err) {
+                handleError('載入失敗：' + err.message);
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        function setLoading(loading) {
+            isLoading = loading;
+            const loadingEl = document.getElementById('loading');
+            const refreshBtn = document.getElementById('refresh-btn');
+            const btnText = refreshBtn.querySelector('.btn-text');
+            const btnLoading = refreshBtn.querySelector('.btn-loading');
+
+            loadingEl.style.display = loading ? 'block' : 'none';
+            refreshBtn.disabled = loading;
+            btnText.style.display = loading ? 'none' : 'inline';
+            btnLoading.style.display = loading ? 'inline' : 'none';
+        }
+
+        function handleError(message) {
+            const error = document.getElementById('error');
+            error.textContent = message;
+            error.style.display = 'block';
+            console.error(message);
+        }
+
         window.onload = async function() {
             await initializeLiff();
             loadData();

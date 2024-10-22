@@ -240,7 +240,7 @@ async function initializeLiff() {
 // 新增記錄使用者訪問的函數
 async function logUserVisit(profile) {
     try {
-        const logUrl = `${GAS_WEBAPP_URL}?action=logVisit&userId=${encodeURIComponent(profile.userId)}&displayName=${encodeURIComponent(profile.displayName)}}`;
+        const logUrl = `${GAS_WEBAPP_URL}?action=logVisit&userId=${encodeURIComponent(profile.userId)}&displayName=${encodeURIComponent(profile.displayName)}`;
         
         const response = await fetch(logUrl);
         const result = await response.json();

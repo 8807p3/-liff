@@ -230,7 +230,7 @@
             try {
                 // 加入修改者資訊
                 const now = new Date().toLocaleString('zh-TW');
-                const fullNote = newNote ? `${newNote} (修改者: ${currentUser.displayName} ${now})` : '';
+                const fullNote = newNote ? `${newNote} ( ${currentUser.displayName} ${now})` : '';
                 
                 const updateUrl = `${GAS_WEBAPP_URL}?action=updateNote&row=${originalRow}&note=${encodeURIComponent(fullNote)}`;
                 const response = await fetch(updateUrl);

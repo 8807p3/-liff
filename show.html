@@ -219,21 +219,51 @@
             };
         }
 
-        async function initializeLiff() {
-            try {
-                await liff.init({ liffId: LIFF_ID });
-                if (!liff.isLoggedIn()) {
-                    liff.login();
-                } else {
-                    const profile = await liff.getProfile();
-                    currentUser = profile;
-                    await displayUserInfo();
-                }
-            } catch (err) {
-                handleError('LIFF 初始化失敗: ' + err.message);
-            }
+async function initializeLiff() {
+    try {
+        await liff.init({ liffId: LIFF_ID });
+        if (!liff.isLoggedIn()) {
+            liff.login();
+        } else {
+            const profile = await liff.getProfile();
+            currentUser = profile;
+            await displayUserInfo();
+            // 記錄使用者訪問
+            await logUserVisit(profile);
+            // 載入活動資料
+            await loadData();
         }
+    } catch (err) {
+        handleError('LIFF 初始化失敗: ' + err.message);
+    }
+}
+// 新增記錄使用者訪問的函數
+async function logUserVisit(profile) {
+    try {
+        const now = new Date();
+        const timeStr = now.toLocaleString('zh-TW', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false
+        }).replace(/\//g, '/');  // 確保日期格式一致
 
+        const logUrl = `${GAS_WEBAPP_URL}?action=logVisit&userId=${encodeURIComponent(profile.userId)}&displayName=${encodeURIComponent(profile.displayName)}&timestamp=${encodeURIComponent(timeStr)}`;
+        
+        const response = await fetch(logUrl);
+        const result = await response.json();
+        
+        if (result.status !== 'success') {
+            console.warn('訪問記錄儲存失敗:', result.message);
+        }
+    } catch (err) {
+        console.error('記錄訪問失敗：', err);
+    }
+}
+
+        
         async function displayUserInfo() {
             try {
                 const profile = await liff.getProfile();

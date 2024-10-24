@@ -71,19 +71,17 @@
             font-style: italic;
         }
 
-        /* 手機版樣式 */
         @media screen and (max-width: 768px) {
             .desktop-only {
                 display: none;
             }
             
-            /* 卡片式設計 */
             table, thead, tbody, th, td, tr {
                 display: block;
             }
             
             thead {
-                display: none; /* 隱藏表頭 */
+                display: none;
             }
             
             tr {
@@ -116,14 +114,12 @@
                 color: #666;
             }
             
-            /* 為每個欄位添加標籤 */
             td:nth-of-type(1):before { content: "日期"; }
             td:nth-of-type(2):before { content: "時間"; }
             td:nth-of-type(3):before { content: "主題"; }
             td:nth-of-type(4):before { content: "備註"; }
         }
 
-        /* 控制按鈕樣式 */
         .controls {
             margin-bottom: 1rem;
         }
@@ -148,7 +144,6 @@
             background-color: #ccc;
         }
 
-        /* 載入動畫 */
         .loading {
             text-align: center;
             padding: 20px;
@@ -156,7 +151,6 @@
             border-radius: 8px;
         }
 
-        /* 錯誤訊息樣式 */
         .error {
             color: var(--error-color);
             padding: 10px;
@@ -166,7 +160,6 @@
             text-align: center;
         }
 
-        /* 使用者資訊樣式 */
         #user-info {
             background: var(--bg-light);
             padding: 15px;
@@ -175,7 +168,6 @@
             font-size: 0.9rem;
         }
 
-        /* 載入動畫 */
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
@@ -202,199 +194,224 @@
     </div>
 
     <script>
-        const GAS_WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbwL5_CNpbaiNpEPrjrz9xpGKldMuOe54WOPJU6UEed2uuOHyTNPTalUWE03ebUh15-S/exec';
-        const LIFF_ID = '2006477217-bz5ABrnv';
-        let isLoading = false;
-        let currentUser = null;
+        const CONFIG = {
+            GAS_WEBAPP_URL: 'https://script.google.com/macros/s/AKfycbwL5_CNpbaiNpEPrjrz9xpGKldMuOe54WOPJU6UEed2uuOHyTNPTalUWE03ebUh15-S/exec',
+            LIFF_ID: '2006477217-bz5ABrnv'
+        };
 
-        function debounce(func, wait) {
-            let timeout;
-            return function executedFunction(...args) {
-                const later = () => {
+        let state = {
+            isLoading: false,
+            currentUser: null,
+            activityData: null
+        };
+
+        const utils = {
+            debounce(func, wait) {
+                let timeout;
+                return function(...args) {
                     clearTimeout(timeout);
-                    func(...args);
+                    timeout = setTimeout(() => func.apply(this, args), wait);
                 };
-                clearTimeout(timeout);
-                timeout = setTimeout(later, wait);
-            };
-        }
+            },
 
-async function initializeLiff() {
-    try {
-        await liff.init({ liffId: LIFF_ID });
-        if (!liff.isLoggedIn()) {
-            liff.login();
-        } else {
-            const profile = await liff.getProfile();
-            currentUser = profile;
-            await displayUserInfo();
-            // 記錄使用者訪問
-            await logUserVisit(profile);
-            // 載入活動資料
-            await loadData();
-        }
-    } catch (err) {
-        handleError('LIFF 初始化失敗: ' + err.message);
-    }
-}
-// 新增記錄使用者訪問的函數
-async function logUserVisit(profile) {
-    try {
-        const logUrl = `${GAS_WEBAPP_URL}?action=logVisit&userId=${encodeURIComponent(profile.userId)}&displayName=${encodeURIComponent(profile.displayName)}`;
-        
-        const response = await fetch(logUrl);
-        const result = await response.json();
-        
-        if (result.status !== 'success') {
-            console.warn('訪問記錄儲存失敗:', result.message);
-        }
-    } catch (err) {
-        console.error('記錄訪問失敗：', err);
-    }
-}
+            formatDate(dateNum) {
+                const dateStr = dateNum.toString().padStart(4, '0');
+                return `${dateStr.substring(0, 2)}/${dateStr.substring(2)}`;
+            },
 
-        
-        async function displayUserInfo() {
-            try {
-                const profile = await liff.getProfile();
+            formatTimeStamp() {
+                return new Date().toLocaleString('zh-TW', {
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    hour12: false
+                }).replace(/\//g, '/');
+            }
+        };
+
+        const ui = {
+            setLoading(loading) {
+                state.isLoading = loading;
+                const elements = {
+                    loading: document.getElementById('loading'),
+                    refreshBtn: document.getElementById('refresh-btn'),
+                    btnText: document.querySelector('.btn-text'),
+                    btnLoading: document.querySelector('.btn-loading')
+                };
+
+                elements.loading.style.display = loading ? 'block' : 'none';
+                elements.refreshBtn.disabled = loading;
+                elements.btnText.style.display = loading ? 'none' : 'inline';
+                elements.btnLoading.style.display = loading ? 'inline' : 'none';
+            },
+
+            showError(message) {
+                const error = document.getElementById('error');
+                error.textContent = message;
+                error.style.display = 'block';
+                console.error(message);
+                setTimeout(() => {
+                    error.style.display = 'none';
+                }, 3000);
+            },
+
+            renderTable(data) {
+                const container = document.getElementById('data-container');
+                container.classList.remove('fade-in');
+
+                const tableHTML = `
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>日期</th>
+                                <th>時間</th>
+                                <th>主題</th>
+                                <th>備註</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${data.slice(1).map(row => `
+                                <tr>
+                                    <td data-label="日期">${utils.formatDate(row[0])}</td>
+                                    <td data-label="時間">${row[1]} - ${row[2]}</td>
+                                    <td data-label="主題">${row[3]}</td>
+                                    <td data-label="備註">
+                                        <span class="edit-note ${!row[4] ? 'empty-note' : ''}" 
+                                              onclick="editNote(${row[row.length - 1]}, this)">
+                                            ${row[4] || '點擊添加備註'}
+                                        </span>
+                                    </td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+
+                container.innerHTML = tableHTML;
+                requestAnimationFrame(() => container.classList.add('fade-in'));
+            },
+
+            async updateUserInfo(profile) {
                 const userInfo = document.getElementById('user-info');
                 userInfo.innerHTML = `
                     <p><strong>使用者名稱:</strong> ${profile.displayName}</p>
                     <p><strong>使用者ID:</strong> ${profile.userId}</p>
                 `;
+            }
+        };
+
+        async function fetchActivityData() {
+            try {
+                const response = await fetch(CONFIG.GAS_WEBAPP_URL);
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                return await response.json();
             } catch (err) {
-                handleError('取得用戶資訊失敗: ' + err.message);
+                throw new Error('活動資料載入失敗：' + err.message);
             }
         }
 
-     const editNote = debounce(async function(originalRow, element) {
-    if (!currentUser) {
-        alert('無法獲取用戶資訊，請重新登入');
-        return;
-    }
-
-    const currentNoteText = element.textContent === '點擊添加備註' ? '' : element.textContent;
-    const noteOnly = currentNoteText.split('(')[0].trim();
-    const newNote = prompt("編輯備註:", noteOnly);
-
-    if (newNote === null || newNote === noteOnly) return;
-
-    try {
-        const now = new Date();
-        const timeStr = now.toLocaleString('zh-TW', {
-            month: '2-digit',
-            day: '2-digit',
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: false
-        }).replace(/\//g, '/').replace(' ', ' ');
-        
-        const fullNote = newNote ? `${newNote} (${currentUser.displayName} ${timeStr})` : '';
-        
-        const updateUrl = `${GAS_WEBAPP_URL}?action=updateNote&row=${originalRow}&note=${encodeURIComponent(fullNote)}`;
-        const response = await fetch(updateUrl);
-        const result = await response.json();
-
-        if (result.status === 'success' || result === "備註更新成功") {
-            element.textContent = fullNote || '點擊添加備註';
-            element.classList.toggle('empty-note', !fullNote);
-            alert('備註更新成功');
-        } else {
-            throw new Error(result.message || '更新失敗');
-        }
-    } catch (err) {
-        handleError('更新失敗：' + err.message);
-    }
-}, 300);
-        function renderTable(data) {
-            const container = document.getElementById('data-container');
-            container.classList.remove('fade-in');
-
-            let tableHtml = `
-                <table>
-                    <thead>
-                        <tr>
-                            <th>日期</th>
-                            <th>時間</th>
-                            <th>主題</th>
-                            <th>備註</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-            `;
-
-            for (let i = 1; i < data.length; i++) {
-                const row = data[i];
-                const originalRow = row[row.length - 1];
-                const noteText = row[4] || '點擊添加備註';
-                const noteClass = noteText === '點擊添加備註' ? 'empty-note' : '';
-
-                tableHtml += `
-                    <tr>
-                        <td data-label="日期">${formatDate(row[0])}</td>
-                        <td data-label="時間">${row[1]} - ${row[2]}</td>
-                        <td data-label="主題">${row[3]}</td>
-                        <td data-label="備註">
-                            <span class="edit-note ${noteClass}" onclick="editNote(${originalRow}, this)">${noteText}</span>
-                        </td>
-                    </tr>
-                `;
+        async function initLIFF() {
+            try {
+                await liff.init({ liffId: CONFIG.LIFF_ID });
+                if (!liff.isLoggedIn()) {
+                    liff.login();
+                    return null;
+                }
+                return await liff.getProfile();
+            } catch (err) {
+                throw new Error('LIFF 初始化失敗: ' + err.message);
             }
+        }
 
-            tableHtml += '</tbody></table>';
-            container.innerHTML = tableHtml;
+        async function logUserVisit(profile) {
+            try {
+                const logUrl = `${CONFIG.GAS_WEBAPP_URL}?action=logVisit&userId=${encodeURIComponent(profile.userId)}&displayName=${encodeURIComponent(profile.displayName)}`;
+                const response = await fetch(logUrl);
+                const result = await response.json();
+                
+                if (result.status !== 'success') {
+                    console.warn('訪問記錄儲存失敗:', result.message);
+                }
+            } catch (err) {
+                console.error('記錄訪問失敗：', err);
+            }
+        }
+
+        async function initialize() {
+            ui.setLoading(true);
             
-            requestAnimationFrame(() => {
-                container.classList.add('fade-in');
-            });
-        }
+            try {
+                const [profile, activityData] = await Promise.all([
+                    initLIFF(),
+                    fetchActivityData()
+                ]);
 
-        function formatDate(dateNum) {
-            const dateStr = dateNum.toString().padStart(4, '0');
-            return `${dateStr.substring(0, 2)}/${dateStr.substring(2)}`;
+                if (!profile) return;
+
+                state.currentUser = profile;
+                state.activityData = activityData;
+
+                await Promise.all([
+                    ui.updateUserInfo(profile),
+                    ui.renderTable(activityData),
+                    logUserVisit(profile)
+                ]);
+
+            } catch (err) {
+                ui.showError(err.message);
+            } finally {
+                ui.setLoading(false);
+            }
         }
 
         async function loadData() {
-            if (isLoading) return;
+            if (state.isLoading) return;
             
-            setLoading(true);
+            ui.setLoading(true);
             try {
-                const response = await fetch(GAS_WEBAPP_URL);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const data = await response.json();
-                renderTable(data);
+                const data = await fetchActivityData();
+                state.activityData = data;
+                ui.renderTable(data);
             } catch (err) {
-                handleError('載入失敗：' + err.message);
+                ui.showError(err.message);
             } finally {
-                setLoading(false);
+                ui.setLoading(false);
             }
         }
 
-        function setLoading(loading) {
-            isLoading = loading;
-            const loadingEl = document.getElementById('loading');
-            const refreshBtn = document.getElementById('refresh-btn');
-            const btnText = refreshBtn.querySelector('.btn-text');
-            const btnLoading = refreshBtn.querySelector('.btn-loading');
+        const editNote = utils.debounce(async function(originalRow, element) {
+            if (!state.currentUser) {
+                alert('請先登入');
+                return;
+            }
 
-            loadingEl.style.display = loading ? 'block' : 'none';
-            refreshBtn.disabled = loading;
-            btnText.style.display = loading ? 'none' : 'inline';
-            btnLoading.style.display = loading ? 'inline' : 'none';
-        }
+            const currentNote = element.textContent.trim();
+            const noteOnly = currentNote === '點擊添加備註' ? '' : currentNote.split('(')[0].trim();
+            const newNote = prompt('編輯備註:', noteOnly);
 
-        function handleError(message) {
-            const error = document.getElementById('error');
-            error.textContent = message;
-            error.style.display = 'block';
-            console.error(message);
-        }
+            if (newNote === null || newNote === noteOnly) return;
 
-        window.onload = async function() {
-            await initializeLiff();
-        };
+            try {
+                const fullNote = newNote ? `${newNote} (${state.currentUser.displayName} ${utils.formatTimeStamp()})` : '';
+                const updateUrl = `${CONFIG.GAS_WEBAPP_URL}?action=updateNote&row=${originalRow}&note=${encodeURIComponent(fullNote)}`;
+                
+                const response = await fetch(updateUrl);
+                const result = await response.json();
+
+                if (result.status === 'success' || result === "備註更新成功") {
+                    element.textContent = fullNote || '點擊添加備註';
+                    element.classList.toggle('empty-note', !fullNote);
+                    alert('備註更新成功');
+                } else {
+                    throw new Error(result.message || '更新失敗');
+                }
+            } catch (err) {
+                ui.showError('更新失敗：' + err.message);
+            }
+        }, 300);
+
+        window.onload = initialize;
     </script>
 </body>
 </html>

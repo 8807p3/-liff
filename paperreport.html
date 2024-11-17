@@ -1,1 +1,714 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .slide {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 2rem;
+            box-sizing: border-box;
+        }
+        .title-slide {
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            color: white;
+            text-align: center;
+        }
+        .content-slide {
+            background: white;
+        }
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        h2 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+        ul {
+            font-size: 1.2rem;
+            line-height: 1.6;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+        }
+        .card {
+            background: #f0f9ff;
+            padding: 1.5rem;
+            border-radius: 8px;
+        }
+        .navigation {
+            position: fixed;
+            bottom: 1rem;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+        }
+        .nav-button {
+            padding: 0.5rem 1rem;
+            background: #3b82f6;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
 
+<!-- Slide 1: Title -->
+<div id="slide1" class="slide title-slide">
+    <h1>Internet Addiction and Problematic Internet Use</h1>
+    <h2>A Systematic Review of Clinical Research</h2>
+    <div style="margin-top: 2rem;">
+        <p>World Journal of Psychiatry, 2016</p>
+        <p>Daria J Kuss & Olatz Lopez-Fernandez</p>
+    </div>
+</div>
+
+<!-- Slide 2: Outline -->
+<div id="slide2" class="slide content-slide">
+    <h1>Content</h1>
+    <ul>
+        <li>Research Background</li>
+        <li>Study Aims</li>
+        <li>Methodology</li>
+        <li>Results
+            <ul>
+                <li>Treatment Seeker Characteristics</li>
+                <li>Psychopharmacotherapy</li>
+                <li>Psychological Therapy</li>
+                <li>Combined Treatment</li>
+            </ul>
+        </li>
+        <li>Discussion & Recommendations</li>
+    </ul>
+</div>
+
+<!-- Slide 3: Background -->
+<div id="slide3" class="slide content-slide">
+    <h1>Research Background</h1>
+    <div class="grid">
+        <div class="card">
+            <h2>Internet Usage Growth</h2>
+            <ul>
+                <li>1000% increase in users over 15 years</li>
+                <li>Widespread accessibility</li>
+                <li>Growing concerns about addiction</li>
+            </ul>
+        </div>
+        <div class="card">
+            <h2>Current Prevalence</h2>
+            <ul>
+                <li>Italy: 0.8% of young individuals</li>
+                <li>China: 8.8% of adolescents</li>
+                <li>Higher rates in Asian countries</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Slide 4: Definition Evolution -->
+<div id="slide4" class="slide content-slide">
+    <h1>Internet Addiction Definition Evolution</h1>
+    <div class="grid">
+        <div class="card">
+            <h2>DSM-5 (2013)</h2>
+            <ul>
+                <li>Internet Gaming Disorder included in Section III</li>
+                <li>Condition requiring further research</li>
+                <li>First official recognition</li>
+            </ul>
+        </div>
+        <div class="card">
+            <h2>Key Challenges</h2>
+            <ul>
+                <li>21 different assessment tools</li>
+                <li>No standardized diagnostic criteria</li>
+                <li>Varied conceptualizations</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Slide 5: Study Aims -->
+<div id="slide5" class="slide content-slide">
+    <h1>Study Aims</h1>
+    <div class="grid">
+        <div class="card">
+            <h2>Primary Objectives</h2>
+            <ul>
+                <li>Comprehensive review of clinical research</li>
+                <li>Analyze treatment approaches</li>
+                <li>Evaluate intervention effectiveness</li>
+            </ul>
+        </div>
+        <div class="card">
+            <h2>Secondary Goals</h2>
+            <ul>
+                <li>Assessment tool evaluation</li>
+                <li>Treatment seeker profile analysis</li>
+                <li>Clinical recommendations development</li>
+            </ul>
+        </div>
+    </div>
+</div>
+  
+<!-- Slide 6: Methodology Details -->
+<div id="slide6" class="slide content-slide">
+    <h1>Methodology</h1>
+    <div class="grid">
+        <div class="card">
+            <h2>Literature Search Strategy</h2>
+            <ul>
+                <li>Database: Web of Science</li>
+                <li>Search Terms: Internet addiction, gaming addiction, problematic Internet use</li>
+                <li>Publication Period: 2000-2015</li>
+                <li>Initial Results: 152 articles</li>
+            </ul>
+        </div>
+        <div class="card">
+            <h2>Inclusion Criteria</h2>
+            <ul>
+                <li>Quantitative empirical data</li>
+                <li>Clinical samples/interventions</li>
+                <li>Full text available</li>
+                <li>46 studies met final criteria</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Slide 7: Treatment Seeker Demographics -->
+<div id="slide7" class="slide content-slide">
+    <h1>Treatment Seeker Characteristics</h1>
+    <div class="grid">
+        <div class="card">
+            <h2>Demographics</h2>
+            <ul>
+                <li>Age Range: 16-30 years</li>
+                <li>Gender: Predominantly male</li>
+                <li>Sample Sizes: 1-1826 patients</li>
+                <li>13 countries, 4 continents</li>
+            </ul>
+        </div>
+        <div class="card">
+            <h2>Treatment Settings</h2>
+            <ul>
+                <li>Inpatient facilities</li>
+                <li>Outpatient clinics</li>
+                <li>Specialized addiction centers</li>
+                <li>Psychiatric services</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Slide 8: Common Comorbidities -->
+<div id="slide8" class="slide content-slide">
+    <h1>Comorbid Conditions</h1>
+    <div class="grid">
+        <div class="card">
+            <h2>Mood Disorders</h2>
+            <ul>
+                <li>Major Depression (30%)</li>
+                <li>Dysthymia (26.7%)</li>
+                <li>Bipolar Spectrum Disorders (30.9%)</li>
+            </ul>
+        </div>
+        <div class="card">
+            <h2>Other Conditions</h2>
+            <ul>
+                <li>Anxiety Disorders (15%)</li>
+                <li>ADHD (14%)</li>
+                <li>Personality Disorders (38%)</li>
+                <li>Substance Use Disorders</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Slide 9: Assessment Tools -->
+<div id="slide9" class="slide content-slide">
+    <h1>Diagnostic Assessment</h1>
+    <div class="grid">
+        <div class="card">
+            <h2>Common Assessment Tools</h2>
+            <ul>
+                <li>Young's Internet Addiction Test (IAT)</li>
+                <li>Internet Addiction Scale (IAS)</li>
+                <li>Chen Internet Addiction Scale</li>
+                <li>Compulsive Internet Use Scale</li>
+            </ul>
+        </div>
+        <div class="card">
+            <h2>Clinical Interviews</h2>
+            <ul>
+                <li>Structured Clinical Interview for DSM-IV</li>
+                <li>Semi-structured interviews</li>
+                <li>Clinical observation</li>
+                <li>Behavioral assessments</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Slide 10: Pharmacological Treatment -->
+<div id="slide10" class="slide content-slide">
+    <h1>Psychopharmacotherapy</h1>
+    <div class="grid">
+        <div class="card">
+            <h2>Medications Used</h2>
+            <ul>
+                <li>SSRIs (Escitalopram, Sertraline)</li>
+                <li>NDRIs (Bupropion)</li>
+                <li>Antipsychotics (Quetiapine)</li>
+                <li>Methylphenidate for ADHD</li>
+            </ul>
+        </div>
+        <div class="card">
+            <h2>Treatment Outcomes</h2>
+            <ul>
+                <li>Reduced addiction symptoms</li>
+                <li>Decreased online time</li>
+                <li>Improved mood symptoms</li>
+                <li>Better impulse control</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Slide 11: CBT Details -->
+<div id="slide11" class="slide content-slide">
+    <h1>Cognitive Behavioral Therapy Approach</h1>
+    <div class="grid">
+        <div class="card">
+            <h2>Treatment Structure</h2>
+            <ul>
+                <li>8-28 sessions</li>
+                <li>Individual and group formats</li>
+                <li>Duration: 1-2 hours per session</li>
+                <li>Structured homework assignments</li>
+            </ul>
+        </div>
+        <div class="card">
+            <h2>Key Interventions</h2>
+            <ul>
+                <li>Internet use monitoring</li>
+                <li>Time management training</li>
+                <li>Alternative activity planning</li>
+                <li>Goal setting strategies</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Slide 12: Group Therapy -->
+<div id="slide12" class="slide content-slide">
+    <h1>Group Therapy Approaches</h1>
+    <div class="grid">
+        <div class="card">
+            <h2>Types of Groups</h2>
+            <ul>
+                <li>Multimodal school-based groups</li>
+                <li>Multi-family group therapy</li>
+                <li>Support groups</li>
+                <li>Skills development groups</li>
+            </ul>
+        </div>
+        <div class="card">
+            <h2>Benefits</h2>
+            <ul>
+                <li>Peer support network</li>
+                <li>Shared experiences</li>
+                <li>Social skills practice</li>
+                <li>Cost-effective treatment</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Slide 13: Family Interventions -->
+<div id="slide13" class="slide content-slide">
+    <h1>Family-Based Interventions</h1>
+    <div class="grid">
+        <div class="card">
+            <h2>Treatment Components</h2>
+            <ul>
+                <li>Parent-child communication</li>
+                <li>Family system assessment</li>
+                <li>Boundary setting</li>
+                <li>Relationship building</li>
+            </ul>
+        </div>
+        <div class="card">
+            <h2>Outcomes</h2>
+            <ul>
+                <li>Improved family dynamics</li>
+                <li>Better monitoring of internet use</li>
+                <li>Enhanced support system</li>
+                <li>Reduced family conflicts</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Slide 14: Combined Treatment -->
+<div id="slide14" class="slide content-slide">
+    <h1>Combined Treatment Approaches</h1>
+    <div class="grid">
+        <div class="card">
+            <h2>Treatment Combinations</h2>
+            <ul>
+                <li>CBT + Pharmacotherapy</li>
+                <li>Family therapy + Individual therapy</li>
+                <li>Group therapy + Medication</li>
+                <li>Multimodal interventions</li>
+            </ul>
+        </div>
+        <div class="card">
+            <h2>Enhanced Outcomes</h2>
+            <ul>
+                <li>Better symptom management</li>
+                <li>Lower relapse rates</li>
+                <li>Improved treatment adherence</li>
+                <li>Comprehensive care approach</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Slide 15: Treatment Effectiveness -->
+<div id="slide15" class="slide content-slide">
+    <h1>Treatment Effectiveness</h1>
+    <div class="grid">
+        <div class="card">
+            <h2>Outcome Measures</h2>
+            <ul>
+                <li>Reduction in internet use time</li>
+                <li>Improved daily functioning</li>
+                <li>Decreased addiction scores</li>
+                <li>Better psychosocial adjustment</li>
+            </ul>
+        </div>
+        <div class="card">
+            <h2>Success Factors</h2>
+            <ul>
+                <li>Treatment compliance</li>
+                <li>Family support</li>
+                <li>Comorbidity management</li>
+                <li>Lifestyle modifications</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Slide 16: Research Limitations -->
+<div id="slide16" class="slide content-slide">
+    <h1>Research Limitations</h1>
+    <div class="grid">
+        <div class="card">
+            <h2>Methodological Issues</h2>
+            <ul>
+                <li>Limited control groups</li>
+                <li>Small sample sizes</li>
+                <li>Varied assessment tools</li>
+                <li>Short follow-up periods</li>
+            </ul>
+        </div>
+        <div class="card">
+            <h2>Research Gaps</h2>
+            <ul>
+                <li>Long-term effectiveness</li>
+                <li>Treatment matching studies</li>
+                <li>Cultural considerations</li>
+                <li>Cost-effectiveness analysis</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Slide 17: Clinical Recommendations -->
+<div id="slide17" class="slide content-slide">
+    <h1>Clinical Recommendations</h1>
+    <div class="grid">
+        <div class="card">
+            <h2>Assessment</h2>
+            <ul>
+                <li>Comprehensive evaluation</li>
+                <li>Standardized measures</li>
+                <li>Comorbidity screening</li>
+                <li>Functional analysis</li>
+            </ul>
+        </div>
+        <div class="card">
+            <h2>Treatment Planning</h2>
+            <ul>
+                <li>Individualized approach</li>
+                <li>Multi-modal interventions</li>
+                <li>Family involvement</li>
+                <li>Regular progress monitoring</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Slide 18: Future Directions -->
+<div id="slide18" class="slide content-slide">
+    <h1>Future Directions</h1>
+    <div class="grid">
+        <div class="card">
+            <h2>Research Needs</h2>
+            <ul>
+                <li>Standardized diagnostic criteria</li>
+                <li>Large-scale clinical trials</li>
+                <li>Treatment effectiveness studies</li>
+                <li>Prevention strategies</li>
+            </ul>
+        </div>
+        <div class="card">
+            <h2>Clinical Development</h2>
+            <ul>
+                <li>Treatment guidelines</li>
+                <li>Specialized training programs</li>
+                <li>Prevention programs</li>
+                <li>Policy development</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Slide 19: Key Findings Summary -->
+<div id="slide19" class="slide content-slide">
+    <h1>Key Research Findings</h1>
+    <div class="grid">
+        <div class="card">
+            <h2>Clinical Profile</h2>
+            <ul>
+                <li>High comorbidity rates</li>
+                <li>Complex presenting problems</li>
+                <li>Age and gender patterns</li>
+                <li>Cultural variations</li>
+            </ul>
+        </div>
+        <div class="card">
+            <h2>Treatment Evidence</h2>
+            <ul>
+                <li>CBT most studied approach</li>
+                <li>Medication shows promise</li>
+                <li>Combined treatments effective</li>
+                <li>Family involvement important</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Slide 20: Treatment Implications -->
+<div id="slide20" class="slide content-slide">
+    <h1>Treatment Implications</h1>
+    <div class="grid">
+        <div class="card">
+            <h2>Clinical Practice</h2>
+            <ul>
+                <li>Comprehensive assessment needed</li>
+                <li>Individualized treatment plans</li>
+                <li>Regular progress monitoring</li>
+                <li>Long-term follow-up essential</li>
+            </ul>
+        </div>
+        <div class="card">
+            <h2>Service Delivery</h2>
+            <ul>
+                <li>Multi-disciplinary approach</li>
+                <li>Specialized training required</li>
+                <li>Resource allocation needs</li>
+                <li>Healthcare system integration</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Slide 21: Research Recommendations -->
+<div id="slide21" class="slide content-slide">
+    <h1>Research Recommendations</h1>
+    <div class="grid">
+        <div class="card">
+            <h2>Methodology</h2>
+            <ul>
+                <li>Larger sample sizes</li>
+                <li>Controlled trials needed</li>
+                <li>Longitudinal studies</li>
+                <li>Standardized measures</li>
+            </ul>
+        </div>
+        <div class="card">
+            <h2>Focus Areas</h2>
+            <ul>
+                <li>Treatment effectiveness</li>
+                <li>Predictors of outcomes</li>
+                <li>Prevention strategies</li>
+                <li>Cost-benefit analysis</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Slide 22: Policy Implications -->
+<div id="slide22" class="slide content-slide">
+    <h1>Policy Implications</h1>
+    <div class="grid">
+        <div class="card">
+            <h2>Healthcare Systems</h2>
+            <ul>
+                <li>Treatment accessibility</li>
+                <li>Resource allocation</li>
+                <li>Professional training</li>
+                <li>Service integration</li>
+            </ul>
+        </div>
+        <div class="card">
+            <h2>Public Health</h2>
+            <ul>
+                <li>Prevention programs</li>
+                <li>Early intervention</li>
+                <li>Community awareness</li>
+                <li>Support networks</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Slide 23: Conclusions -->
+<div id="slide23" class="slide content-slide">
+    <h1>Conclusions</h1>
+    <div class="grid">
+        <div class="card">
+            <h2>Current Status</h2>
+            <ul>
+                <li>Growing clinical concern</li>
+                <li>Treatment options available</li>
+                <li>Evidence base developing</li>
+                <li>Need for standardization</li>
+            </ul>
+        </div>
+        <div class="card">
+            <h2>Future Directions</h2>
+            <ul>
+                <li>Research development</li>
+                <li>Clinical guidelines</li>
+                <li>Healthcare integration</li>
+                <li>Prevention focus</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Slide 24: References -->
+<div id="slide24" class="slide content-slide">
+    <h1>Key References</h1>
+    <div class="grid">
+        <div class="card">
+            <h2>Clinical Studies</h2>
+            <ul>
+                <li>46 studies reviewed</li>
+                <li>Multiple treatment approaches</li>
+                <li>Various clinical settings</li>
+                <li>International perspective</li>
+            </ul>
+        </div>
+        <div class="card">
+            <h2>Primary Sources</h2>
+            <ul>
+                <li>Treatment outcome studies</li>
+                <li>Clinical case reports</li>
+                <li>Assessment validation</li>
+                <li>Systematic reviews</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Slide 25: Thank You -->
+<div id="slide25" class="slide title-slide">
+    <h1>Thank You</h1>
+    <h2>Questions & Discussion</h2>
+    <div style="margin-top: 2rem;">
+        <p>Contact Information</p>
+        <p>Additional Resources Available</p>
+    </div>
+</div>
+
+<!-- Update navigation script -->
+<script>
+    const totalSlides = 25;
+    // Rest of the script remains the same...
+</script>
+  
+<!-- Update navigation script -->
+<script>
+    const totalSlides = 18;
+    // Rest of the script remains the same...
+</script>
+  
+
+<!-- Add navigation script -->
+<script>
+    // Update total slides count
+    const totalSlides = 10;
+    
+    // Rest of the navigation script remains the same
+    function showSlide(n) {
+        for(let i = 6; i <= totalSlides; i++) {
+            document.getElementById(`slide${i}`).style.display = 'none';
+        }
+        document.getElementById(`slide${n}`).style.display = 'flex';
+        document.getElementById('slide-counter').textContent = `${n}/${totalSlides}`;
+    }
+</script>
+<div class="navigation">
+    <button class="nav-button" onclick="previousSlide()">Previous</button>
+    <span id="slide-counter">1/5</span>
+    <button class="nav-button" onclick="nextSlide()">Next</button>
+</div>
+
+<script>
+    let currentSlide = 1;
+    const totalSlides = 5;
+
+    function showSlide(n) {
+        // Hide all slides
+        for(let i = 1; i <= totalSlides; i++) {
+            document.getElementById(`slide${i}`).style.display = 'none';
+        }
+        // Show current slide
+        document.getElementById(`slide${n}`).style.display = 'flex';
+        document.getElementById('slide-counter').textContent = `${n}/${totalSlides}`;
+    }
+
+    function nextSlide() {
+        currentSlide = currentSlide >= totalSlides ? 1 : currentSlide + 1;
+        showSlide(currentSlide);
+    }
+
+    function previousSlide() {
+        currentSlide = currentSlide <= 1 ? totalSlides : currentSlide - 1;
+        showSlide(currentSlide);
+    }
+
+    // Initialize
+    showSlide(1);
+</script>
+
+</body>
+</html>

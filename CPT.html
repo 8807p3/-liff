@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CPT-III Simulation 02</title>
+    <title>CPT-III Simulation 03 </title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -18,11 +18,19 @@
         button {
             margin-top: 20px;
         }
+        .seed-input {
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
-    <h1>CPT-III Simulation</h1>
+    <h1>CPT-III Simulation 03</h1>
     <p>Press the "SPACE" key when you see letters other than "X".</p>
+
+    <div class="seed-input">
+        <label for="seedInput">Seed (for repeatable test): </label>
+        <input type="number" id="seedInput" placeholder="Enter seed">
+    </div>
 
     <div id="target" class="target">A</div>
 
@@ -40,19 +48,35 @@
         let reactionTimes = [];
         let isiChanges = [];
         let blockReactionTimes = [];
-        let blockInterval = 30000; // 5 seconds per block
-        let testDuration = 90000; // 90 seconds
+        let blockInterval = 30000; // 30 seconds per block
+        let testDuration = 120000; // 2 minutes
         let interval;
         let isTestRunning = false;
         let stimulusStartTime;
         let previousInterval;
         let blockTimer;
+        let rng;
 
         const target = document.getElementById("target");
         const startButton = document.getElementById("startButton");
         const result = document.getElementById("result");
+        const seedInput = document.getElementById("seedInput");
+
+        function seededRandom(seed) {
+            let x = Math.sin(seed) * 10000;
+            return x - Math.floor(x);
+        }
+
+        function initializeRNG(seed) {
+            return function () {
+                seed = (seed * 9301 + 49297) % 233280;
+                return seed / 233280;
+            };
+        }
 
         function startTest() {
+            const seed = seedInput.value ? parseInt(seedInput.value, 10) : Date.now();
+            rng = initializeRNG(seed);
             correctResponses = 0;
             totalResponses = 0;
             omissions = 0;
@@ -68,8 +92,8 @@
             blockTimer = setInterval(recordBlockReactionTime, blockInterval);
 
             function showStimulus() {
-                const randomLetter = letters[Math.floor(Math.random() * letters.length)];
-                const currentInterval = intervals[Math.floor(Math.random() * intervals.length)];
+                const randomLetter = letters[Math.floor(rng() * letters.length)];
+                const currentInterval = intervals[Math.floor(rng() * intervals.length)];
 
                 if (previousInterval !== undefined) {
                     isiChanges.push(Math.abs(currentInterval - previousInterval));
@@ -138,6 +162,7 @@
                 <p>HRT Block Change: ${hrtBlockChange} ms</p>
                 <p>HRT Inter-Stimulus Interval (ISI) Change: ${isiChange} ms</p>
                 <p>Detectability (d'): ${dPrime}</p>
+                <p>Seed Used: ${seed}</p>
             `;
 
             // Prevent restarting until the user clicks the button

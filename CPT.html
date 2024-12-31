@@ -61,7 +61,7 @@
             isTestRunning = true;
             startButton.disabled = true;
 
-            interval = setInterval(() => {
+            function showStimulus() {
                 const randomLetter = letters[Math.floor(Math.random() * letters.length)];
                 const currentInterval = intervals[Math.floor(Math.random() * intervals.length)];
 
@@ -79,20 +79,20 @@
                         omissions++;
                     }
                     target.style.display = "none";
+                    if (isTestRunning) {
+                        setTimeout(showStimulus, currentInterval);
+                    }
                 }, 800); // Show letter for 800ms
+            }
 
-                clearInterval(interval);
-                interval = setInterval(arguments.callee, currentInterval);
-            }, intervals[0]); // Start with the shortest interval
-
+            showStimulus();
             setTimeout(endTest, testDuration);
         }
 
         function endTest() {
-            clearInterval(interval);
             isTestRunning = false;
-            startButton.disabled = false;
             target.style.display = "none";
+            startButton.disabled = false;
 
             const hrt = reactionTimes.length > 0 ? (reactionTimes.reduce((a, b) => a + b, 0) / reactionTimes.length).toFixed(2) : "N/A";
             const hrtSd = reactionTimes.length > 1 ? Math.sqrt(reactionTimes.map(rt => Math.pow(rt - hrt, 2)).reduce((a, b) => a + b, 0) / (reactionTimes.length - 1)).toFixed(2) : "N/A";
@@ -113,6 +113,9 @@
                 <p>HRT Inter-Stimulus Interval (ISI) Change: ${isiChange} ms</p>
                 <p>Detectability (d'): ${dPrime}</p>
             `;
+
+            // Prevent restarting until the user clicks the button
+            startButton.disabled = false;
         }
 
         document.addEventListener("keydown", (event) => {

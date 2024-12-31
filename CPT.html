@@ -22,7 +22,7 @@
 </head>
 <body>
     <h1>CPT-III Simulation</h1>
-    <p>Press the "SPACE" key when you see the letter "X" on the screen.</p>
+    <p>Press the "SPACE" key when you see letters other than "X".</p>
 
     <div id="target" class="target">A</div>
 
@@ -31,16 +31,19 @@
 
     <script>
         let letters = ["A", "B", "X", "C", "D"];
+        let intervals = [1000, 2000, 4000]; // 1s, 2s, 4s intervals
         let correctResponses = 0;
         let totalResponses = 0;
         let omissions = 0;
         let commissions = 0;
         let perseverations = 0;
         let reactionTimes = [];
+        let isiChanges = [];
         let testDuration = 20000; // 20 seconds
         let interval;
         let isTestRunning = false;
         let stimulusStartTime;
+        let previousInterval;
 
         const target = document.getElementById("target");
         const startButton = document.getElementById("startButton");
@@ -53,23 +56,34 @@
             commissions = 0;
             perseverations = 0;
             reactionTimes = [];
+            isiChanges = [];
             result.textContent = "";
             isTestRunning = true;
             startButton.disabled = true;
 
             interval = setInterval(() => {
                 const randomLetter = letters[Math.floor(Math.random() * letters.length)];
+                const currentInterval = intervals[Math.floor(Math.random() * intervals.length)];
+
+                if (previousInterval !== undefined) {
+                    isiChanges.push(Math.abs(currentInterval - previousInterval));
+                }
+                previousInterval = currentInterval;
+
                 target.textContent = randomLetter;
                 target.style.display = "block";
                 stimulusStartTime = performance.now();
 
                 setTimeout(() => {
-                    if (target.textContent === "X" && target.style.display === "block") {
+                    if (target.textContent !== "X" && target.style.display === "block") {
                         omissions++;
                     }
                     target.style.display = "none";
                 }, 800); // Show letter for 800ms
-            }, 1000); // Change letter every second
+
+                clearInterval(interval);
+                interval = setInterval(arguments.callee, currentInterval);
+            }, intervals[0]); // Start with the shortest interval
 
             setTimeout(endTest, testDuration);
         }
@@ -83,6 +97,7 @@
             const hrt = reactionTimes.length > 0 ? (reactionTimes.reduce((a, b) => a + b, 0) / reactionTimes.length).toFixed(2) : "N/A";
             const hrtSd = reactionTimes.length > 1 ? Math.sqrt(reactionTimes.map(rt => Math.pow(rt - hrt, 2)).reduce((a, b) => a + b, 0) / (reactionTimes.length - 1)).toFixed(2) : "N/A";
             const variability = hrtSd;
+            const isiChange = isiChanges.length > 0 ? (isiChanges.reduce((a, b) => a + b, 0) / isiChanges.length).toFixed(2) : "N/A";
             const dPrime = (correctResponses - commissions).toFixed(2);
 
             result.innerHTML = `
@@ -95,6 +110,7 @@
                 <p>Hit Reaction Time (HRT): ${hrt} ms</p>
                 <p>HRT Standard Deviation (SD): ${hrtSd}</p>
                 <p>Variability: ${variability}</p>
+                <p>HRT Inter-Stimulus Interval (ISI) Change: ${isiChange} ms</p>
                 <p>Detectability (d'): ${dPrime}</p>
             `;
         }
@@ -104,7 +120,7 @@
 
             if (event.code === "Space") {
                 totalResponses++;
-                if (target.textContent === "X" && target.style.display === "block") {
+                if (target.textContent !== "X" && target.style.display === "block") {
                     correctResponses++;
                     const reactionTime = performance.now() - stimulusStartTime;
                     reactionTimes.push(reactionTime);

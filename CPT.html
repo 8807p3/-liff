@@ -39,8 +39,8 @@
     <div id="result"></div>
 
 <script>
-    // 將 seed 定義為全域變數
-    let seed; 
+    // 全域變數
+    let seed;
     let letters = ["A", "B", "X", "C", "D"];
     let intervals = [1000, 2000, 4000]; // 1s, 2s, 4s intervals
     let correctResponses = 0;
@@ -49,13 +49,16 @@
     let commissions = 0;
     let perseverations = 0;
     let reactionTimes = [];
+    let isiReactionTimes = { 1000: [], 2000: [], 4000: [] }; // 每個 ISI 的反應時間
     let isiChanges = [];
     let blockReactionTimes = [];
+    let blockOmissions = [];
+    let blockCommissions = [];
     let blockInterval = 30000; // 30 seconds per block
     let testDuration = 120000; // 2 minutes
-    let interval;
     let isTestRunning = false;
     let stimulusStartTime;
+    let currentInterval;
     let previousInterval;
     let blockTimer;
     let rng;
@@ -79,7 +82,7 @@
     }
 
     function startTest() {
-        // 使用全域變數 seed
+        // 初始化全域變數
         seed = seedInput.value ? parseInt(seedInput.value, 10) : Date.now();
         rng = initializeRNG(seed);
         correctResponses = 0;
@@ -88,8 +91,11 @@
         commissions = 0;
         perseverations = 0;
         reactionTimes = [];
+        isiReactionTimes = { 1000: [], 2000: [], 4000: [] };
         isiChanges = [];
         blockReactionTimes = [];
+        blockOmissions = [];
+        blockCommissions = [];
         result.innerHTML = "";
         isTestRunning = true;
         startButton.disabled = true;
@@ -105,11 +111,11 @@
     }
 
     function runTest() {
-        blockTimer = setInterval(recordBlockReactionTime, blockInterval);
+        blockTimer = setInterval(recordBlockMetrics, blockInterval);
 
         function showStimulus() {
             const randomLetter = letters[Math.floor(rng() * letters.length)];
-            const currentInterval = intervals[Math.floor(rng() * intervals.length)];
+            currentInterval = intervals[Math.floor(rng() * intervals.length)];
 
             if (previousInterval !== undefined) {
                 isiChanges.push(Math.abs(currentInterval - previousInterval));
@@ -135,36 +141,45 @@
         setTimeout(endTest, testDuration);
     }
 
-    function recordBlockReactionTime() {
+    function recordBlockMetrics() {
         if (reactionTimes.length > 0) {
             const blockAverage = reactionTimes.reduce((a, b) => a + b, 0) / reactionTimes.length;
             blockReactionTimes.push(blockAverage);
-            reactionTimes = []; // 清空以記錄下一區塊
+            blockOmissions.push(omissions);
+            blockCommissions.push(commissions);
+
+            // 清空區塊資料以記錄下一區塊
+            reactionTimes = [];
+            omissions = 0;
+            commissions = 0;
         }
     }
 
     function endTest() {
-        console.log("測試結束：正在生成結果..."); // Debug 日誌
         isTestRunning = false;
         target.style.display = "none";
         startButton.disabled = false;
         clearInterval(blockTimer);
 
         if (reactionTimes.length > 0) {
-            recordBlockReactionTime(); // 紀錄最後一個區塊
+            recordBlockMetrics(); // 紀錄最後一個區塊
         }
 
-        let blockChanges = [];
-        for (let i = 1; i < blockReactionTimes.length; i++) {
-            blockChanges.push(Math.abs(blockReactionTimes[i] - blockReactionTimes[i - 1]));
+        let isiAverageReactionTimes = {};
+        for (let isi in isiReactionTimes) {
+            if (isiReactionTimes[isi].length > 0) {
+                isiAverageReactionTimes[isi] = (
+                    isiReactionTimes[isi].reduce((a, b) => a + b, 0) /
+                    isiReactionTimes[isi].length
+                ).toFixed(2);
+            } else {
+                isiAverageReactionTimes[isi] = "N/A";
+            }
         }
-        const hrtBlockChange = blockChanges.length > 0 ? (blockChanges.reduce((a, b) => a + b, 0) / blockChanges.length).toFixed(2) : "N/A";
 
-        const hrt = blockReactionTimes.length > 0 ? (blockReactionTimes.reduce((a, b) => a + b, 0) / blockReactionTimes.length).toFixed(2) : "N/A";
-        const hrtSd = blockReactionTimes.length > 1 ? Math.sqrt(blockReactionTimes.map(rt => Math.pow(rt - hrt, 2)).reduce((a, b) => a + b, 0) / (blockReactionTimes.length - 1)).toFixed(2) : "N/A";
-        const variability = hrtSd;
-        const isiChange = isiChanges.length > 0 ? (isiChanges.reduce((a, b) => a + b, 0) / isiChanges.length).toFixed(2) : "N/A";
-        const dPrime = (correctResponses - commissions).toFixed(2);
+        const hrt = blockReactionTimes.length > 0
+            ? (blockReactionTimes.reduce((a, b) => a + b, 0) / blockReactionTimes.length).toFixed(2)
+            : "N/A";
 
         result.innerHTML = `
             <h2>測試結果</h2>
@@ -172,13 +187,10 @@
             <p>正確反應次數: ${correctResponses}</p>
             <p>遺漏次數: ${omissions}</p>
             <p>誤反應次數: ${commissions}</p>
-            <p>重複按鍵次數: ${perseverations}</p>
-            <p>平均反應時間 (HRT): ${hrt} 毫秒</p>
-            <p>HRT 標準差 (SD): ${hrtSd}</p>
-            <p>反應時間變異性: ${variability}</p>
-            <p>HRT 區塊變化: ${hrtBlockChange} 毫秒</p>
-            <p>ISI 變化: ${isiChange} 毫秒</p>
-            <p>可偵測性 (d'): ${dPrime}</p>
+            <p>每區塊的平均反應時間: ${blockReactionTimes.map((rt, i) => `<br>區塊${i + 1}: ${rt.toFixed(2)} 毫秒`).join("")}</p>
+            <p>每區塊的遺漏次數: ${blockOmissions.map((om, i) => `<br>區塊${i + 1}: ${om}`).join("")}</p>
+            <p>每區塊的誤反應次數: ${blockCommissions.map((com, i) => `<br>區塊${i + 1}: ${com}`).join("")}</p>
+            <p>每個 ISI 的平均反應時間: ${Object.entries(isiAverageReactionTimes).map(([isi, avg]) => `<br>${isi} 毫秒間隔: ${avg}`).join("")}</p>
             <p>測試種子: ${seed}</p>
         `;
     }
@@ -192,6 +204,10 @@
                 correctResponses++;
                 const reactionTime = performance.now() - stimulusStartTime;
                 reactionTimes.push(reactionTime);
+
+                if (isiReactionTimes[currentInterval]) {
+                    isiReactionTimes[currentInterval].push(reactionTime);
+                }
             } else if (target.style.display === "block") {
                 commissions++;
             } else {
@@ -202,6 +218,7 @@
 
     startButton.addEventListener("click", startTest);
 </script>
+
 
 </body>
 </html>

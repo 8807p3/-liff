@@ -24,7 +24,7 @@
     </style>
 </head>
 <body>
-    <h1>CPT-III 測驗模擬202502</h1>
+    <h1>CPT-III 測驗模擬202503</h1>
     <p>當看到除了「X」以外的字母時，請按「空白鍵」。</p>
 
     <div class="seed-input">
@@ -165,7 +165,7 @@
             }
 
             omissions = blockOmissions.reduce((a, b) => a + b, 0);
-            const totalCalculatedResponses = correctResponses + commissions + perseverations;
+            const totalCalculatedResponses = correctResponses + omissions + commissions;
 
             result.innerHTML = `
                 <h2>測試結果</h2>

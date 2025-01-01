@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CPT-III Simulation</title>
+    <title>CPT-III 測驗模擬</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -24,17 +24,18 @@
     </style>
 </head>
 <body>
-    <h1>CPT-III Simulation 3</h1>
-    <p>Press the "SPACE" key when you see letters other than "X".</p>
+    <h1>CPT-III 測驗模擬</h1>
+    <p>請在看到非「X」的字母時按下「空白鍵」。</p>
 
     <div class="seed-input">
-        <label for="seedInput">Seed (for repeatable test): </label>
-        <input type="number" id="seedInput" placeholder="Enter seed">
+        <label for="seedInput">測試種子（可重複測驗用）: </label>
+        <input type="number" id="seedInput" placeholder="請輸入種子數值">
     </div>
 
-    <div id="target" class="target">A</div>
+    <div id="prompt" class="target" style="display: none;">準備開始...</div>
+    <div id="target" class="target"></div>
 
-    <button id="startButton">Start Test</button>
+    <button id="startButton">開始測試</button>
     <div id="result"></div>
 
     <script>
@@ -57,6 +58,7 @@
         let blockTimer;
         let rng;
 
+        const prompt = document.getElementById("prompt");
         const target = document.getElementById("target");
         const startButton = document.getElementById("startButton");
         const result = document.getElementById("result");
@@ -89,6 +91,17 @@
             isTestRunning = true;
             startButton.disabled = true;
 
+            prompt.style.display = "block";
+            target.style.display = "none";
+            prompt.textContent = "準備開始...";
+            
+            setTimeout(() => {
+                prompt.style.display = "none";
+                runTest();
+            }, 3000); // 等待 3 秒
+        }
+
+        function runTest() {
             blockTimer = setInterval(recordBlockReactionTime, blockInterval);
 
             function showStimulus() {
@@ -112,7 +125,7 @@
                     if (isTestRunning) {
                         setTimeout(showStimulus, currentInterval);
                     }
-                }, 800); // Show letter for 800ms
+                }, 800); // 顯示字母 800ms
             }
 
             showStimulus();
@@ -123,7 +136,7 @@
             if (reactionTimes.length > 0) {
                 const blockAverage = reactionTimes.reduce((a, b) => a + b, 0) / reactionTimes.length;
                 blockReactionTimes.push(blockAverage);
-                reactionTimes = []; // Reset for the next block
+                reactionTimes = []; // 清空以記錄下一區塊
             }
         }
 
@@ -134,7 +147,7 @@
             clearInterval(blockTimer);
 
             if (reactionTimes.length > 0) {
-                recordBlockReactionTime(); // Record the last block if not yet recorded
+                recordBlockReactionTime(); // 紀錄最後一個區塊
             }
 
             let blockChanges = [];
@@ -150,23 +163,20 @@
             const dPrime = (correctResponses - commissions).toFixed(2);
 
             result.innerHTML = `
-                <h2>Test Results</h2>
-                <p>Total Responses: ${totalResponses}</p>
-                <p>Correct Responses: ${correctResponses}</p>
-                <p>Omissions: ${omissions}</p>
-                <p>Commissions: ${commissions}</p>
-                <p>Perseverations: ${perseverations}</p>
-                <p>Hit Reaction Time (HRT): ${hrt} ms</p>
-                <p>HRT Standard Deviation (SD): ${hrtSd}</p>
-                <p>Variability: ${variability}</p>
-                <p>HRT Block Change: ${hrtBlockChange} ms</p>
-                <p>HRT Inter-Stimulus Interval (ISI) Change: ${isiChange} ms</p>
-                <p>Detectability (d'): ${dPrime}</p>
-                <p>Seed Used: ${seed}</p>
+                <h2>測試結果</h2>
+                <p>總反應次數: ${totalResponses}</p>
+                <p>正確反應次數: ${correctResponses}</p>
+                <p>遺漏次數: ${omissions}</p>
+                <p>誤反應次數: ${commissions}</p>
+                <p>重複按鍵次數: ${perseverations}</p>
+                <p>平均反應時間 (HRT): ${hrt} 毫秒</p>
+                <p>HRT 標準差 (SD): ${hrtSd}</p>
+                <p>反應時間變異性: ${variability}</p>
+                <p>HRT 區塊變化: ${hrtBlockChange} 毫秒</p>
+                <p>ISI 變化: ${isiChange} 毫秒</p>
+                <p>可偵測性 (d'): ${dPrime}</p>
+                <p>測試種子值: ${seed}</p>
             `;
-
-            // Prevent restarting until the user clicks the button
-            startButton.disabled = false;
         }
 
         document.addEventListener("keydown", (event) => {

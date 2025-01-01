@@ -36,7 +36,7 @@
 </head>
 <body>
     <h1>CPT-2 兩分鐘注意力測驗</h1>
-    <p>當看到除了「X」以外的字母時，請按「空白鍵」。</p>
+    <p>當看到除了「X」以外的字母時，用手指或滑鼠按下螢幕。</p>
 
     <div class="seed-input">
         <label for="seedInput">測試種子 (可重複測試): </label>
@@ -336,11 +336,11 @@
             }, 1000);
         }
 
-        document.addEventListener("keydown", (event) => {
+        document.addEventListener("click", (event) => {
             if (!isTestRunning) return;
 
             const currentTime = performance.now();
-            if (event.code === "Space") {
+       
                 totalResponses++;
                 if (isStimulusActive) {
                     if (target.textContent !== targetLetter) {
@@ -368,7 +368,7 @@
                     }
                 }
                 lastKeyPressTime = currentTime;
-            }
+            
         });
 
         startButton.addEventListener("click", startTest);

@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CPT-2025 測驗模擬</title>
+    <title>CPT-III 測驗模擬</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -24,98 +24,90 @@
     </style>
 </head>
 <body>
-    <h1>CPT-III 測驗模擬202501</h1>
-    <p>請在看到非「X」的字母時按下「空白鍵」。</p>
+    <h1>CPT-III 測驗模擬202502</h1>
+    <p>當看到除了「X」以外的字母時，請按「空白鍵」。</p>
 
     <div class="seed-input">
-        <label for="seedInput">測試種子（可重複測驗用）: </label>
-        <input type="number" id="seedInput" placeholder="請輸入種子數值">
+        <label for="seedInput">測試種子 (可重複測試): </label>
+        <input type="number" id="seedInput" placeholder="輸入種子">
     </div>
 
-    <div id="prompt" class="target" style="display: none;">準備開始...</div>
-    <div id="target" class="target"></div>
+    <div id="target" class="target">A</div>
 
     <button id="startButton">開始測試</button>
     <div id="result"></div>
 
-<script>
-    // 全域變數
-    let seed;
-    let letters = ["A", "B", "X", "C", "D"];
-    let intervals = [1000, 2000, 4000]; // 1s, 2s, 4s intervals
-    let correctResponses = 0;
-    let totalResponses = 0;
-    let omissions = 0;
-    let commissions = 0;
-    let perseverations = 0;
-    let reactionTimes = [];
-    let isiReactionTimes = { 1000: [], 2000: [], 4000: [] }; // 每個 ISI 的反應時間
-    let isiChanges = [];
-    let blockReactionTimes = [];
-    let blockOmissions = [];
-    let blockCommissions = [];
-    let blockInterval = 30000; // 30 seconds per block
-    let testDuration = 120000; // 2 minutes
-    let isTestRunning = false;
-    let stimulusStartTime;
-    let currentInterval;
-    let previousInterval;
-    let blockTimer;
-    let rng;
+    <script>
+        let letters = ["A", "B", "X", "C", "D"];
+        let intervals = [1000, 2000, 4000]; // 間隔時間: 1秒, 2秒, 4秒
+        let correctResponses = 0;
+        let totalResponses = 0;
+        let omissions = 0;
+        let commissions = 0;
+        let perseverations = 0;
+        let reactionTimes = [];
+        let isiChanges = [];
+        let blockReactionTimes = [];
+        let blockOmissions = [];
+        let blockCommissions = [];
+        let isiReactionTimes = { 1000: [], 2000: [], 4000: [] };
+        let blockInterval = 30000; // 每區塊 30 秒
+        let testDuration = 120000; // 測試總時長 2 分鐘
+        let interval;
+        let isTestRunning = false;
+        let stimulusStartTime;
+        let previousInterval;
+        let blockTimer;
+        let rng;
+        let seed;
 
-    const prompt = document.getElementById("prompt");
-    const target = document.getElementById("target");
-    const startButton = document.getElementById("startButton");
-    const result = document.getElementById("result");
-    const seedInput = document.getElementById("seedInput");
+        const target = document.getElementById("target");
+        const startButton = document.getElementById("startButton");
+        const result = document.getElementById("result");
+        const seedInput = document.getElementById("seedInput");
 
-    function seededRandom(seed) {
-        let x = Math.sin(seed) * 10000;
-        return x - Math.floor(x);
-    }
+        function seededRandom(seed) {
+            let x = Math.sin(seed) * 10000;
+            return x - Math.floor(x);
+        }
 
-    function initializeRNG(seed) {
-        return function () {
-            seed = (seed * 9301 + 49297) % 233280;
-            return seed / 233280;
-        };
-    }
+        function initializeRNG(seed) {
+            return function () {
+                seed = (seed * 9301 + 49297) % 233280;
+                return seed / 233280;
+            };
+        }
 
-    function startTest() {
-        // 初始化全域變數
-        seed = seedInput.value ? parseInt(seedInput.value, 10) : Date.now();
-        rng = initializeRNG(seed);
-        correctResponses = 0;
-        totalResponses = 0;
-        omissions = 0;
-        commissions = 0;
-        perseverations = 0;
-        reactionTimes = [];
-        isiReactionTimes = { 1000: [], 2000: [], 4000: [] };
-        isiChanges = [];
-        blockReactionTimes = [];
-        blockOmissions = [];
-        blockCommissions = [];
-        result.innerHTML = "";
-        isTestRunning = true;
-        startButton.disabled = true;
+        function startTest() {
+            seed = seedInput.value ? parseInt(seedInput.value, 10) : Date.now();
+            rng = initializeRNG(seed);
+            correctResponses = 0;
+            totalResponses = 0;
+            omissions = 0;
+            commissions = 0;
+            perseverations = 0;
+            reactionTimes = [];
+            isiChanges = [];
+            blockReactionTimes = [];
+            blockOmissions = [];
+            blockCommissions = [];
+            isiReactionTimes = { 1000: [], 2000: [], 4000: [] };
+            result.textContent = "";
+            isTestRunning = true;
+            startButton.disabled = true;
 
-        prompt.style.display = "block";
-        target.style.display = "none";
-        prompt.textContent = "準備開始...";
-        
-        setTimeout(() => {
-            prompt.style.display = "none";
-            runTest();
-        }, 3000); // 等待 3 秒
-    }
-
-    function runTest() {
-        blockTimer = setInterval(recordBlockMetrics, blockInterval);
+            result.textContent = "準備開始...";
+            setTimeout(() => {
+                result.textContent = "";
+                blockTimer = setInterval(recordBlockMetrics, blockInterval);
+                showStimulus();
+                setTimeout(endTest, testDuration);
+            }, 3000); // 3 秒提示時間
+        }
 
         function showStimulus() {
             const randomLetter = letters[Math.floor(rng() * letters.length)];
-            currentInterval = intervals[Math.floor(rng() * intervals.length)];
+            const currentInterval = intervals[Math.floor(rng() * intervals.length)];
 
             if (previousInterval !== undefined) {
                 isiChanges.push(Math.abs(currentInterval - previousInterval));
@@ -129,96 +121,93 @@
             setTimeout(() => {
                 if (target.textContent !== "X" && target.style.display === "block") {
                     omissions++;
+                    blockOmissions[blockOmissions.length - 1]++;
                 }
                 target.style.display = "none";
                 if (isTestRunning) {
                     setTimeout(showStimulus, currentInterval);
                 }
-            }, 800); // 顯示字母 800ms
+            }, 800); // 顯示字母 800 毫秒
         }
 
-        showStimulus();
-        setTimeout(endTest, testDuration);
-    }
-
-    function recordBlockMetrics() {
-        if (reactionTimes.length > 0) {
-            const blockAverage = reactionTimes.reduce((a, b) => a + b, 0) / reactionTimes.length;
-            blockReactionTimes.push(blockAverage);
-            blockOmissions.push(omissions);
-            blockCommissions.push(commissions);
-
-            // 清空區塊資料以記錄下一區塊
-            reactionTimes = [];
-            omissions = 0;
-            commissions = 0;
-        }
-    }
-
-    function endTest() {
-        isTestRunning = false;
-        target.style.display = "none";
-        startButton.disabled = false;
-        clearInterval(blockTimer);
-
-        if (reactionTimes.length > 0) {
-            recordBlockMetrics(); // 紀錄最後一個區塊
-        }
-
-        let isiAverageReactionTimes = {};
-        for (let isi in isiReactionTimes) {
-            if (isiReactionTimes[isi].length > 0) {
-                isiAverageReactionTimes[isi] = (
-                    isiReactionTimes[isi].reduce((a, b) => a + b, 0) /
-                    isiReactionTimes[isi].length
-                ).toFixed(2);
+        function recordBlockMetrics() {
+            if (reactionTimes.length > 0) {
+                const blockAverage = reactionTimes.reduce((a, b) => a + b, 0) / reactionTimes.length;
+                blockReactionTimes.push(blockAverage);
+                reactionTimes = []; // 重置
             } else {
-                isiAverageReactionTimes[isi] = "N/A";
+                blockReactionTimes.push(0);
             }
+            blockOmissions.push(0);
+            blockCommissions.push(0);
         }
 
-        const hrt = blockReactionTimes.length > 0
-            ? (blockReactionTimes.reduce((a, b) => a + b, 0) / blockReactionTimes.length).toFixed(2)
-            : "N/A";
+        function endTest() {
+            isTestRunning = false;
+            target.style.display = "none";
+            startButton.disabled = false;
+            clearInterval(blockTimer);
 
-        result.innerHTML = `
-            <h2>測試結果</h2>
-            <p>總反應次數: ${totalResponses}</p>
-            <p>正確反應次數: ${correctResponses}</p>
-            <p>遺漏次數: ${omissions}</p>
-            <p>誤反應次數: ${commissions}</p>
-            <p>每區塊的平均反應時間: ${blockReactionTimes.map((rt, i) => `<br>區塊${i + 1}: ${rt.toFixed(2)} 毫秒`).join("")}</p>
-            <p>每區塊的遺漏次數: ${blockOmissions.map((om, i) => `<br>區塊${i + 1}: ${om}`).join("")}</p>
-            <p>每區塊的誤反應次數: ${blockCommissions.map((com, i) => `<br>區塊${i + 1}: ${com}`).join("")}</p>
-            <p>每個 ISI 的平均反應時間: ${Object.entries(isiAverageReactionTimes).map(([isi, avg]) => `<br>${isi} 毫秒間隔: ${avg}`).join("")}</p>
-            <p>測試種子: ${seed}</p>
-        `;
-    }
+            if (reactionTimes.length > 0) {
+                recordBlockMetrics(); // 紀錄最後一個區塊
+            }
 
-    document.addEventListener("keydown", (event) => {
-        if (!isTestRunning) return;
-
-        if (event.code === "Space") {
-            totalResponses++;
-            if (target.textContent !== "X" && target.style.display === "block") {
-                correctResponses++;
-                const reactionTime = performance.now() - stimulusStartTime;
-                reactionTimes.push(reactionTime);
-
-                if (isiReactionTimes[currentInterval]) {
-                    isiReactionTimes[currentInterval].push(reactionTime);
+            let isiAverageReactionTimes = {};
+            for (let isi in isiReactionTimes) {
+                if (isiReactionTimes[isi].length > 0) {
+                    isiAverageReactionTimes[isi] = (
+                        isiReactionTimes[isi].reduce((a, b) => a + b, 0) /
+                        isiReactionTimes[isi].length
+                    ).toFixed(2);
+                } else {
+                    isiAverageReactionTimes[isi] = "N/A";
                 }
-            } else if (target.style.display === "block") {
-                commissions++;
-            } else {
-                perseverations++;
+            }
+
+            omissions = blockOmissions.reduce((a, b) => a + b, 0);
+            const totalCalculatedResponses = correctResponses + commissions + perseverations;
+
+            result.innerHTML = `
+                <h2>測試結果</h2>
+                <p>總反應次數: ${totalResponses}</p>
+                <p>正確反應次數: ${correctResponses}</p>
+                <p>遺漏次數: ${omissions}</p>
+                <p>誤反應次數: ${commissions}</p>
+                <p>重複按鍵次數: ${perseverations}</p>
+                <p>每區塊的平均反應時間: ${blockReactionTimes.map((rt, i) => `<br>區塊${i + 1}: ${rt.toFixed(2)} 毫秒`).join("")}</p>
+                <p>每區塊的遺漏次數: ${blockOmissions.map((om, i) => `<br>區塊${i + 1}: ${om}`).join("")}</p>
+                <p>每區塊的誤反應次數: ${blockCommissions.map((com, i) => `<br>區塊${i + 1}: ${com}`).join("")}</p>
+                <p>每個 ISI 的平均反應時間: ${Object.entries(isiAverageReactionTimes).map(([isi, avg]) => `<br>${isi} 毫秒間隔: ${avg}`).join("")}</p>
+                <p>測試種子: ${seed}</p>
+            `;
+
+            if (totalCalculatedResponses !== totalResponses) {
+                result.innerHTML += `
+                    <p style="color: red;">注意：數據不一致！計算的總反應 (${totalCalculatedResponses}) 與總反應次數 (${totalResponses}) 不符。</p>
+                `;
             }
         }
-    });
 
-    startButton.addEventListener("click", startTest);
-</script>
+        document.addEventListener("keydown", (event) => {
+            if (!isTestRunning) return;
 
+            if (event.code === "Space") {
+                totalResponses++;
+                if (target.textContent !== "X" && target.style.display === "block") {
+                    correctResponses++;
+                    const reactionTime = performance.now() - stimulusStartTime;
+                    reactionTimes.push(reactionTime);
+                    isiReactionTimes[previousInterval].push(reactionTime);
+                } else if (target.style.display === "block") {
+                    commissions++;
+                    blockCommissions[blockCommissions.length - 1]++;
+                } else {
+                    perseverations++;
+                }
+            }
+        });
 
+        startButton.addEventListener("click", startTest);
+    </script>
 </body>
 </html>

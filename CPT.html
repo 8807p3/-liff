@@ -24,7 +24,7 @@
     </style>
 </head>
 <body>
-    <h1>CPT-III 測驗模擬202503</h1>
+    <h1>CPT-III 測驗模擬202504</h1>
     <p>當看到除了「X」以外的字母時，請按「空白鍵」。</p>
 
     <div class="seed-input">
@@ -50,6 +50,7 @@
         let blockReactionTimes = [];
         let blockOmissions = [];
         let blockCommissions = [];
+        let blockStimuliCounts = [];
         let isiReactionTimes = { 1000: [], 2000: [], 4000: [] };
         let blockInterval = 30000; // 每區塊 30 秒
         let testDuration = 120000; // 測試總時長 2 分鐘
@@ -91,6 +92,7 @@
             blockReactionTimes = [];
             blockOmissions = [];
             blockCommissions = [];
+            blockStimuliCounts = [];
             isiReactionTimes = { 1000: [], 2000: [], 4000: [] };
             result.textContent = "";
             isTestRunning = true;
@@ -117,6 +119,11 @@
             target.textContent = randomLetter;
             target.style.display = "block";
             stimulusStartTime = performance.now();
+
+            if (blockStimuliCounts.length === 0 || blockStimuliCounts.length < blockReactionTimes.length + 1) {
+                blockStimuliCounts.push(0);
+            }
+            blockStimuliCounts[blockStimuliCounts.length - 1]++;
 
             setTimeout(() => {
                 if (target.textContent !== "X" && target.style.display === "block") {
@@ -165,7 +172,7 @@
             }
 
             omissions = blockOmissions.reduce((a, b) => a + b, 0);
-            const totalCalculatedResponses = correctResponses + omissions + commissions;
+            const totalCalculatedResponses = correctResponses + commissions;
 
             result.innerHTML = `
                 <h2>測試結果</h2>
@@ -179,6 +186,7 @@
                 <p>每區塊的誤反應次數: ${blockCommissions.map((com, i) => `<br>區塊${i + 1}: ${com}`).join("")}</p>
                 <p>每個 ISI 的平均反應時間: ${Object.entries(isiAverageReactionTimes).map(([isi, avg]) => `<br>${isi} 毫秒間隔: ${avg}`).join("")}</p>
                 <p>測試種子: ${seed}</p>
+                <p>在 ${testDuration / 1000} 秒內，呈現 ${blockStimuliCounts.reduce((a, b) => a + b, 0)} 個刺激，其中有 ${blockStimuliCounts.map((count, i) => `<br>區塊${i + 1}: 刺激 ${count} 個`).join("")}。</p>
             `;
 
             if (totalCalculatedResponses !== totalResponses) {

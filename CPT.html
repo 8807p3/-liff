@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CPT 測驗模擬</title>
+    <title>CPT-III 測驗模擬</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -32,13 +32,14 @@
             display: none;
         }
     </style>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jstat/1.9.4/jstat.min.js"></script>
 </head>
 <body>
-    <h1> CPT-2 兩分鐘簡易注意力測驗</h1>
+    <h1>CPT-2 兩分鐘注意力測驗</h1>
     <p>當看到除了「X」以外的字母時，請按「空白鍵」。</p>
 
     <div class="seed-input">
-        <label for="seedInput">試題種子 (重複測試用): </label>
+        <label for="seedInput">測試種子 (可重複測試): </label>
         <input type="number" id="seedInput" placeholder="輸入種子">
     </div>
 
@@ -70,6 +71,8 @@
         let blockStimuliCounts = [];
         let blockTargetCounts = [];
         let isiReactionTimes = { 1000: [], 2000: [], 4000: [] };
+        let isiOmissions = { 1000: 0, 2000: 0, 4000: 0 };
+        let isiCommissions = { 1000: 0, 2000: 0, 4000: 0 };
         let blockInterval = 30000; // 每區塊 30 秒
         let testDuration = 120000; // 測試總時長 2 分鐘
         let interval;
@@ -119,6 +122,8 @@
             blockStimuliCounts = [];
             blockTargetCounts = [];
             isiReactionTimes = { 1000: [], 2000: [], 4000: [] };
+            isiOmissions = { 1000: 0, 2000: 0, 4000: 0 };
+            isiCommissions = { 1000: 0, 2000: 0, 4000: 0 };
             result.textContent = "";
             isTestRunning = true;
             startButton.disabled = true;
@@ -170,6 +175,7 @@
                 if (currentStimulus !== targetLetter && isStimulusActive) {
                     omissions++;
                     blockOmissions[blockOmissions.length - 1]++;
+                    isiOmissions[currentInterval]++;
                     if (showRealtimeFeedback) {
                         showRealtimeResult("omission");
                     }
@@ -226,10 +232,10 @@
                 <p>誤反應次數: ${commissions}</p>
                 <p>重複按鍵次數: ${perseverations}</p>
                 <p>每區塊的平均反應時間: ${blockReactionTimes.map((rt, i) => `<br>區塊${i + 1}: ${rt.toFixed(2)} 毫秒`).join("")}</p>
-                <p>每區塊的遺漏次數: ${blockOmissions.map((om, i) => `<br>區塊${i + 1}: ${om}`).join("")}</p>
-                <p>每區塊的誤反應次數: ${blockCommissions.map((com, i) => `<br>區塊${i + 1}: ${com}`).join("")}</p>
+                <p>每區塊的遺漏次數: ${blockOmissions.map((om, i) => `<br>區塊${i + 1}: ${om} (${((om / blockStimuliCounts[i]) * 100).toFixed(2)}%)`).join("")}</p>
+                <p>每區塊的誤反應次數: ${blockCommissions.map((com, i) => `<br>區塊${i + 1}: ${com} (${((com / blockStimuliCounts[i]) * 100).toFixed(2)}%)`).join("")}</p>
                 <p>每個 ISI 的平均反應時間: ${Object.entries(isiAverageReactionTimes).map(([isi, avg]) => `<br>${isi} 毫秒間隔: ${avg}`).join("")}</p>
-                <p>試題種子: ${seed}</p>                
+                <p>測試種子: ${seed}</p>                
             `;
 
             if (totalCalculatedResponses !== totalResponses) {
@@ -238,42 +244,71 @@
                 `;
             }
 
+            // 計算 d' 值
+            const hitRate = correctResponses / (correctResponses + omissions);
+            const falseAlarmRate = commissions / (commissions + (blockStimuliCounts.reduce((a, b) => a + b, 0) - blockTargetCounts.reduce((a, b) => a + b, 0) - commissions));
+            const dPrime = jStat.normal.inv(hitRate, 0, 1) - jStat.normal.inv(falseAlarmRate, 0, 1);
+
+            result.innerHTML += `<h3>可檢測性 (d')</h3><p>d' 值: ${dPrime.toFixed(2)}</p>`;
+
+            // 計算 Omissions by ISI 和 Commissions by ISI
+            result.innerHTML += `<h3>Omissions by ISI</h3>`;
+            for (let isi in isiOmissions) {
+                const totalStimuli = blockStimuliCounts.reduce((a, b) => a + b, 0);
+                const percentage = ((isiOmissions[isi] / totalStimuli) * 100).toFixed(2);
+                result.innerHTML += `${isi} 毫秒間隔: ${isiOmissions[isi]} (${percentage}%)<br>`;
+            }
+
+            result.innerHTML += `<h3>Commissions by ISI</h3>`;
+            for (let isi in isiCommissions) {
+                const totalStimuli = blockStimuliCounts.reduce((a, b) => a + b, 0);
+                const percentage = ((isiCommissions[isi] / totalStimuli) * 100).toFixed(2);
+                result.innerHTML += `${isi} 毫秒間隔: ${isiCommissions[isi]} (${percentage}%)<br>`;
+            }
+
             // 根據測試結果生成短評
-            let shortReview = generateShortReview(correctResponses, omissions, commissions, perseverations, blockReactionTimes);
+            let shortReview = generateShortReview(correctResponses, omissions, commissions, perseverations, blockReactionTimes, dPrime);
             result.innerHTML += `<h3>測試短評</h3><p>${shortReview}</p>`;
         }
 
-        function generateShortReview(correct, omission, commission, perseveration, blockReactionTimes) {
-            let review = "根據測試結果，受測者的反應特徵如下：";
+        function generateShortReview(correct, omission, commission, perseveration, blockReactionTimes, dPrime) {
+            let review = "根據測試結果，受測者的反應特徵如下：<br>";
 
-            // 專注力
+            // 注意力
             if (omission > 0) {
-                review += `\n- 專注力：受測者在 ${omission} 次刺激中未能做出反應，顯示出注意力不集中。`;
+                review += `\n- 注意力：受測者在 ${omission} 次刺激中未能做出反應，顯示出注意力不集中。<br>`;
             } else {
-                review += `\n- 專注力：受測者在所有刺激中均做出了反應，顯示出良好的注意力。`;
+                review += `\n- 注意力：受測者在所有刺激中均做出了反應，顯示出良好的注意力。<br>`;
             }
 
             // 衝動
             if (commission > 0) {
-                review += `\n- 衝動：受測者在 ${commission} 次刺激中做出了誤反應，顯示出一定程度的衝動性。`;
+                review += `\n- 衝動：受測者在 ${commission} 次刺激中做出了誤反應，顯示出一定程度的衝動性。<br>`;
             } else {
-                review += `\n- 衝動：受測者在所有刺激中均未做出誤反應，顯示出良好的自我控制能力。`;
+                review += `\n- 衝動：受測者在所有刺激中均未做出誤反應，顯示出良好的自我控制能力。<br>`;
             }
 
             // 警覺度
             const averageReactionTime = blockReactionTimes.reduce((a, b) => a + b, 0) / blockReactionTimes.length;
             if (averageReactionTime < 500) {
-                review += `\n- 警覺度：受測者的平均反應時間為 ${averageReactionTime.toFixed(2)} 毫秒，顯示出高警覺度。`;
+                review += `\n- 警覺度：受測者的平均反應時間為 ${averageReactionTime.toFixed(2)} 毫秒，顯示出高警覺度。<br>`;
             } else {
-                review += `\n- 警覺度：受測者的平均反應時間為 ${averageReactionTime.toFixed(2)} 毫秒，顯示出警覺度較低。`;
+                review += `\n- 警覺度：受測者的平均反應時間為 ${averageReactionTime.toFixed(2)} 毫秒，顯示出警覺度較低。<br>`;
             }
 
             // 持續注意力
             const reactionTimeVariance = blockReactionTimes.reduce((a, b) => a + Math.pow(b - averageReactionTime, 2), 0) / blockReactionTimes.length;
             if (reactionTimeVariance < 10000) {
-                review += `\n- 持續注意力：受測者的反應時間變異性較小，顯示出良好的持續注意力。`;
+                review += `\n- 持續注意力：受測者的反應時間變異性較小，顯示出良好的持續注意力。<br>`;
             } else {
-                review += `\n- 持續注意力：受測者的反應時間變異性較大，顯示出持續注意力不穩定。`;
+                review += `\n- 持續注意力：受測者的反應時間變異性較大，顯示出持續注意力不穩定。<br>`;
+            }
+
+            // 可檢測性
+            if (dPrime > 1) {
+                review += `\n- 可檢測性：受測者的 d' 值為 ${dPrime.toFixed(2)}，顯示出良好的信號檢測能力。<br>`;
+            } else {
+                review += `\n- 可檢測性：受測者的 d' 值為 ${dPrime.toFixed(2)}，顯示出信號檢測能力較弱。<br>`;
             }
 
             return review;
@@ -320,6 +355,7 @@
                     } else if (target.textContent === targetLetter) {
                         commissions++;
                         blockCommissions[blockCommissions.length - 1]++;
+                        isiCommissions[previousInterval]++;
                         isStimulusActive = false; // 確保每個刺激只記錄一次反應
                         if (showRealtimeFeedback) {
                             showRealtimeResult("commission");

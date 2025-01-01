@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CPT-III 測驗模擬</title>
+    <title>CPT-2025 測驗模擬</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -38,165 +38,170 @@
     <button id="startButton">開始測試</button>
     <div id="result"></div>
 
-    <script>
-        let letters = ["A", "B", "X", "C", "D"];
-        let intervals = [1000, 2000, 4000]; // 1s, 2s, 4s intervals
-        let correctResponses = 0;
-        let totalResponses = 0;
-        let omissions = 0;
-        let commissions = 0;
-        let perseverations = 0;
-        let reactionTimes = [];
-        let isiChanges = [];
-        let blockReactionTimes = [];
-        let blockInterval = 30000; // 30 seconds per block
-        let testDuration = 120000; // 2 minutes
-        let interval;
-        let isTestRunning = false;
-        let stimulusStartTime;
-        let previousInterval;
-        let blockTimer;
-        let rng;
+<script>
+    // 將 seed 定義為全域變數
+    let seed; 
+    let letters = ["A", "B", "X", "C", "D"];
+    let intervals = [1000, 2000, 4000]; // 1s, 2s, 4s intervals
+    let correctResponses = 0;
+    let totalResponses = 0;
+    let omissions = 0;
+    let commissions = 0;
+    let perseverations = 0;
+    let reactionTimes = [];
+    let isiChanges = [];
+    let blockReactionTimes = [];
+    let blockInterval = 30000; // 30 seconds per block
+    let testDuration = 120000; // 2 minutes
+    let interval;
+    let isTestRunning = false;
+    let stimulusStartTime;
+    let previousInterval;
+    let blockTimer;
+    let rng;
 
-        const prompt = document.getElementById("prompt");
-        const target = document.getElementById("target");
-        const startButton = document.getElementById("startButton");
-        const result = document.getElementById("result");
-        const seedInput = document.getElementById("seedInput");
+    const prompt = document.getElementById("prompt");
+    const target = document.getElementById("target");
+    const startButton = document.getElementById("startButton");
+    const result = document.getElementById("result");
+    const seedInput = document.getElementById("seedInput");
 
-        function seededRandom(seed) {
-            let x = Math.sin(seed) * 10000;
-            return x - Math.floor(x);
-        }
+    function seededRandom(seed) {
+        let x = Math.sin(seed) * 10000;
+        return x - Math.floor(x);
+    }
 
-        function initializeRNG(seed) {
-            return function () {
-                seed = (seed * 9301 + 49297) % 233280;
-                return seed / 233280;
-            };
-        }
+    function initializeRNG(seed) {
+        return function () {
+            seed = (seed * 9301 + 49297) % 233280;
+            return seed / 233280;
+        };
+    }
 
-        function startTest() {
-            const seed = seedInput.value ? parseInt(seedInput.value, 10) : Date.now();
-            rng = initializeRNG(seed);
-            correctResponses = 0;
-            totalResponses = 0;
-            omissions = 0;
-            commissions = 0;
-            perseverations = 0;
-            reactionTimes = [];
-            isiChanges = [];
-            blockReactionTimes = [];
-            result.textContent = "";
-            isTestRunning = true;
-            startButton.disabled = true;
+    function startTest() {
+        // 使用全域變數 seed
+        seed = seedInput.value ? parseInt(seedInput.value, 10) : Date.now();
+        rng = initializeRNG(seed);
+        correctResponses = 0;
+        totalResponses = 0;
+        omissions = 0;
+        commissions = 0;
+        perseverations = 0;
+        reactionTimes = [];
+        isiChanges = [];
+        blockReactionTimes = [];
+        result.innerHTML = "";
+        isTestRunning = true;
+        startButton.disabled = true;
 
-            prompt.style.display = "block";
-            target.style.display = "none";
-            prompt.textContent = "準備開始...";
-            
+        prompt.style.display = "block";
+        target.style.display = "none";
+        prompt.textContent = "準備開始...";
+        
+        setTimeout(() => {
+            prompt.style.display = "none";
+            runTest();
+        }, 3000); // 等待 3 秒
+    }
+
+    function runTest() {
+        blockTimer = setInterval(recordBlockReactionTime, blockInterval);
+
+        function showStimulus() {
+            const randomLetter = letters[Math.floor(rng() * letters.length)];
+            const currentInterval = intervals[Math.floor(rng() * intervals.length)];
+
+            if (previousInterval !== undefined) {
+                isiChanges.push(Math.abs(currentInterval - previousInterval));
+            }
+            previousInterval = currentInterval;
+
+            target.textContent = randomLetter;
+            target.style.display = "block";
+            stimulusStartTime = performance.now();
+
             setTimeout(() => {
-                prompt.style.display = "none";
-                runTest();
-            }, 3000); // 等待 3 秒
-        }
-
-        function runTest() {
-            blockTimer = setInterval(recordBlockReactionTime, blockInterval);
-
-            function showStimulus() {
-                const randomLetter = letters[Math.floor(rng() * letters.length)];
-                const currentInterval = intervals[Math.floor(rng() * intervals.length)];
-
-                if (previousInterval !== undefined) {
-                    isiChanges.push(Math.abs(currentInterval - previousInterval));
-                }
-                previousInterval = currentInterval;
-
-                target.textContent = randomLetter;
-                target.style.display = "block";
-                stimulusStartTime = performance.now();
-
-                setTimeout(() => {
-                    if (target.textContent !== "X" && target.style.display === "block") {
-                        omissions++;
-                    }
-                    target.style.display = "none";
-                    if (isTestRunning) {
-                        setTimeout(showStimulus, currentInterval);
-                    }
-                }, 800); // 顯示字母 800ms
-            }
-
-            showStimulus();
-            setTimeout(endTest, testDuration);
-        }
-
-        function recordBlockReactionTime() {
-            if (reactionTimes.length > 0) {
-                const blockAverage = reactionTimes.reduce((a, b) => a + b, 0) / reactionTimes.length;
-                blockReactionTimes.push(blockAverage);
-                reactionTimes = []; // 清空以記錄下一區塊
-            }
-        }
-
-        function endTest() {
-            isTestRunning = false;
-            target.style.display = "none";
-            startButton.disabled = false;
-            clearInterval(blockTimer);
-
-            if (reactionTimes.length > 0) {
-                recordBlockReactionTime(); // 紀錄最後一個區塊
-            }
-
-            let blockChanges = [];
-            for (let i = 1; i < blockReactionTimes.length; i++) {
-                blockChanges.push(Math.abs(blockReactionTimes[i] - blockReactionTimes[i - 1]));
-            }
-            const hrtBlockChange = blockChanges.length > 0 ? (blockChanges.reduce((a, b) => a + b, 0) / blockChanges.length).toFixed(2) : "N/A";
-
-            const hrt = blockReactionTimes.length > 0 ? (blockReactionTimes.reduce((a, b) => a + b, 0) / blockReactionTimes.length).toFixed(2) : "N/A";
-            const hrtSd = blockReactionTimes.length > 1 ? Math.sqrt(blockReactionTimes.map(rt => Math.pow(rt - hrt, 2)).reduce((a, b) => a + b, 0) / (blockReactionTimes.length - 1)).toFixed(2) : "N/A";
-            const variability = hrtSd;
-            const isiChange = isiChanges.length > 0 ? (isiChanges.reduce((a, b) => a + b, 0) / isiChanges.length).toFixed(2) : "N/A";
-            const dPrime = (correctResponses - commissions).toFixed(2);
-
-            result.innerHTML = `
-                <h2>測試結果</h2>
-                <p>總反應次數: ${totalResponses}</p>
-                <p>正確反應次數: ${correctResponses}</p>
-                <p>遺漏次數: ${omissions}</p>
-                <p>誤反應次數: ${commissions}</p>
-                <p>重複按鍵次數: ${perseverations}</p>
-                <p>平均反應時間 (HRT): ${hrt} 毫秒</p>
-                <p>HRT 標準差 (SD): ${hrtSd}</p>
-                <p>反應時間變異性: ${variability}</p>
-                <p>HRT 區塊變化: ${hrtBlockChange} 毫秒</p>
-                <p>ISI 變化: ${isiChange} 毫秒</p>
-                <p>可偵測性 (d'): ${dPrime}</p>
-                <p>測試種子值: ${seed}</p>
-            `;
-        }
-
-        document.addEventListener("keydown", (event) => {
-            if (!isTestRunning) return;
-
-            if (event.code === "Space") {
-                totalResponses++;
                 if (target.textContent !== "X" && target.style.display === "block") {
-                    correctResponses++;
-                    const reactionTime = performance.now() - stimulusStartTime;
-                    reactionTimes.push(reactionTime);
-                } else if (target.style.display === "block") {
-                    commissions++;
-                } else {
-                    perseverations++;
+                    omissions++;
                 }
-            }
-        });
+                target.style.display = "none";
+                if (isTestRunning) {
+                    setTimeout(showStimulus, currentInterval);
+                }
+            }, 800); // 顯示字母 800ms
+        }
 
-        startButton.addEventListener("click", startTest);
-    </script>
+        showStimulus();
+        setTimeout(endTest, testDuration);
+    }
+
+    function recordBlockReactionTime() {
+        if (reactionTimes.length > 0) {
+            const blockAverage = reactionTimes.reduce((a, b) => a + b, 0) / reactionTimes.length;
+            blockReactionTimes.push(blockAverage);
+            reactionTimes = []; // 清空以記錄下一區塊
+        }
+    }
+
+    function endTest() {
+        console.log("測試結束：正在生成結果..."); // Debug 日誌
+        isTestRunning = false;
+        target.style.display = "none";
+        startButton.disabled = false;
+        clearInterval(blockTimer);
+
+        if (reactionTimes.length > 0) {
+            recordBlockReactionTime(); // 紀錄最後一個區塊
+        }
+
+        let blockChanges = [];
+        for (let i = 1; i < blockReactionTimes.length; i++) {
+            blockChanges.push(Math.abs(blockReactionTimes[i] - blockReactionTimes[i - 1]));
+        }
+        const hrtBlockChange = blockChanges.length > 0 ? (blockChanges.reduce((a, b) => a + b, 0) / blockChanges.length).toFixed(2) : "N/A";
+
+        const hrt = blockReactionTimes.length > 0 ? (blockReactionTimes.reduce((a, b) => a + b, 0) / blockReactionTimes.length).toFixed(2) : "N/A";
+        const hrtSd = blockReactionTimes.length > 1 ? Math.sqrt(blockReactionTimes.map(rt => Math.pow(rt - hrt, 2)).reduce((a, b) => a + b, 0) / (blockReactionTimes.length - 1)).toFixed(2) : "N/A";
+        const variability = hrtSd;
+        const isiChange = isiChanges.length > 0 ? (isiChanges.reduce((a, b) => a + b, 0) / isiChanges.length).toFixed(2) : "N/A";
+        const dPrime = (correctResponses - commissions).toFixed(2);
+
+        result.innerHTML = `
+            <h2>測試結果</h2>
+            <p>總反應次數: ${totalResponses}</p>
+            <p>正確反應次數: ${correctResponses}</p>
+            <p>遺漏次數: ${omissions}</p>
+            <p>誤反應次數: ${commissions}</p>
+            <p>重複按鍵次數: ${perseverations}</p>
+            <p>平均反應時間 (HRT): ${hrt} 毫秒</p>
+            <p>HRT 標準差 (SD): ${hrtSd}</p>
+            <p>反應時間變異性: ${variability}</p>
+            <p>HRT 區塊變化: ${hrtBlockChange} 毫秒</p>
+            <p>ISI 變化: ${isiChange} 毫秒</p>
+            <p>可偵測性 (d'): ${dPrime}</p>
+            <p>測試種子: ${seed}</p>
+        `;
+    }
+
+    document.addEventListener("keydown", (event) => {
+        if (!isTestRunning) return;
+
+        if (event.code === "Space") {
+            totalResponses++;
+            if (target.textContent !== "X" && target.style.display === "block") {
+                correctResponses++;
+                const reactionTime = performance.now() - stimulusStartTime;
+                reactionTimes.push(reactionTime);
+            } else if (target.style.display === "block") {
+                commissions++;
+            } else {
+                perseverations++;
+            }
+        }
+    });
+
+    startButton.addEventListener("click", startTest);
+</script>
+
 </body>
 </html>

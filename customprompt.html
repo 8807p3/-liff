@@ -1,29 +1,81 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>自訂提示設定</title>
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+            background-color: #f9f9f9;
+        }
+        h1 {
+            font-size: 24px;
+            color: #333;
+        }
+        label {
+            font-size: 16px;
+            color: #555;
+            display: block;
+            margin-bottom: 10px;
+        }
+        input[type="text"] {
+            width: 100%;
+            max-width: 500px;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        .description {
+            font-size: 14px;
+            color: #777;
+            margin-top: 10px;
+            margin-bottom: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            color: #fff;
+            background-color: #007bff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
     <h1>設定自訂提示</h1>
     <form id="customPromptForm">
         <label for="userInput">你想設定的自訂提示:</label>
-        <input type="text" id="userInput" name="userInput" required>
-        <br><br>
+        <input type="text" id="userInput" name="userInput" required
+               value="你是日文翻譯專家, 我來自台灣, 要使用台灣繁體中文翻譯, 翻譯時使用台灣用詞避免大陸用詞,簡短翻譯">
+        <div class="description">
+            <strong>提示詞寫法:</strong><br>
+            1. 你希望我扮演的角色<br>
+            2. 你要做什麼<br>
+            3. 期待的回應風格
+        </div>
         <button type="button" id="confirmButton">確認</button>
         <button type="button" id="cancelButton">取消</button>
     </form>
 
     <script>
-        // 初始化LIFF
+        // 初始化 LIFF
         liff.init({ liffId: '2006477217-rzgv0Djq' })
             .then(() => {
                 if (!liff.isLoggedIn()) {
-                    liff.login(); // 如果未登入，跳轉至LINE登入頁面
+                    liff.login(); // 如果未登入，跳轉至 LINE 登入頁面
                 } else {
-                    // 獲取用戶ID
+                    // 獲取用戶 ID
                     liff.getProfile()
                         .then(profile => {
                             const userId = profile.userId;
@@ -38,36 +90,44 @@
                 }
             })
             .catch(err => {
-                console.error('LIFF初始化失敗:', err);
+                console.error('LIFF 初始化失敗:', err);
             });
 
         // 取消按鈕
         document.getElementById('cancelButton').addEventListener('click', () => {
-            liff.closeWindow(); // 關閉LIFF視窗
+            liff.closeWindow(); // 關閉 LIFF 視窗
         });
 
-        // 更新Google Sheets
-function updateGoogleSheet(userId, userInput) {
-  const url = 'https://script.google.com/macros/s/AKfycbyRdFR-9eoopUc4aoP_c2bHVDIFjlb-VsPe9kQ7yKlBDjXwz3TckUNAdAOCAuPXWb_y/exec' +
-    `?action=updatePrompt&userId=${encodeURIComponent(userId)}&userInput=${encodeURIComponent(userInput)}`;
-  
-  fetch(url, {
-    method: 'GET',
-  })
-  .then(response => response.json())
-  .then(data => {
-    if (data.status === 'success') {
-      alert('設定成功！');
-      liff.closeWindow(); // 關閉 LIFF 視窗
-    } else {
-      alert('設定失敗：' + data.message);
-    }
-  })
-  .catch(error => {
-    console.error('更新失敗:', error);
-    alert('設定失敗，請稍後再試。');
-  });
-}
+        // 更新 Google Sheets
+        function updateGoogleSheet(userId, userInput) {
+            const url = 'https://script.google.com/macros/s/AKfycbyRdFR-9eoopUc4aoP_c2bHVDIFjlb-VsPe9kQ7yKlBDjXwz3TckUNAdAOCAuPXWb_y/exec' +
+                `?action=updatePrompt&userId=${encodeURIComponent(userId)}&userInput=${encodeURIComponent(userInput)}`;
+            
+            console.log('發送請求到:', url); // 記錄請求 URL
+
+            fetch(url, {
+                method: 'GET',
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('網路請求失敗');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log('收到的回應:', data); // 記錄回應數據
+                if (data.status === 'success') {
+                    alert('設定成功！');
+                    liff.closeWindow(); // 關閉 LIFF 視窗
+                } else {
+                    alert('設定失敗：' + (data.message || '未知錯誤'));
+                }
+            })
+            .catch(error => {
+                console.error('更新失敗:', error); // 記錄錯誤
+                alert('設定失敗，請稍後再試。');
+            });
+        }
     </script>
 </body>
 </html>

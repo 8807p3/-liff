@@ -48,27 +48,25 @@
 
         // 更新Google Sheets
 function updateGoogleSheet(userId, userInput) {
-    const url = 'https://script.google.com/macros/s/AKfycbyRdFR-9eoopUc4aoP_c2bHVDIFjlb-VsPe9kQ7yKlBDjXwz3TckUNAdAOCAuPXWb_y/exec';
-    fetch(url, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ 
-            action: 'updatePrompt', // 加入識別標記
-            userId, 
-            userInput 
-        }),
-    })
-    .then(response => response.json())
-    .then(data => {
-        alert('設定成功！');
-        liff.closeWindow(); // 關閉LIFF視窗
-    })
-    .catch(error => {
-        console.error('更新失敗:', error);
-        alert('設定失敗，請稍後再試。');
-    });
+  const url = 'https://script.google.com/macros/s/AKfycbyRdFR-9eoopUc4aoP_c2bHVDIFjlb-VsPe9kQ7yKlBDjXwz3TckUNAdAOCAuPXWb_y/exec' +
+    `?action=updatePrompt&userId=${encodeURIComponent(userId)}&userInput=${encodeURIComponent(userInput)}`;
+  
+  fetch(url, {
+    method: 'GET',
+  })
+  .then(response => response.json())
+  .then(data => {
+    if (data.status === 'success') {
+      alert('設定成功！');
+      liff.closeWindow(); // 關閉 LIFF 視窗
+    } else {
+      alert('設定失敗：' + data.message);
+    }
+  })
+  .catch(error => {
+    console.error('更新失敗:', error);
+    alert('設定失敗，請稍後再試。');
+  });
 }
     </script>
 </body>

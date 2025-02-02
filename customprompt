@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>自訂提示設定</title>
+    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+</head>
+<body>
+    <h1>設定自訂提示</h1>
+    <form id="customPromptForm">
+        <label for="userInput">你想設定的自訂提示:</label>
+        <input type="text" id="userInput" name="userInput" required>
+        <br><br>
+        <button type="button" id="confirmButton">確認</button>
+        <button type="button" id="cancelButton">取消</button>
+    </form>
+
+    <script>
+        // 初始化LIFF
+        liff.init({ liffId: '你的LIFF_ID' })
+            .then(() => {
+                if (!liff.isLoggedIn()) {
+                    liff.login(); // 如果未登入，跳轉至LINE登入頁面
+                } else {
+                    // 獲取用戶ID
+                    liff.getProfile()
+                        .then(profile => {
+                            const userId = profile.userId;
+                            document.getElementById('confirmButton').addEventListener('click', () => {
+                                const userInput = document.getElementById('userInput').value;
+                                updateGoogleSheet(userId, userInput);
+                            });
+                        })
+                        .catch(err => {
+                            console.error('獲取用戶資訊失敗:', err);
+                        });
+                }
+            })
+            .catch(err => {
+                console.error('LIFF初始化失敗:', err);
+            });
+
+        // 取消按鈕
+        document.getElementById('cancelButton').addEventListener('click', () => {
+            liff.closeWindow(); // 關閉LIFF視窗
+        });
+
+        // 更新Google Sheets
+function updateGoogleSheet(userId, userInput) {
+    const url = 'https://script.google.com/macros/s/AKfycbyRdFR-9eoopUc4aoP_c2bHVDIFjlb-VsPe9kQ7yKlBDjXwz3TckUNAdAOCAuPXWb_y/exec';
+    fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ 
+            action: 'updatePrompt', // 加入識別標記
+            userId, 
+            userInput 
+        }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        alert('設定成功！');
+        liff.closeWindow(); // 關閉LIFF視窗
+    })
+    .catch(error => {
+        console.error('更新失敗:', error);
+        alert('設定失敗，請稍後再試。');
+    });
+}
+    </script>
+</body>
+</html>

@@ -22,14 +22,16 @@
             display: block;
             margin-bottom: 10px;
         }
-        input[type="text"] {
+        textarea {
             width: 100%;
             max-width: 500px;
+            height: 150px; /* 調整高度 */
             padding: 10px;
             font-size: 16px;
             border: 1px solid #ccc;
             border-radius: 5px;
             box-sizing: border-box;
+            resize: vertical; /* 允許用戶垂直調整大小 */
         }
         .description {
             font-size: 14px;
@@ -56,8 +58,9 @@
     <h1>設定自訂提示</h1>
     <form id="customPromptForm">
         <label for="userInput">你想設定的自訂提示:</label>
-        <input type="text" id="userInput" name="userInput" required
-               value="你是日文翻譯專家, 我來自台灣, 要使用台灣繁體中文翻譯, 翻譯時使用台灣用詞避免大陸用詞,簡短翻譯">
+        <textarea id="userInput" name="userInput" required>
+你是日文翻譯專家, 我來自台灣, 要使用繁體中文避免古怪用詞,簡短翻譯
+        </textarea>
         <div class="description">
             <strong>提示詞寫法:</strong><br>
             1. 你希望我扮演的角色<br>

@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>永康總院酒癮藥癮繼續教育影片</title>
+    <script>
+        function redirect() {
+            var userId = document.getElementById("userId").value;
+            var url = "http://training.chimei.org.tw/asp.net/網路教學/query.aspx?iuser=" + userId + "&itype=S&health=G0044";
+            window.location.href = url;
+        }
+    </script>
+</head>
+<body>
+    <h1>輸入人事號後跳轉</h1>
+    <input type="text" id="userId" placeholder="輸入人事號">
+    <button onclick="redirect()">跳轉</button>
+</body>
+</html>

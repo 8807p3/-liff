@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="zh-TW">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>兒童精神科互動篩查問句指引</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .content-fade-enter { opacity: 0; transform: translateY(10px); }
+        .content-fade-enter-active { opacity: 1; transform: translateY(0); transition: opacity 300ms ease-out, transform 300ms ease-out; }
+        select {
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23007AFF%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.4-5.4-13z%22%2F%3E%3C%2Fsvg%3E');
+            background-repeat: no-repeat;
+            background-position: right 0.7rem center;
+            background-size: 0.65rem auto;
+            padding-right: 2.5rem;
+        }
+         .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none; 
+            scrollbar-width: none; 
+        }
+    </style>
+</head>
+<body class="bg-slate-100 text-slate-800 min-h-screen flex flex-col">
+
+    <header class="bg-blue-700 text-white p-6 shadow-md">
+        <div class="container mx-auto max-w-5xl">
+            <h1 class="text-3xl font-bold text-center">兒童精神科互動篩查問句指引</h1>
+        </div>
+    </header>
+
+    <main class="container mx-auto max-w-5xl p-4 sm:p-6 flex-grow">
+        <p class="mb-6 text-center text-slate-700 bg-slate-200 p-3 rounded-lg">
+            此工具旨在協助諮商實習生在20分鐘的門診時間内，快速查閱針對注意力不足過動症 (ADHD) 及自閉症類群障礙症 (ASD) 的發展階段篩查問句。請依序選擇診斷類別與年齡階段以顯示相關資訊。
+        </p>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+            <div>
+                <label for="diagnosis-select" class="block text-sm font-medium text-slate-700 mb-1">選擇診斷類別：</label>
+                <select id="diagnosis-select" class="w-full p-3 border border-slate-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-white">
+                    <option value="">請選擇...</option>
+                </select>
+            </div>
+            <div>
+                <label for="age-group-select" class="block text-sm font-medium text-slate-700 mb-1">選擇年齡階段：</label>
+                <select id="age-group-select" class="w-full p-3 border border-slate-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-white" disabled>
+                    <option value="">請先選擇診斷類別...</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="content-area" class="mt-6">
+            </div>
+    </main>
+
+    <footer class="bg-slate-800 text-slate-300 p-4 text-center text-sm">
+        <div class="container mx-auto max-w-5xl">
+            <p>&copy; 2024 兒童精神科篩查輔助工具。僅供參考，不能取代專業臨床判斷。</p>
+        </div>
+    </footer>
+
+    <script>
+        const screeningData = [
+            {
+                id: "adhd",
+                name: "注意力不足過動症 (ADHD)",
+                ageGroups: [
+                    {
+                        id: "adhd_preschool",
+                        name: "學齡前兒童 (3-5歲)",
+                        observationCuesGeneral: "坐立不安、無法安靜坐著、難以轉換活動、物品雜亂無章、語速過快、眼神接觸不佳 [1]",
+                        symptomCategories: [
+                            {
+                                name: "注意力不集中",
+                                symptoms: [
+                                    { criterion: "不注意細節或粗心大意 [2, 3, 4, 1]", questionsChild: null, questionsParent: "「畫畫或玩玩具時，他們會不會很容易分心，畫到一半就跑掉？」" },
+                                    { criterion: "難以持續專注 [2, 3, 4, 1]", questionsChild: null, questionsParent: "「玩一個遊戲或聽故事時，他們能專心多久？會不會很快就失去興趣？」" },
+                                    { criterion: "直接對話時似乎沒在聽 [2, 3, 4, 1]", questionsChild: null, questionsParent: "「跟他們說話時，他們會不會常常沒反應，好像沒聽到一樣？」" },
+                                    { criterion: "不遵循指示或未完成任務 [2, 3, 4, 1]", questionsChild: null, questionsParent: "「給他們簡單的指令，例如『把玩具收起來』，他們會不會常常沒做完？」" },
+                                    { criterion: "難以組織任務和活動 [2, 3]", questionsChild: null, questionsParent: "「他們玩完玩具後，會不會把東西弄得一團亂，很難自己收拾？」" },
+                                    { criterion: "逃避或不喜歡需要持續精神努力的任務 [2, 3, 4]", questionsChild: null, questionsParent: "「他們會不會不喜歡玩需要動腦筋的遊戲，例如拼圖或積木？」" },
+                                    { criterion: "常遺失物品 [2, 3, 4]", questionsChild: null, questionsParent: "「他們會不會常常把自己的玩具、水壺或小東西弄丟？」" },
+                                    { criterion: "容易被外界刺激分散注意力 [2, 3, 4, 1]", questionsChild: null, questionsParent: "「他們會不會很容易被周圍的小聲音或動靜分散注意力？」" },
+                                    { criterion: "日常活動中健忘 [2, 3, 4, 1]", questionsChild: null, questionsParent: "「他們會不會常常忘記一些日常的事情，例如洗手或穿鞋子？」" }
+                                ]
+                            },
+                            {
+                                name: "過動/衝動",
+                                symptoms: [
+                                    { criterion: "坐著時手腳不停扭動或輕敲 [2, 3, 4, 1]", questionsChild: null, questionsParent: "「他們坐著的時候，會不會常常扭動身體，手腳停不下來？」" },
+                                    { criterion: "難以安靜坐著 [2, 3, 4, 1]", questionsChild: null, questionsParent: "「在需要坐著的場合，例如吃飯或聽故事，他們會不會很難乖乖坐好？」" },
+                                    { criterion: "在不適當場合跑跳或攀爬 [2, 3, 4, 1]", questionsChild: null, questionsParent: "「他們會不會常常在家裡或公共場合跑來跑去、爬上爬下，好像有用不完的精力？」" },
+                                    { criterion: "難以安靜玩耍或參與休閒活動 [2, 3, 4, 1]", questionsChild: null, questionsParent: "「他們玩遊戲時，會不會很難安靜地玩，常常發出很大的聲音？」" },
+                                    { criterion: "過度說話 [2, 3, 4, 1]", questionsChild: null, questionsParent: "「他們會不會常常說個不停，很難停下來？」" },
+                                    { criterion: "問題未問完就搶答 [2, 3, 4, 1]", questionsChild: null, questionsParent: "「問他們問題時，他們會不會常常不等問題問完就搶著回答？」" },
+                                    { criterion: "難以等待輪流 [2, 3, 4, 1]", questionsChild: null, questionsParent: "「他們玩遊戲或排隊時，會不會很難等待輪到自己？」" },
+                                    { criterion: "打斷或闖入他人活動 [2, 3, 4, 1]", questionsChild: null, questionsParent: "「他們會不會常常打斷別人說話或玩遊戲？」" }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        id: "adhd_school_age",
+                        name: "學齡兒童 (6-12歲)",
+                        observationCuesGeneral: "坐立不安、無法安靜坐著、難以轉換活動、物品雜亂無章、語速過快、眼神接觸不佳",
+                        symptomCategories: [
+                            {
+                                name: "注意力不集中",
+                                symptoms: [
+                                    { criterion: "不注意細節或粗心大意 [2, 3, 4, 1]", questionsChild: "「寫功課或做事情時，你會不會常常粗心大意，犯一些不該犯的錯？」", questionsParent: "「寫功課或做事情時，他們會不會常常粗心大意，犯一些不該犯的錯？」" },
+                                    { criterion: "難以持續專注 [2, 3, 4, 1]", questionsChild: "「上課或讀書時，你能持續專心多久？會不會很容易放空或發呆？」", questionsParent: "「上課或讀書時，他們能持續專心多久？會不會很容易放空或發呆？」" },
+                                    { criterion: "直接對話時似乎沒在聽 [2, 3, 4, 1]", questionsChild: "「在吵雜的環境中，你會不會很難聽清楚別人說話？」", questionsParent: "「在吵雜的環境中，他們會不會很難聽清楚別人說話？」" },
+                                    { criterion: "不遵循指示或未完成任務 [2, 3, 4, 1]", questionsChild: "「老師或家長交代的事情，你會不會常常半途而廢，沒有完成？」", questionsParent: "「老師或家長交代的事情，他們會不會常常半途而廢，沒有完成？」" },
+                                    { criterion: "難以組織任務和活動 [2, 3]", questionsChild: "「你的書包、書桌或房間，是不是常常很亂，找不到東西？」", questionsParent: "「他們的書包、書桌或房間，是不是常常很亂，找不到東西？」" },
+                                    { criterion: "逃避或不喜歡需要持續精神努力的任務 [2, 3, 4]", questionsChild: "「你會不會很抗拒寫功課或做需要長時間思考的事情？」", questionsParent: "「他們會不會很抗拒寫功課或做需要長時間思考的事情？」" },
+                                    { criterion: "常遺失物品 [2, 3, 4]", questionsChild: "「你會不會常常弄丟課本、鉛筆、作業或外套？」", questionsParent: "「他們會不會常常弄丟課本、鉛筆、作業或外套？」" },
+                                    { criterion: "容易被外界刺激分散注意力 [2, 3, 4, 1]", questionsChild: "「上課或做功課時，你會不會很容易被窗外的聲音或旁邊的人說話影響？」", questionsParent: "「上課或做功課時，他們會不會很容易被窗外的聲音或旁邊的人說話影響？」" },
+                                    { criterion: "日常活動中健忘 [2, 3, 4, 1]", questionsChild: "「你會不會常常忘記帶東西去學校，或忘記老師交代的事情？」", questionsParent: "「他們會不會常常忘記帶東西去學校，或忘記老師交代的事情？」" }
+                                ]
+                            },
+                            {
+                                name: "過動/衝動",
+                                symptoms: [
+                                    { criterion: "坐著時手腳不停扭動或輕敲 [2, 3, 4, 1]", questionsChild: "「上課或吃飯時，你會不會常常坐不住，一直動來動去？」", questionsParent: "「上課或吃飯時，他們會不會常常坐不住，一直動來動去？」" },
+                                    { criterion: "難以安靜坐著 [2, 3, 4, 1]", questionsChild: "「在教室或其他需要坐著的場合，你會不會常常離開座位？」", questionsParent: "「在教室或其他需要坐著的場合，他們會不會常常離開座位？」" },
+                                    { criterion: "在不適當場合跑跳或攀爬 [2, 3, 4, 1]", questionsChild: "「在不適合跑跳的場合，例如教室或商店，你會不會還是會跑來跑去？」", questionsParent: "「在不適合跑跳的場合，例如教室或商店，他們會不會還是會跑來跑去？」" },
+                                    { criterion: "難以安靜玩耍或參與休閒活動 [2, 3, 4, 1]", questionsChild: "「你會不會很難安靜地玩耍或參與休閒活動？」", questionsParent: "「他們會不會很難安靜地玩耍或參與休閒活動？」" },
+                                    { criterion: "過度說話 [2, 3, 4, 1]", questionsChild: "「你會不會話很多，常常打斷別人說話？」", questionsParent: "「他們會不會話很多，常常打斷別人說話？」" },
+                                    { criterion: "問題未問完就搶答 [2, 3, 4, 1]", questionsChild: "「在課堂上或對話中，你會不會常常不等別人說完就搶話？」", questionsParent: "「在課堂上或對話中，他們會不會常常不等別人說完就搶話？」" },
+                                    { criterion: "難以等待輪流 [2, 3, 4, 1]", questionsChild: "「你會不會很難等待輪到自己，例如在遊戲中或對話中？」", questionsParent: "「他們會不會很難等待輪到自己，例如在遊戲中或對話中？」" },
+                                    { criterion: "打斷或闖入他人活動 [2, 3, 4, 1]", questionsChild: "「你會不會常常插嘴或闖入別人的活動？」", questionsParent: "「他們會不會常常插嘴或闖入他人的活動？」" }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: "asd",
+                name: "自閉症類群障礙症 (ASD)",
+                ageGroups: [
+                    {
+                        id: "asd_language_emergence",
+                        name: "語言萌發期 (2-3歲)",
+                        observationCuesGeneral: "缺乏視覺追蹤或不喜歡擁抱 [8]；一歲時可能出現語言發展遲緩或不指物 [8]；眼神接觸缺乏、對名字無反應、難以分享注意力、異常的遊戲方式（如排列玩具）、語言發展遲緩、仿說、不喜歡擁抱或不指物 [8, 9, 10]；重複性動作（拍手、搖晃、墊腳尖走路）、排列玩具、對小改變感到不安、對特定物品著迷、對感官輸入反應異常 [8, 10]。",
+                        languageConsiderations: "許多ASD兒童在語言發展和理解他人言語方面可能存在困難 [11]。有些兒童可能無法使用口語溝通，有些口語技能非常有限 [11]。可能出現重複或僵化的語言（例如：仿說、重複數數、固定開場白） [8, 10, 11]。語言發展不均衡，例如在特定興趣領域詞彙量豐富，但對話能力受損 [11]。非口語溝通能力差，如不使用手勢、眼神接觸差 [11]。問句應極度簡化，多使用「是/否」或圖片輔助 [12]。主要透過觀察遊戲行為、非語言線索（眼神、手勢、表情）及家長報告來評估 [10, 12, 13]。",
+                        symptomCategories: [
+                            {
+                                name: "社交溝通和社交互動缺陷 (A)",
+                                symptoms: [
+                                    { criterion: "社交情緒互惠性缺陷 [5, 6]", questionsChild: null, questionsParent: "「他們會不會主動跟大人或小朋友互動？例如，會不會主動分享玩具或眼神交流？」" },
+                                    { criterion: "非語言溝通行為缺陷 [5, 6]", questionsChild: null, questionsParent: "「他們會不會用眼神看著你，或用手勢表達他們想要的東西？」" },
+                                    { criterion: "發展、維持和理解人際關係的缺陷 [5, 6]", questionsChild: null, questionsParent: "「他們會不會對其他小朋友有興趣？會不會主動找人玩？」" }
+                                ]
+                            },
+                            {
+                                name: "受限、重複的行為模式、興趣或活動 (B)",
+                                symptoms: [
+                                    { criterion: "刻板或重複的動作、物品使用或言語 [5, 6]", questionsChild: null, questionsParent: "「他們會不會常常重複做一些動作，例如拍手、搖晃身體或墊腳尖走路？」" },
+                                    { criterion: "堅持同一性、僵硬地遵守常規或儀式化模式 [5, 6]", questionsChild: null, questionsParent: "「他們會不會很堅持每天做一樣的事情，如果改變順序就會很不高興？」" },
+                                    { criterion: "高度受限、固著的興趣，且其強度或專注力異常 [5, 6]", questionsChild: null, questionsParent: "「他們會不會對某種玩具或主題特別著迷，而且只對那個有興趣？」" },
+                                    { criterion: "對感官輸入過度或過低反應，或對環境的感官方面有不尋常的興趣 [5, 6]", questionsChild: null, questionsParent: "「他們會不會對某些聲音、光線或觸感特別敏感或沒反應？例如，不喜歡某些衣服材質或對疼痛沒感覺？」" }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        id: "asd_preschool_kindergarten",
+                        name: "學齡前兒童 (3-6歲) - 有上幼稚園",
+                        observationCuesGeneral: "眼神接觸缺乏、對名字無反應、難以分享注意力、異常的遊戲方式（如排列玩具）、語言發展遲緩、仿說、不喜歡擁抱或不指物 [8, 9, 10]。可能抗拒團體活動，在課堂上難以管理 [8]。行為在學校和家裡可能不同，學校表現較好但回家後行為問題增加 [14]。",
+                        languageConsiderations: "觀察兒童在幼稚園環境中，是否能主動發起對話、參與雙向交流 [15, 12]。評估其理解和遵循老師指令的能力，特別是多步驟指令 [15, 12]。注意是否在團體活動中難以參與或理解社交規則 [8]。觀察是否使用重複性語言或仿說 [8, 10, 11]。觀察對視覺輔助和書面指令的反應，而非僅依賴口語指令 [9]。",
+                        symptomCategories: [
+                             {
+                                name: "社交溝通和社交互動缺陷 (A)",
+                                symptoms: [
+                                    { criterion: "社交情緒互惠性缺陷 [5, 6]", questionsChild: null, questionsParent: "「他們在幼稚園會不會主動跟老師或小朋友互動？例如，會不會主動分享玩具或眼神交流？」" },
+                                    { criterion: "非語言溝通行為缺陷 [5, 6]", questionsChild: null, questionsParent: "「老師說他們會不會用眼神看著你，或用手勢表達他們想要的東西？」" },
+                                    { criterion: "發展、維持和理解人際關係的缺陷 [5, 6]", questionsChild: null, questionsParent: "「他們在幼稚園會不會對其他小朋友有興趣？會不會主動找人玩？」" }
+                                ]
+                            },
+                            {
+                                name: "受限、重複的行為模式、興趣或活動 (B)",
+                                symptoms: [
+                                    { criterion: "刻板或重複的動作、物品使用或言語 [5, 6]", questionsChild: null, questionsParent: "「他們在幼稚園會不會常常重複做一些動作，例如拍手、搖晃身體或墊腳尖走路？」" },
+                                    { criterion: "堅持同一性、僵硬地遵守常規或儀式化模式 [5, 6]", questionsChild: null, questionsParent: "「他們在幼稚園會不會很堅持每天做一樣的事情，如果改變順序就會很不高興？」" },
+                                    { criterion: "高度受限、固著的興趣，且其強度或專注力異常 [5, 6]", questionsChild: null, questionsParent: "「他們在幼稚園會不會對某種玩具或主題特別著迷，而且只對那個有興趣？」" },
+                                    { criterion: "對感官輸入過度或過低反應，或對環境的感官方面有不尋常的興趣 [5, 6]", questionsChild: null, questionsParent: "「他們在幼稚園會不會對某些聲音、光線或觸感特別敏感或沒反應？例如，不喜歡某些衣服材質或對疼痛沒感覺？」" }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        id: "asd_preschool_no_kindergarten",
+                        name: "學齡前兒童 (3-6歲) - 無上幼稚園",
+                        observationCuesGeneral: "眼神接觸缺乏、對名字無反應、難以分享注意力、異常的遊戲方式（如排列玩具）、語言發展遲緩、仿說、不喜歡擁抱或不指物 [8, 9, 10]。在家中或公共場所可能表現出更多負面行為（如發脾氣、攻擊性） [14]。",
+                        languageConsiderations: "評估兒童在家中與家人互動時的自發性語言使用 [12, 13]。觀察其是否能主動發起簡單對話，並在對話中輪替 [15, 12]。注意其對日常指令的理解和執行能力 [12, 13]。觀察遊戲中是否使用想像力遊戲或模仿行為 [9, 12, 13]。",
+                        symptomCategories: [
+                             {
+                                name: "社交溝通和社交互動缺陷 (A)",
+                                symptoms: [
+                                    { criterion: "社交情緒互惠性缺陷 [5, 6]", questionsChild: null, questionsParent: "「他們在家裡會不會主動跟大人或小朋友互動？例如，會不會主動分享玩具或眼神交流？」" },
+                                    { criterion: "非語言溝通行為缺陷 [5, 6]", questionsChild: null, questionsParent: "「他們在家裡會不會用眼神看著你，或用手勢表達他們想要的東西？」" },
+                                    { criterion: "發展、維持和理解人際關係的缺陷 [5, 6]", questionsChild: null, questionsParent: "「他們在家裡會不會對其他小朋友有興趣？會不會主動找人玩？」" }
+                                ]
+                            },
+                            {
+                                name: "受限、重複的行為模式、興趣或活動 (B)",
+                                symptoms: [
+                                    { criterion: "刻板或重複的動作、物品使用或言語 [5, 6]", questionsChild: null, questionsParent: "「他們在家裡會不會常常重複做一些動作，例如拍手、搖晃身體或墊腳尖走路？」" },
+                                    { criterion: "堅持同一性、僵硬地遵守常規或儀式化模式 [5, 6]", questionsChild: null, questionsParent: "「他們在家裡會不會很堅持每天做一樣的事情，如果改變順序就會很不高興？」" },
+                                    { criterion: "高度受限、固著的興趣，且其強度或專注力異常 [5, 6]", questionsChild: null, questionsParent: "「他們在家裡會不會對某種玩具或主題特別著迷，而且只對那個有興趣？」" },
+                                    { criterion: "對感官輸入過度或過低反應，或對環境的感官方面有不尋常的興趣 [5, 6]", questionsChild: null, questionsParent: "「他們在家裡會不會對某些聲音、光線或觸感特別敏感或沒反應？例如，不喜歡某些衣服材質或對疼痛沒感覺？」" }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        id: "asd_school_age",
+                        name: "學齡兒童 (6-12歲)",
+                        observationCuesGeneral: "難以理解非語言線索、交友困難或偏好獨自活動、重複行為和對常規的堅持 [7]",
+                        languageConsiderations: "針對口語不流暢或有限的兒童，提問需具體、直接，避免抽象概念，可使用視覺輔助或書寫方式輔助溝通。觀察是否能理解複雜指令，或需要重複和簡化。注意是否有重複性語言模式或仿說.[7] 對於口語流暢的兒童，可提問更深入，探索社交情境中的理解和應對策略，觀察對話中的輪替、話題轉換、非字面意義的理解（如諷刺、比喻）.[6, 7]",
+                        symptomCategories: [
+                            {
+                                name: "社交溝通和社交互動缺陷 (A)",
+                                symptoms: [
+                                    { criterion: "社交情緒互惠性缺陷 [5, 6]", questionsChild: "「你會不會主動開始跟別人說話？如果別人跟你說話，你會不會有來有回地回應？」", questionsParent: "「他們會不會主動開始對話？如果別人跟他們說話，他們會不會有來有回地回應？」" },
+                                    { criterion: "非語言溝通行為缺陷 [5, 6]", questionsChild: "「你說話時，會不會看著別人的眼睛？你的表情和肢體語言會不會跟說話的內容一致？」", questionsParent: "「他們說話時，會不會看著你的眼睛？他們的表情和肢體語言會不會跟說話的內容一致？」" },
+                                    { criterion: "發展、維持和理解人際關係的缺陷 [5, 6]", questionsChild: "「你會不會很難交朋友？或者交了朋友之後，會不會很難維持友誼？」", questionsParent: "「他們會不會很難交朋友？或者交了朋友之後，會不會很難維持友誼？」" }
+                                ]
+                            },
+                            {
+                                name: "受限、重複的行為模式、興趣或活動 (B)",
+                                symptoms: [
+                                    { criterion: "刻板或重複的動作、物品使用或言語 [5, 6]", questionsChild: "「你會不會有特殊的動作或聲音，例如重複說某些詞語或玩玩具的方式很固定？」", questionsParent: "「他們會不會有特殊的動作或聲音，例如重複說某些詞語或玩玩具的方式很固定？」" },
+                                    { criterion: "堅持同一性、僵硬地遵守常規或儀式化模式 [5, 6]", questionsChild: "「你會不會對日常作息或環境的微小變化感到極度困擾？」", questionsParent: "「他們會不會對日常作息或環境的微小變化感到極度困擾？」" },
+                                    { criterion: "高度受限、固著的興趣，且其強度或專注力異常 [5, 6]", questionsChild: "「你會不會對某些特定主題有異常強烈或集中的興趣，例如恐龍、火車或地圖？」", questionsParent: "「他們會不會對某些特定主題有異常強烈或集中的興趣，例如恐龍、火車或地圖？」" },
+                                    { criterion: "對感官輸入過度或過低反應，或對環境的感官方面有不尋常的興趣 [5, 6]", questionsChild: "「你會不會對某些感官刺激有過度或過低的反應？例如，不喜歡吵鬧的聲音或喜歡聞東西？」", questionsParent: "「他們會不會對某些感官刺激有過度或過低的反應？例如，不喜歡吵鬧的聲音或喜歡聞東西？」" }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        id: "asd_adolescent",
+                        name: "青少年 (13-18歲)",
+                        observationCuesGeneral: "在社交情境中調整行為的困難、理解非字面語言以及執行功能方面的挑戰.[4, 6, 7] 焦慮和抑鬱症狀也可能共存.[7]",
+                        languageConsiderations: "針對口語不流暢或有限的青少年，提問需清晰、直接，避免過於抽象或需要推斷的問題，可使用書寫或視覺輔助。觀察其對話的連貫性和邏輯性。對於口語流暢的青少年，可討論更複雜的社交情境、人際關係中的細微差別、抽象概念和未來規劃。觀察其對非字面語言（如幽默、諷刺）的理解，以及在不同社交情境中調整溝通方式的能力.[6]",
+                         symptomCategories: [
+                            {
+                                name: "社交溝通和社交互動缺陷 (A)",
+                                symptoms: [
+                                    { criterion: "社交情緒互惠性缺陷 [5, 6]", questionsChild: "「你在社交場合中，會不會難以理解別人的情緒或意圖？例如，會不會很難察覺別人是否生氣或開心？」", questionsParent: "「他們在社交場合中，會不會難以理解別人的情緒或意圖？例如，會不會很難察覺別人是否生氣或開心？」" },
+                                    { criterion: "非語言溝通行為缺陷 [5, 6]", questionsChild: "「你會不會難以理解或使用非語言的溝通方式，例如眼神交流、肢體語言或手勢？」", questionsParent: "「他們會不會難以理解或使用非語言的溝通方式，例如眼神交流、肢體語言或手勢？」" },
+                                    { criterion: "發展、維持和理解人際關係的缺陷 [5, 6]", questionsChild: "「你會不會難以根據不同的社交場合調整自己的行為？例如，在學校和家裡表現不同？」", questionsParent: "「他們會不會難以根據不同的社交場合調整自己的行為？例如，在學校和家裡表現不同？」" }
+                                ]
+                            },
+                            {
+                                name: "受限、重複的行為模式、興趣或活動 (B)",
+                                symptoms: [
+                                    { criterion: "刻板或重複的動作、物品使用或言語 [5, 6]", questionsChild: "「你會不會有重複的動作、語言模式或使用物品的方式？」", questionsParent: "「他們會不會有重複的動作、語言模式或使用物品的方式？」" },
+                                    { criterion: "堅持同一性、僵硬地遵守常規或儀式化模式 [5, 6]", questionsChild: "「你會不會堅持一貫性，對常規有僵硬的遵守，或有儀式化的行為模式？」", questionsParent: "「他們會不會堅持一貫性，對常規有僵硬的遵守，或有儀式化的行為模式？」" },
+                                    { criterion: "高度受限、固著的興趣，且其強度或專注力異常 [5, 6]", questionsChild: "「你會不會對某些特定興趣有異常強烈或集中的執著，例如對不尋常的物品有強烈依戀或過度專注於某些領域？」", questionsParent: "「他們會不會對某些特定興趣有異常強烈或集中的執著，例如對不尋常的物品有強烈依戀或過度專注於某些領域？」" },
+                                    { criterion: "對感官輸入過度或過低反應，或對環境的感官方面有不尋常的興趣 [5, 6]", questionsChild: "「你會不會對感官輸入有過度或過低的反應，或對環境中的感官方面有不尋常的興趣？」", questionsParent: "「他們會不會對感官輸入有過度或過低的反應，或對環境中的感官方面有不尋常的興趣？」" }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ];
+
+        const diagnosisSelect = document.getElementById('diagnosis-select');
+        const ageGroupSelect = document.getElementById('age-group-select');
+        const contentArea = document.getElementById('content-area');
+
+        function populateDiagnosisSelect() {
+            screeningData.forEach(diagnosis => {
+                const option = document.createElement('option');
+                option.value = diagnosis.id;
+                option.textContent = diagnosis.name;
+                diagnosisSelect.appendChild(option);
+            });
+        }
+
+        function populateAgeGroupSelect(diagnosisId) {
+            ageGroupSelect.innerHTML = '<option value="">請選擇年齡階段...</option>';
+            ageGroupSelect.disabled = true;
+
+            if (diagnosisId) {
+                const selectedDiagnosis = screeningData.find(d => d.id === diagnosisId);
+                if (selectedDiagnosis) {
+                    selectedDiagnosis.ageGroups.forEach(ageGroup => {
+                        const option = document.createElement('option');
+                        option.value = ageGroup.id;
+                        option.textContent = ageGroup.name;
+                        ageGroupSelect.appendChild(option);
+                    });
+                    ageGroupSelect.disabled = false;
+                }
+            }
+        }
+
+        function displayContent(diagnosisId, ageGroupId) {
+            contentArea.innerHTML = '';
+            contentArea.classList.remove('content-fade-enter-active');
+            void contentArea.offsetWidth; 
+
+            if (!diagnosisId || !ageGroupId) {
+                 contentArea.innerHTML = '<p class="text-center text-slate-500">請選擇診斷類別和年齡階段以查看相關資訊。</p>';
+                 contentArea.classList.add('content-fade-enter', 'content-fade-enter-active');
+                return;
+            }
+
+            const diagnosis = screeningData.find(d => d.id === diagnosisId);
+            const ageGroup = diagnosis.ageGroups.find(ag => ag.id === ageGroupId);
+
+            if (!diagnosis || !ageGroup) {
+                contentArea.innerHTML = '<p class="text-center text-red-500">找不到選定的資料，請重新選擇。</p>';
+                contentArea.classList.add('content-fade-enter', 'content-fade-enter-active');
+                return;
+            }
+            
+            let html = `<div class="bg-white p-4 sm:p-6 rounded-lg shadow-lg">`;
+            html += `<h2 class="text-2xl font-bold text-blue-700 mb-4">${diagnosis.name} - ${ageGroup.name}</h2>`;
+
+            if (diagnosisId === 'adhd') {
+                html += `<p class="mb-4 text-slate-600">以下為針對注意力不足過動症 (ADHD) 在此年齡階段的篩查問句、觀察重點及相關考量。</p>`;
+            } else if (diagnosisId === 'asd') {
+                 html += `<p class="mb-4 text-slate-600">以下為針對自閉症類群障礙症 (ASD) 在此年齡階段的篩查問句、觀察重點及語言能力考量。</p>`;
+            }
+
+            if (ageGroup.observationCuesGeneral) {
+                html += `<div class="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-md">
+                            <h3 class="text-lg font-semibold text-blue-600 mb-2">觀察重點</h3>
+                            <p class="text-slate-700 whitespace-pre-line">${ageGroup.observationCuesGeneral}</p>
+                         </div>`;
+            }
+            if (ageGroup.languageConsiderations) {
+                html += `<div class="mb-6 p-4 bg-green-50 border border-green-200 rounded-md">
+                            <h3 class="text-lg font-semibold text-green-600 mb-2">語言能力考量</h3>
+                            <p class="text-slate-700 whitespace-pre-line">${ageGroup.languageConsiderations}</p>
+                         </div>`;
+            }
+
+            ageGroup.symptomCategories.forEach(category => {
+                html += `<div class="mb-6">
+                            <h3 class="text-xl font-semibold text-slate-700 border-b-2 border-blue-500 pb-2 mb-3">${category.name}</h3>`;
+                category.symptoms.forEach(symptom => {
+                    html += `<div class="mb-4 p-4 bg-slate-50 rounded-lg shadow">
+                                <p class="font-medium text-slate-800 mb-2">${symptom.criterion}</p>`;
+                    if (symptom.questionsChild) {
+                        html += `<div class="mb-1">
+                                    <strong class="text-sm text-slate-600">建議詢問問句 (兒童/青少年):</strong>
+                                    <p class="text-slate-700 pl-2 italic"> ${symptom.questionsChild}</p>
+                                 </div>`;
+                    }
+                    if (symptom.questionsParent) {
+                         html += `<div>
+                                     <strong class="text-sm text-slate-600">建議詢問問句 (家長/主要照顧者):</strong>
+                                     <p class="text-slate-700 pl-2 italic"> ${symptom.questionsParent}</p>
+                                  </div>`;
+                    }
+                    html += `</div>`;
+                });
+                html += `</div>`;
+            });
+            html += `</div>`;
+            contentArea.innerHTML = html;
+            contentArea.classList.add('content-fade-enter', 'content-fade-enter-active');
+        }
+
+        diagnosisSelect.addEventListener('change', (e) => {
+            populateAgeGroupSelect(e.target.value);
+            displayContent(e.target.value, ageGroupSelect.value);
+        });
+
+        ageGroupSelect.addEventListener('change', (e) => {
+            displayContent(diagnosisSelect.value, e.target.value);
+        });
+
+        populateDiagnosisSelect();
+        displayContent(null,null); // Initial empty state
+    </script>
+
+</body>
+</html>

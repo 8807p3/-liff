@@ -7,8 +7,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         body { font-family: 'Inter', sans-serif; }
-       .content-fade-enter { opacity: 0; transform: translateY(10px); }
-       .content-fade-enter-active { opacity: 1; transform: translateY(0); transition: opacity 300ms ease-out, transform 300ms ease-out; }
+        .content-fade-enter { opacity: 0; transform: translateY(10px); }
+        .content-fade-enter-active { opacity: 1; transform: translateY(0); transition: opacity 300ms ease-out, transform 300ms ease-out; }
         select {
             -webkit-appearance: none;
             -moz-appearance: none;
@@ -19,10 +19,10 @@
             background-size: 0.65rem auto;
             padding-right: 2.5rem;
         }
-        .no-scrollbar::-webkit-scrollbar {
+         .no-scrollbar::-webkit-scrollbar {
             display: none;
         }
-       .no-scrollbar {
+        .no-scrollbar {
             -ms-overflow-style: none; 
             scrollbar-width: none; 
         }
@@ -67,7 +67,15 @@
     </footer>
 
     <script>
-        const screeningData =",
+        const screeningData = [
+            {
+                id: "adhd",
+                name: "注意力不足過動症 (ADHD)",
+                ageGroups: [
+                    {
+                        id: "adhd_preschool",
+                        name: "學齡前兒童 (3-5歲)",
+                        observationCuesGeneral: "坐立不安、無法安靜坐著、難以轉換活動、物品雜亂無章、語速過快、眼神接觸不佳 [1]",
                         symptomCategories: [
                             {
                                 name: "注意力不集中",
@@ -141,24 +149,24 @@
                     {
                         id: "asd_language_emergence",
                         name: "語言萌發期 (2-3歲)",
-                        observationCuesGeneral: "缺乏眼神接觸或眼神飄忽 [5, 6, 7, 8]；對名字呼喚無反應 [5, 7, 8]；不指物或不回應指物 [5, 7]；語言發展明顯遲緩或倒退 [5, 6, 7, 8]；重複詞語或短語（仿說）[5, 6, 7]；不使用手勢或身體語言（如揮手）[5, 6, 8]；不玩假扮遊戲 [5, 8]；重複性動作（如拍手、搖晃身體、墊腳尖走路）[5, 7]；將玩具或其他物品排成一線 [5, 7]；對日常作息的微小改變感到極度不安 [5]；對特定物品（如車輪）有異常著迷 [5]；對聲音、光線或觸感有異常反應 [5, 7]。",
-                        languageConsiderations: "此階段為語言萌發關鍵期，需特別關注語言發展里程碑 [9]。許多ASD兒童可能語言發展遲緩或無口語 [5, 6, 8]。即使有口語，也可能出現仿說（立即或延遲）[5, 6, 7]、重複詞語或短語 [5, 6]、語調異常（如平板或唱歌般）[5, 6]。可能詞彙量有限，或僅在特定興趣領域有豐富詞彙 [6]。難以理解簡單指令或需要重複 [9]。非口語溝通（如指向、揮手、眼神接觸）明顯不足 [5, 6, 8]。問句應極度簡化，多使用「是/否」或圖片輔助 [8, 10]。主要透過觀察遊戲行為、非語言線索及家長報告來評估 [5, 11, 12, 13, 8, 10]。",
+                        observationCuesGeneral: "缺乏視覺追蹤或不喜歡擁抱 [8]；一歲時可能出現語言發展遲緩或不指物 [8]；眼神接觸缺乏、對名字無反應、難以分享注意力、異常的遊戲方式（如排列玩具）、語言發展遲緩、仿說、不喜歡擁抱或不指物 [8, 9, 10]；重複性動作（拍手、搖晃、墊腳尖走路）、排列玩具、對小改變感到不安、對特定物品著迷、對感官輸入反應異常 [8, 10]。",
+                        languageConsiderations: "許多ASD兒童在語言發展和理解他人言語方面可能存在困難 [11]。有些兒童可能無法使用口語溝通，有些口語技能非常有限 [11]。可能出現重複或僵化的語言（例如：仿說、重複數數、固定開場白） [8, 10, 11]。語言發展不均衡，例如在特定興趣領域詞彙量豐富，但對話能力受損 [11]。非口語溝通能力差，如不使用手勢、眼神接觸差 [11]。問句應極度簡化，多使用「是/否」或圖片輔助 [12]。主要透過觀察遊戲行為、非語言線索（眼神、手勢、表情）及家長報告來評估 [10, 12, 13]。",
                         symptomCategories: [
                             {
                                 name: "社交溝通和社交互動缺陷 (A)",
                                 symptoms: [
-                                    { criterion: "社交情緒互惠性缺陷 [11, 14]", questionsChild: null, questionsParent: "「他們會不會主動跟大人或小朋友互動？例如，會不會主動分享玩具或眼神交流？」" },
-                                    { criterion: "非語言溝通行為缺陷 [11, 14]", questionsChild: null, questionsParent: "「他們會不會用眼神看著你，或用手勢表達他們想要的東西？」" },
-                                    { criterion: "發展、維持和理解人際關係的缺陷 [11, 14]", questionsChild: null, questionsParent: "「他們會不會對其他小朋友有興趣？會不會主動找人玩？」" }
+                                    { criterion: "社交情緒互惠性缺陷 [5, 6]", questionsChild: null, questionsParent: "「他們會不會主動跟大人或小朋友互動？例如，會不會主動分享玩具或眼神交流？」" },
+                                    { criterion: "非語言溝通行為缺陷 [5, 6]", questionsChild: null, questionsParent: "「他們會不會用眼神看著你，或用手勢表達他們想要的東西？」" },
+                                    { criterion: "發展、維持和理解人際關係的缺陷 [5, 6]", questionsChild: null, questionsParent: "「他們會不會對其他小朋友有興趣？會不會主動找人玩？」" }
                                 ]
                             },
                             {
                                 name: "受限、重複的行為模式、興趣或活動 (B)",
                                 symptoms: [
-                                    { criterion: "刻板或重複的動作、物品使用或言語 [11, 14]", questionsChild: null, questionsParent: "「他們會不會常常重複做一些動作，例如拍手、搖晃身體或墊腳尖走路？」" },
-                                    { criterion: "堅持同一性、僵硬地遵守常規或儀式化模式 [11, 14]", questionsChild: null, questionsParent: "「他們會不會很堅持每天做一樣的事情，如果改變順序就會很不高興？」" },
-                                    { criterion: "高度受限、固著的興趣，且其強度或專注力異常 [11, 14]", questionsChild: null, questionsParent: "「他們會不會對某種玩具或主題特別著迷，而且只對那個有興趣？」" },
-                                    { criterion: "對感官輸入過度或過低反應，或對環境的感官方面有不尋常的興趣 [11, 14]", questionsChild: null, questionsParent: "「他們會不會對某些聲音、光線或觸感特別敏感或沒反應？例如，不喜歡某些衣服材質或對疼痛沒感覺？」" }
+                                    { criterion: "刻板或重複的動作、物品使用或言語 [5, 6]", questionsChild: null, questionsParent: "「他們會不會常常重複做一些動作，例如拍手、搖晃身體或墊腳尖走路？」" },
+                                    { criterion: "堅持同一性、僵硬地遵守常規或儀式化模式 [5, 6]", questionsChild: null, questionsParent: "「他們會不會很堅持每天做一樣的事情，如果改變順序就會很不高興？」" },
+                                    { criterion: "高度受限、固著的興趣，且其強度或專注力異常 [5, 6]", questionsChild: null, questionsParent: "「他們會不會對某種玩具或主題特別著迷，而且只對那個有興趣？」" },
+                                    { criterion: "對感官輸入過度或過低反應，或對環境的感官方面有不尋常的興趣 [5, 6]", questionsChild: null, questionsParent: "「他們會不會對某些聲音、光線或觸感特別敏感或沒反應？例如，不喜歡某些衣服材質或對疼痛沒感覺？」" }
                                 ]
                             }
                         ]
@@ -166,24 +174,24 @@
                     {
                         id: "asd_preschool_kindergarten",
                         name: "學齡前兒童 (3-6歲) - 有上幼稚園",
-                        observationCuesGeneral: "眼神接觸缺乏或不尋常 [5, 6, 7, 8]；難以參與或抗拒團體活動 [7]；在課堂上難以管理或遵循指令 [7, 8]；難以與同儕建立或維持友誼 [5, 11, 14]；遊戲方式刻板或重複（如排列玩具）[5, 7, 8]；對日常作息或環境的微小變化感到極度不安 [5, 7]；對特定主題有異常強烈或固著的興趣 [5, 7]；對感官刺激有過度或過低反應 [5, 7, 8]；行為在學校和家裡可能存在差異，例如在學校表現較好但回家後行為問題增加 [15]。",
-                        languageConsiderations: "觀察在幼稚園環境中，是否能主動發起對話或參與雙向交流 [9]；評估其理解和遵循老師指令的能力，特別是多步驟指令 [9, 8]；注意在團體活動中是否難以參與或理解社交規則 [7]；觀察是否有重複性語言（如仿說、重複詞語）[5, 6, 7]；可能難以理解非字面意義的語言 [5]；對視覺輔助和書面指令的反應可能優於口語指令 [8]。",
+                        observationCuesGeneral: "眼神接觸缺乏、對名字無反應、難以分享注意力、異常的遊戲方式（如排列玩具）、語言發展遲緩、仿說、不喜歡擁抱或不指物 [8, 9, 10]。可能抗拒團體活動，在課堂上難以管理 [8]。行為在學校和家裡可能不同，學校表現較好但回家後行為問題增加 [14]。",
+                        languageConsiderations: "觀察兒童在幼稚園環境中，是否能主動發起對話、參與雙向交流 [15, 12]。評估其理解和遵循老師指令的能力，特別是多步驟指令 [15, 12]。注意是否在團體活動中難以參與或理解社交規則 [8]。觀察是否使用重複性語言或仿說 [8, 10, 11]。觀察對視覺輔助和書面指令的反應，而非僅依賴口語指令 [9]。",
                         symptomCategories: [
                              {
                                 name: "社交溝通和社交互動缺陷 (A)",
                                 symptoms: [
-                                    { criterion: "社交情緒互惠性缺陷 [11, 14]", questionsChild: null, questionsParent: "「他們在幼稚園會不會主動跟老師或小朋友互動？例如，會不會主動分享玩具或眼神交流？」" },
-                                    { criterion: "非語言溝通行為缺陷 [11, 14]", questionsChild: null, questionsParent: "「老師說他們會不會用眼神看著你，或用手勢表達他們想要的東西？」" },
-                                    { criterion: "發展、維持和理解人際關係的缺陷 [11, 14]", questionsChild: null, questionsParent: "「他們在幼稚園會不會對其他小朋友有興趣？會不會主動找人玩？」" }
+                                    { criterion: "社交情緒互惠性缺陷 [5, 6]", questionsChild: null, questionsParent: "「他們在幼稚園會不會主動跟老師或小朋友互動？例如，會不會主動分享玩具或眼神交流？」" },
+                                    { criterion: "非語言溝通行為缺陷 [5, 6]", questionsChild: null, questionsParent: "「老師說他們會不會用眼神看著你，或用手勢表達他們想要的東西？」" },
+                                    { criterion: "發展、維持和理解人際關係的缺陷 [5, 6]", questionsChild: null, questionsParent: "「他們在幼稚園會不會對其他小朋友有興趣？會不會主動找人玩？」" }
                                 ]
                             },
                             {
                                 name: "受限、重複的行為模式、興趣或活動 (B)",
                                 symptoms: [
-                                    { criterion: "刻板或重複的動作、物品使用或言語 [11, 14]", questionsChild: null, questionsParent: "「他們在幼稚園會不會常常重複做一些動作，例如拍手、搖晃身體或墊腳尖走路？」" },
-                                    { criterion: "堅持同一性、僵硬地遵守常規或儀式化模式 [11, 14]", questionsChild: null, questionsParent: "「他們在幼稚園會不會很堅持每天做一樣的事情，如果改變順序就會很不高興？」" },
-                                    { criterion: "高度受限、固著的興趣，且其強度或專注力異常 [11, 14]", questionsChild: null, questionsParent: "「他們在幼稚園會不會對某種玩具或主題特別著迷，而且只對那個有興趣？」" },
-                                    { criterion: "對感官輸入過度或過低反應，或對環境的感官方面有不尋常的興趣 [11, 14]", questionsChild: null, questionsParent: "「他們在幼稚園會不會對某些聲音、光線或觸感特別敏感或沒反應？例如，不喜歡某些衣服材質或對疼痛沒感覺？」" }
+                                    { criterion: "刻板或重複的動作、物品使用或言語 [5, 6]", questionsChild: null, questionsParent: "「他們在幼稚園會不會常常重複做一些動作，例如拍手、搖晃身體或墊腳尖走路？」" },
+                                    { criterion: "堅持同一性、僵硬地遵守常規或儀式化模式 [5, 6]", questionsChild: null, questionsParent: "「他們在幼稚園會不會很堅持每天做一樣的事情，如果改變順序就會很不高興？」" },
+                                    { criterion: "高度受限、固著的興趣，且其強度或專注力異常 [5, 6]", questionsChild: null, questionsParent: "「他們在幼稚園會不會對某種玩具或主題特別著迷，而且只對那個有興趣？」" },
+                                    { criterion: "對感官輸入過度或過低反應，或對環境的感官方面有不尋常的興趣 [5, 6]", questionsChild: null, questionsParent: "「他們在幼稚園會不會對某些聲音、光線或觸感特別敏感或沒反應？例如，不喜歡某些衣服材質或對疼痛沒感覺？」" }
                                 ]
                             }
                         ]
@@ -191,24 +199,24 @@
                     {
                         id: "asd_preschool_no_kindergarten",
                         name: "學齡前兒童 (3-6歲) - 無上幼稚園",
-                        observationCuesGeneral: "眼神接觸缺乏或不尋常 [5, 6, 7, 8]；對名字呼喚無反應 [5, 7, 8]；難以與家人或少數接觸的同儕互動 [5, 11, 14]；遊戲方式刻板或重複（如排列玩具）[5, 7, 8]；對日常作息或環境的微小變化感到極度不安 [5, 7]；對特定主題有異常強烈或固著的興趣 [5, 7]；對感官刺激有過度或過低反應 [5, 7, 8]；在家中或公共場所可能表現出更多負面行為（如發脾氣、攻擊性）[5, 15]。",
-                        languageConsiderations: "評估兒童在家中與家人互動時的自發性語言使用和對話輪替能力 [9]；觀察是否能主動發起簡單對話 [9]；注意其對日常指令的理解和執行能力 [9]；觀察遊戲中是否使用想像力遊戲或模仿行為 [8, 9]；可能出現重複性語言或仿說 [5, 6, 7]。",
+                        observationCuesGeneral: "眼神接觸缺乏、對名字無反應、難以分享注意力、異常的遊戲方式（如排列玩具）、語言發展遲緩、仿說、不喜歡擁抱或不指物 [8, 9, 10]。在家中或公共場所可能表現出更多負面行為（如發脾氣、攻擊性） [14]。",
+                        languageConsiderations: "評估兒童在家中與家人互動時的自發性語言使用 [12, 13]。觀察其是否能主動發起簡單對話，並在對話中輪替 [15, 12]。注意其對日常指令的理解和執行能力 [12, 13]。觀察遊戲中是否使用想像力遊戲或模仿行為 [9, 12, 13]。",
                         symptomCategories: [
                              {
                                 name: "社交溝通和社交互動缺陷 (A)",
                                 symptoms: [
-                                    { criterion: "社交情緒互惠性缺陷 [11, 14]", questionsChild: null, questionsParent: "「他們在家裡會不會主動跟大人或小朋友互動？例如，會不會主動分享玩具或眼神交流？」" },
-                                    { criterion: "非語言溝通行為缺陷 [11, 14]", questionsChild: null, questionsParent: "「他們在家裡會不會用眼神看著你，或用手勢表達他們想要的東西？」" },
-                                    { criterion: "發展、維持和理解人際關係的缺陷 [11, 14]", questionsChild: null, questionsParent: "「他們在家裡會不會對其他小朋友有興趣？會不會主動找人玩？」" }
+                                    { criterion: "社交情緒互惠性缺陷 [5, 6]", questionsChild: null, questionsParent: "「他們在家裡會不會主動跟大人或小朋友互動？例如，會不會主動分享玩具或眼神交流？」" },
+                                    { criterion: "非語言溝通行為缺陷 [5, 6]", questionsChild: null, questionsParent: "「他們在家裡會不會用眼神看著你，或用手勢表達他們想要的東西？」" },
+                                    { criterion: "發展、維持和理解人際關係的缺陷 [5, 6]", questionsChild: null, questionsParent: "「他們在家裡會不會對其他小朋友有興趣？會不會主動找人玩？」" }
                                 ]
                             },
                             {
                                 name: "受限、重複的行為模式、興趣或活動 (B)",
                                 symptoms: [
-                                    { criterion: "刻板或重複的動作、物品使用或言語 [11, 14]", questionsChild: null, questionsParent: "「他們在家裡會不會常常重複做一些動作，例如拍手、搖晃身體或墊腳尖走路？」" },
-                                    { criterion: "堅持同一性、僵硬地遵守常規或儀式化模式 [11, 14]", questionsChild: null, questionsParent: "「他們在家裡會不會很堅持每天做一樣的事情，如果改變順序就會很不高興？」" },
-                                    { criterion: "高度受限、固著的興趣，且其強度或專注力異常 [11, 14]", questionsChild: null, questionsParent: "「他們在家裡會不會對某種玩具或主題特別著迷，而且只對那個有興趣？」" },
-                                    { criterion: "對感官輸入過度或過低反應，或對環境的感官方面有不尋常的興趣 [11, 14]", questionsChild: null, questionsParent: "「他們在家裡會不會對某些聲音、光線或觸感特別敏感或沒反應？例如，不喜歡某些衣服材質或對疼痛沒感覺？」" }
+                                    { criterion: "刻板或重複的動作、物品使用或言語 [5, 6]", questionsChild: null, questionsParent: "「他們在家裡會不會常常重複做一些動作，例如拍手、搖晃身體或墊腳尖走路？」" },
+                                    { criterion: "堅持同一性、僵硬地遵守常規或儀式化模式 [5, 6]", questionsChild: null, questionsParent: "「他們在家裡會不會很堅持每天做一樣的事情，如果改變順序就會很不高興？」" },
+                                    { criterion: "高度受限、固著的興趣，且其強度或專注力異常 [5, 6]", questionsChild: null, questionsParent: "「他們在家裡會不會對某種玩具或主題特別著迷，而且只對那個有興趣？」" },
+                                    { criterion: "對感官輸入過度或過低反應，或對環境的感官方面有不尋常的興趣 [5, 6]", questionsChild: null, questionsParent: "「他們在家裡會不會對某些聲音、光線或觸感特別敏感或沒反應？例如，不喜歡某些衣服材質或對疼痛沒感覺？」" }
                                 ]
                             }
                         ]
@@ -216,24 +224,24 @@
                     {
                         id: "asd_school_age",
                         name: "學齡兒童 (6-12歲)",
-                        observationCuesGeneral: "難以理解非語言線索（如眼神、表情、肢體語言）[5, 6, 11, 14, 16]；交友困難或偏好獨自活動 [5, 11, 14, 16]；重複行為和對常規的堅持 [5, 11, 14, 7, 16]；可能在學校環境中難以適應或理解社交規則 [7, 16]；語言處理延遲，例如能閱讀但無法理解內容 [7]。",
-                        languageConsiderations: "針對口語不流暢或有限的兒童，提問需具體、直接，避免抽象概念，可使用視覺輔助或書寫方式輔助溝通 [8]。觀察是否能理解複雜指令，或需要重複和簡化 [8]。注意是否有重複性語言模式或仿說 [5, 6, 7, 16]。對於口語流暢的兒童，可提問更深入，探索社交情境中的理解和應對策略 [16]；觀察對話中的輪替、話題轉換 [16]；對非字面意義的理解（如諷刺、比喻）[5, 14, 16]。",
+                        observationCuesGeneral: "難以理解非語言線索、交友困難或偏好獨自活動、重複行為和對常規的堅持 [7]",
+                        languageConsiderations: "針對口語不流暢或有限的兒童，提問需具體、直接，避免抽象概念，可使用視覺輔助或書寫方式輔助溝通。觀察是否能理解複雜指令，或需要重複和簡化。注意是否有重複性語言模式或仿說.[7] 對於口語流暢的兒童，可提問更深入，探索社交情境中的理解和應對策略，觀察對話中的輪替、話題轉換、非字面意義的理解（如諷刺、比喻）.[6, 7]",
                         symptomCategories: [
                             {
                                 name: "社交溝通和社交互動缺陷 (A)",
                                 symptoms: [
-                                    { criterion: "社交情緒互惠性缺陷 [11, 14]", questionsChild: "「你會不會主動開始跟別人說話？如果別人跟你說話，你會不會有來有回地回應？」", questionsParent: "「他們會不會主動開始對話？如果別人跟他們說話，他們會不會有來有回地回應？」" },
-                                    { criterion: "非語言溝通行為缺陷 [11, 14]", questionsChild: "「你說話時，會不會看著別人的眼睛？你的表情和肢體語言會不會跟說話的內容一致？」", questionsParent: "「他們說話時，會不會看著你的眼睛？他們的表情和肢體語言會不會跟說話的內容一致？」" },
-                                    { criterion: "發展、維持和理解人際關係的缺陷 [11, 14]", questionsChild: "「你會不會很難交朋友？或者交了朋友之後，會不會很難維持友誼？」", questionsParent: "「他們會不會很難交朋友？或者交了朋友之後，會不會很難維持友誼？」" }
+                                    { criterion: "社交情緒互惠性缺陷 [5, 6]", questionsChild: "「你會不會主動開始跟別人說話？如果別人跟你說話，你會不會有來有回地回應？」", questionsParent: "「他們會不會主動開始對話？如果別人跟他們說話，他們會不會有來有回地回應？」" },
+                                    { criterion: "非語言溝通行為缺陷 [5, 6]", questionsChild: "「你說話時，會不會看著別人的眼睛？你的表情和肢體語言會不會跟說話的內容一致？」", questionsParent: "「他們說話時，會不會看著你的眼睛？他們的表情和肢體語言會不會跟說話的內容一致？」" },
+                                    { criterion: "發展、維持和理解人際關係的缺陷 [5, 6]", questionsChild: "「你會不會很難交朋友？或者交了朋友之後，會不會很難維持友誼？」", questionsParent: "「他們會不會很難交朋友？或者交了朋友之後，會不會很難維持友誼？」" }
                                 ]
                             },
                             {
                                 name: "受限、重複的行為模式、興趣或活動 (B)",
                                 symptoms: [
-                                    { criterion: "刻板或重複的動作、物品使用或言語 [11, 14]", questionsChild: "「你會不會有特殊的動作或聲音，例如重複說某些詞語或玩玩具的方式很固定？」", questionsParent: "「他們會不會有特殊的動作或聲音，例如重複說某些詞語或玩玩具的方式很固定？」" },
-                                    { criterion: "堅持同一性、僵硬地遵守常規或儀式化模式 [11, 14]", questionsChild: "「你會不會對日常作息或環境的微小變化感到極度困擾？」", questionsParent: "「他們會不會對日常作息或環境的微小變化感到極度困擾？」" },
-                                    { criterion: "高度受限、固著的興趣，且其強度或專注力異常 [11, 14]", questionsChild: "「你會不會對某些特定主題有異常強烈或集中的興趣，例如恐龍、火車或地圖？」", questionsParent: "「他們會不會對某些特定主題有異常強烈或集中的興趣，例如恐龍、火車或地圖？」" },
-                                    { criterion: "對感官輸入過度或過低反應，或對環境的感官方面有不尋常的興趣 [11, 14]", questionsChild: "「你會不會對某些感官刺激有過度或過低的反應？例如，不喜歡吵鬧的聲音或喜歡聞東西？」", questionsParent: "「他們會不會對某些感官刺激有過度或過低的反應？例如，不喜歡吵鬧的聲音或喜歡聞東西？」" }
+                                    { criterion: "刻板或重複的動作、物品使用或言語 [5, 6]", questionsChild: "「你會不會有特殊的動作或聲音，例如重複說某些詞語或玩玩具的方式很固定？」", questionsParent: "「他們會不會有特殊的動作或聲音，例如重複說某些詞語或玩玩具的方式很固定？」" },
+                                    { criterion: "堅持同一性、僵硬地遵守常規或儀式化模式 [5, 6]", questionsChild: "「你會不會對日常作息或環境的微小變化感到極度困擾？」", questionsParent: "「他們會不會對日常作息或環境的微小變化感到極度困擾？」" },
+                                    { criterion: "高度受限、固著的興趣，且其強度或專注力異常 [5, 6]", questionsChild: "「你會不會對某些特定主題有異常強烈或集中的興趣，例如恐龍、火車或地圖？」", questionsParent: "「他們會不會對某些特定主題有異常強烈或集中的興趣，例如恐龍、火車或地圖？」" },
+                                    { criterion: "對感官輸入過度或過低反應，或對環境的感官方面有不尋常的興趣 [5, 6]", questionsChild: "「你會不會對某些感官刺激有過度或過低的反應？例如，不喜歡吵鬧的聲音或喜歡聞東西？」", questionsParent: "「他們會不會對某些感官刺激有過度或過低的反應？例如，不喜歡吵鬧的聲音或喜歡聞東西？」" }
                                 ]
                             }
                         ]
@@ -241,24 +249,24 @@
                     {
                         id: "asd_adolescent",
                         name: "青少年 (13-18歲)",
-                        observationCuesGeneral: "在社交情境中調整行為的困難 [14, 16]；難以理解非字面語言（如幽默、諷刺、成語）[5, 14, 16]；執行功能方面的挑戰（如規劃、組織、問題解決）[16]；可能出現焦慮和抑鬱症狀 [16]；難以發起或維持對話 [16]；難以解釋非語言線索（如身體語言、面部表情）[16]；可能偏好獨自活動或難以理解群體動態 [16]；持續的感官敏感性 [16]；興趣可能變得更專業化和複雜 [16]；對常規改變的困難持續存在 [16]；情緒調節困難 [16]；心智理論受損（難以理解他人想法、感受、觀點）[16]。",
-                        languageConsiderations: "針對口語不流暢或有限的青少年，提問需清晰、直接，避免過於抽象或需要推斷的問題，可使用書寫或視覺輔助 [8]。觀察其對話的連貫性和邏輯性 [16]。對於口語流暢的青少年，可討論更複雜的社交情境、人際關係中的細微差別 [16]、抽象概念和未來規劃 [17]。觀察其對非字面語言（如幽默、諷刺）的理解 [5, 14, 16]，以及在不同社交情境中調整溝通方式的能力 [14, 16]。",
+                        observationCuesGeneral: "在社交情境中調整行為的困難、理解非字面語言以及執行功能方面的挑戰.[4, 6, 7] 焦慮和抑鬱症狀也可能共存.[7]",
+                        languageConsiderations: "針對口語不流暢或有限的青少年，提問需清晰、直接，避免過於抽象或需要推斷的問題，可使用書寫或視覺輔助。觀察其對話的連貫性和邏輯性。對於口語流暢的青少年，可討論更複雜的社交情境、人際關係中的細微差別、抽象概念和未來規劃。觀察其對非字面語言（如幽默、諷刺）的理解，以及在不同社交情境中調整溝通方式的能力.[6]",
                          symptomCategories: [
                             {
                                 name: "社交溝通和社交互動缺陷 (A)",
                                 symptoms: [
-                                    { criterion: "社交情緒互惠性缺陷 [11, 14]", questionsChild: "「你在社交場合中，會不會難以理解別人的情緒或意圖？例如，會不會很難察覺別人是否生氣或開心？」", questionsParent: "「他們在社交場合中，會不會難以理解別人的情緒或意圖？例如，會不會很難察覺別人是否生氣或開心？」" },
-                                    { criterion: "非語言溝通行為缺陷 [11, 14]", questionsChild: "「你會不會難以理解或使用非語言的溝通方式，例如眼神交流、肢體語言或手勢？」", questionsParent: "「他們會不會難以理解或使用非語言的溝通方式，例如眼神交流、肢體語言或手勢？」" },
-                                    { criterion: "發展、維持和理解人際關係的缺陷 [11, 14]", questionsChild: "「你會不會難以根據不同的社交場合調整自己的行為？例如，在學校和家裡表現不同？」", questionsParent: "「他們會不會難以根據不同的社交場合調整自己的行為？例如，在學校和家裡表現不同？」" }
+                                    { criterion: "社交情緒互惠性缺陷 [5, 6]", questionsChild: "「你在社交場合中，會不會難以理解別人的情緒或意圖？例如，會不會很難察覺別人是否生氣或開心？」", questionsParent: "「他們在社交場合中，會不會難以理解別人的情緒或意圖？例如，會不會很難察覺別人是否生氣或開心？」" },
+                                    { criterion: "非語言溝通行為缺陷 [5, 6]", questionsChild: "「你會不會難以理解或使用非語言的溝通方式，例如眼神交流、肢體語言或手勢？」", questionsParent: "「他們會不會難以理解或使用非語言的溝通方式，例如眼神交流、肢體語言或手勢？」" },
+                                    { criterion: "發展、維持和理解人際關係的缺陷 [5, 6]", questionsChild: "「你會不會難以根據不同的社交場合調整自己的行為？例如，在學校和家裡表現不同？」", questionsParent: "「他們會不會難以根據不同的社交場合調整自己的行為？例如，在學校和家裡表現不同？」" }
                                 ]
                             },
                             {
                                 name: "受限、重複的行為模式、興趣或活動 (B)",
                                 symptoms: [
-                                    { criterion: "刻板或重複的動作、物品使用或言語 [11, 14]", questionsChild: "「你會不會有重複的動作、語言模式或使用物品的方式？」", questionsParent: "「他們會不會有重複的動作、語言模式或使用物品的方式？」" },
-                                    { criterion: "堅持同一性、僵硬地遵守常規或儀式化模式 [11, 14]", questionsChild: "「你會不會堅持一貫性，對常規有僵硬的遵守，或有儀式化的行為模式？」", questionsParent: "「他們會不會堅持一貫性，對常規有僵硬的遵守，或有儀式化的行為模式？」" },
-                                    { criterion: "高度受限、固著的興趣，且其強度或專注力異常 [11, 14]", questionsChild: "「你會不會對某些特定興趣有異常強烈或集中的執著，例如對不尋常的物品有強烈依戀或過度專注於某些領域？」", questionsParent: "「他們會不會對某些特定興趣有異常強烈或集中的執著，例如對不尋常的物品有強烈依戀或過度專注於某些領域？」" },
-                                    { criterion: "對感官輸入過度或過低反應，或對環境的感官方面有不尋常的興趣 [11, 14]", questionsChild: "「你會不會對感官輸入有過度或過低的反應，或對環境中的感官方面有不尋常的興趣？」", questionsParent: "「他們會不會對感官輸入有過度或過低的反應，或對環境中的感官方面有不尋常的興趣？」" }
+                                    { criterion: "刻板或重複的動作、物品使用或言語 [5, 6]", questionsChild: "「你會不會有重複的動作、語言模式或使用物品的方式？」", questionsParent: "「他們會不會有重複的動作、語言模式或使用物品的方式？」" },
+                                    { criterion: "堅持同一性、僵硬地遵守常規或儀式化模式 [5, 6]", questionsChild: "「你會不會堅持一貫性，對常規有僵硬的遵守，或有儀式化的行為模式？」", questionsParent: "「他們會不會堅持一貫性，對常規有僵硬的遵守，或有儀式化的行為模式？」" },
+                                    { criterion: "高度受限、固著的興趣，且其強度或專注力異常 [5, 6]", questionsChild: "「你會不會對某些特定興趣有異常強烈或集中的執著，例如對不尋常的物品有強烈依戀或過度專注於某些領域？」", questionsParent: "「他們會不會對某些特定興趣有異常強烈或集中的執著，例如對不尋常的物品有強烈依戀或過度專注於某些領域？」" },
+                                    { criterion: "對感官輸入過度或過低反應，或對環境的感官方面有不尋常的興趣 [5, 6]", questionsChild: "「你會不會對感官輸入有過度或過低的反應，或對環境中的感官方面有不尋常的興趣？」", questionsParent: "「他們會不會對感官輸入有過度或過低的反應，或對環境中的感官方面有不尋常的興趣？」" }
                                 ]
                             }
                         ]
@@ -303,7 +311,7 @@
             contentArea.classList.remove('content-fade-enter-active');
             void contentArea.offsetWidth; 
 
-            if (!diagnosisId ||!ageGroupId) {
+            if (!diagnosisId || !ageGroupId) {
                  contentArea.innerHTML = '<p class="text-center text-slate-500">請選擇診斷類別和年齡階段以查看相關資訊。</p>';
                  contentArea.classList.add('content-fade-enter', 'content-fade-enter-active');
                 return;
@@ -312,7 +320,7 @@
             const diagnosis = screeningData.find(d => d.id === diagnosisId);
             const ageGroup = diagnosis.ageGroups.find(ag => ag.id === ageGroupId);
 
-            if (!diagnosis ||!ageGroup) {
+            if (!diagnosis || !ageGroup) {
                 contentArea.innerHTML = '<p class="text-center text-red-500">找不到選定的資料，請重新選擇。</p>';
                 contentArea.classList.add('content-fade-enter', 'content-fade-enter-active');
                 return;

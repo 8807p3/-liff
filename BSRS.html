@@ -124,7 +124,6 @@
     <div id="result">
         <h3>生成的引導連結:</h3>
         <a id="generatedLink" target="_blank"></a>
-        <button id="copyBtn">複製連結</button>
 
         <div class="qr-container">
             <div class="qr-title">手機掃描QR碼:</div>
@@ -165,26 +164,6 @@
                 colorDark : "#000000",
                 colorLight : "#ffffff",
                 correctLevel : QRCode.CorrectLevel.L
-            });
-        });
-
-        document.getElementById('copyBtn').addEventListener('click', function() {
-            const link = document.getElementById('generatedLink').href;
-            navigator.clipboard.writeText(link).then(function() {
-                alert('連結已複製到剪貼簿！');
-            }, function() {
-                // 如果剪貼簿API不可用，使用備用方法
-                const textArea = document.createElement("textarea");
-                textArea.value = link;
-                document.body.appendChild(textArea);
-                textArea.select();
-                try {
-                    document.execCommand('copy');
-                    alert('連結已複製！');
-                } catch (err) {
-                    alert('複製失敗，請手動複製連結。');
-                }
-                document.body.removeChild(textArea);
             });
         });
     </script>

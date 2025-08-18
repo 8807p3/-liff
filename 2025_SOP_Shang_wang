@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>理事長推薦：支持商志雍與王亮人醫師</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', "Microsoft JhengHei", "Noto Sans CJK TC", sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 p-4 sm:p-8">
+
+    <div class="max-w-4xl mx-auto bg-white rounded-xl shadow-lg p-6 sm:p-10">
+
+        <!-- Header and Introduction -->
+        <header class="text-center mb-10">
+            <h1 class="text-3xl sm:text-4xl font-bold text-blue-800 leading-tight mb-2">
+                台灣精神醫學會理事選舉
+            </h1>
+            <h2 class="text-xl sm:text-2xl font-semibold text-gray-700">
+                理事長誠摯推薦：凝聚力量，支持我們的代表！
+            </h2>
+        </header>
+
+        <!-- Director's Endorsement -->
+        <div class="mb-12 border-b-2 border-gray-200 pb-8">
+            <p class="text-base sm:text-lg text-gray-700 text-justify leading-relaxed">
+                親愛的台灣兒童青少年精神醫學會會員們：<br><br>
+                各位在臨床、研究與教育領域的辛勤付出，是台灣兒少精神健康最堅實的後盾。我們共同見證了這個專業領域的成長與蛻變。今年，我們有幸看到兩位在兒童青少年精神醫學領域有傑出貢獻的代表，投入台灣精神醫學會理事的選舉。我樂見並全力支持這兩位優秀的兒精科代表。他們一位代表著<strong class="text-blue-600">穩固的學術基石</strong>，一位代表著<strong class="text-blue-600">創新的前瞻思維</strong>，兩者的結合正是我們這個專業領域所需要的。
+            </p>
+            <div class="text-right mt-6">
+                <p class="font-semibold text-gray-800">林健禾</p>
+                <p class="text-sm text-gray-600">台灣兒童青少年精神醫學會 理事長</p>
+            </div>
+        </div>
+
+        <!-- Candidates Section -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <!-- Shang Zhi-Yung (商志雍) -->
+            <div class="bg-blue-50 rounded-lg p-6 flex flex-col items-center text-center shadow-inner">
+                <div class="mb-4 w-40 h-40 rounded-full overflow-hidden border-4 border-blue-400">
+                    <img src="https://www.ntuh.gov.tw/Image/ImageAction.action?filePath=/ntuh_data/upload//PSY/teacher/pic/&imageId=901137ed-1771-48b8-ab88-66f033a00c50.png" alt="商志雍醫師照片" class="w-full h-full object-cover">
+                </div>
+                <h3 class="text-2xl font-bold text-blue-800 mb-2">商志雍 教授/ 理事候選</h3>
+                <p class="text-sm font-medium text-gray-600 mb-4">台大精神部</p>
+                <p class="text-gray-800 text-justify mb-4">
+                    商志雍教授是我們學術與教育的典範。他深耕兒少精神醫療多年，對人才培育的熱情與貢獻有目共睹。他的政見核心聚焦於<strong class="text-blue-600">穩健發展、人才培育與全齡照護</strong>。
+                </p>
+                <div class="w-full text-left">
+                    <h4 class="font-bold text-blue-700 mb-2">政見重點：</h4>
+                    <ul class="list-disc list-inside space-y-2 text-gray-700">
+                        <li>深化兒童青少年精神醫療：強化兒少精神醫療專業訓練與次專科發展，推動校園與社區精神健康網絡。</li>
+                        <li>優化醫師教育與職涯發展：提升精神科住院醫師訓練品質，並鼓勵學術研究與創新，打造世代共榮的環境。</li>
+                        <li>促進公眾精神健康意識：透過推廣正確知識與舉辦心理健康活動，消弭社會對精神疾病的汙名化。</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Wang Liang-Jen (王亮人) -->
+            <div class="bg-green-50 rounded-lg p-6 flex flex-col items-center text-center shadow-inner">
+                <div class="mb-4 w-40 h-40 rounded-full overflow-hidden border-4 border-green-400">
+                    <img src="http://www.snq.org.tw/smarteditupfiles/01(85).jpg" alt="王亮人醫師照片" class="w-full h-full object-cover">
+                </div>
+                <h3 class="text-2xl font-bold text-green-800 mb-2">王亮人 教授 / 監事候選</h3>
+                <p class="text-sm font-medium text-gray-600 mb-4">高雄長庚</p>
+                <p class="text-gray-800 text-justify mb-4">
+                    王亮人醫師則是我們創新與前瞻的代表。他在ADHD分子診斷的突破，以及對智慧醫療的遠見，將能引領精神醫學走向科技化的新紀元。他的政見著重於<strong class="text-green-600">科技創新、區域整合與精準醫療</strong>。
+                </p>
+                <div class="w-full text-left">
+                    <h4 class="font-bold text-green-700 mb-2">政見重點：</h4>
+                    <ul class="list-disc list-inside space-y-2 text-gray-700">
+                        <li>引領精神醫學科技化：運用ADHD分子診斷技術經驗，推動精準診斷與治療，建構智慧精神醫療生態系。</li>
+                        <li>優化南部精神醫療資源：推動南部地區精神醫療網絡整合，並強化在地人才留任，以平衡區域發展。</li>
+                        <li>深化跨專業協作：倡議促進精神科與非精神科醫學的合作，並建立跨領域心理健康工作團隊，提供更全面的全人照護。</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- Call to Action -->
+        <div class="mt-10 text-center text-gray-700">
+            <p class="text-lg font-medium">
+                我誠摯地邀請各位會員，無論您的執業場域在哪裡，都請發揮我們的團結力量，給予這兩位候選人最堅定的支持。
+                讓我們共同將兒童精神醫學的聲音，帶入精神醫學會的決策核心，為台灣的精神健康未來創造更美好的願景。
+            </p>
+            <p class="mt-4 text-sm text-gray-500">
+                感謝您的支持與付出。
+            </p>
+        </div>
+
+    </div>
+
+</body>
+</html>

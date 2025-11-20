@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>修復性對話練習器 (Restorative Dialogue Trainer)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #f3f4f6;
+        }
+        .card-flip {
+            perspective: 1000px;
+        }
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+        .card-flip.flipped .card-inner {
+            transform: rotateY(180deg);
+        }
+        .card-front, .card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        .card-back {
+            transform: rotateY(180deg);
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .chat-bubble {
+            max-width: 80%;
+            padding: 10px 15px;
+            border-radius: 18px;
+            margin-bottom: 10px;
+            position: relative;
+            animation: popIn 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        @keyframes popIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        .chat-teacher {
+            background-color: #e0f2fe;
+            color: #0369a1;
+            align-self: flex-start;
+            border-bottom-left-radius: 2px;
+        }
+        .chat-student {
+            background-color: #f0fdf4;
+            color: #15803d;
+            align-self: flex-end;
+            border-bottom-right-radius: 2px;
+        }
+    </style>
+</head>
+<body class="text-gray-800 min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm py-6 px-4 text-center">
+        <h1 class="text-3xl font-bold text-gray-800 mb-2">懲罰性 vs 修復性對話</h1>
+        <p class="text-gray-600 max-w-2xl mx-auto">
+            修復性對話聚焦於讓學生理解行為後果並承擔責任，而非指責或懲罰。<br>
+            <span class="text-sm text-blue-500 mt-1 inline-block font-medium">點擊下方紅色卡片，學習如何轉化對話！</span>
+        </p>
+    </header>
+
+    <main class="flex-grow container mx-auto px-4 py-8 max-w-5xl">
+        
+        <!-- Part 1: Interactive Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+            
+            <!-- Card 1 -->
+            <div class="flex flex-col gap-4">
+                <div class="card-flip h-48 cursor-pointer group" onclick="flipCard(this, 'goal1')">
+                    <div class="card-inner">
+                        <!-- Front: Punitive -->
+                        <div class="card-front bg-white border-2 border-red-200 hover:border-red-400">
+                            <div class="text-4xl mb-3">🚫</div>
+                            <h3 class="text-red-500 font-bold text-lg mb-2">懲罰性提問</h3>
+                            <p class="text-gray-700 text-xl font-medium">你做了什麼？ 😠</p>
+                            <div class="mt-4 text-xs text-gray-400">點擊翻轉</div>
+                        </div>
+                        <!-- Back: Restorative -->
+                        <div class="card-back bg-green-50 border-2 border-green-400">
+                            <div class="text-4xl mb-3">✅</div>
+                            <h3 class="text-green-600 font-bold text-lg mb-2">修復性提問</h3>
+                            <p class="text-gray-800 text-xl font-medium">發生了什麼事？ 🤔</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Goal Box (Hidden initially) -->
+                <div id="goal1" class="hidden bg-blue-50 border-l-4 border-blue-400 p-4 rounded shadow-sm fade-in">
+                    <div class="flex items-start">
+                        <div class="text-2xl mr-3">🎯</div>
+                        <div>
+                            <h4 class="font-bold text-blue-700 text-sm uppercase">目的 (Goal)</h4>
+                            <p class="text-gray-700">鼓勵學生描述情境，降低防衛心。 💛</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 2 -->
+            <div class="flex flex-col gap-4">
+                <div class="card-flip h-48 cursor-pointer group" onclick="flipCard(this, 'goal2')">
+                    <div class="card-inner">
+                        <!-- Front: Punitive -->
+                        <div class="card-front bg-white border-2 border-red-200 hover:border-red-400">
+                            <div class="text-4xl mb-3">🛑</div>
+                            <h3 class="text-red-500 font-bold text-lg mb-2">懲罰性提問</h3>
+                            <p class="text-gray-700 text-xl font-medium">為什麼你要這樣做？ 😡</p>
+                            <div class="mt-4 text-xs text-gray-400">點擊翻轉</div>
+                        </div>
+                        <!-- Back: Restorative -->
+                        <div class="card-back bg-green-50 border-2 border-green-400">
+                            <div class="text-4xl mb-3">🤝</div>
+                            <h3 class="text-green-600 font-bold text-lg mb-2">修復性提問</h3>
+                            <p class="text-gray-800 text-xl font-medium">誰受到了影響？ 💖</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Goal Box -->
+                <div id="goal2" class="hidden bg-blue-50 border-l-4 border-blue-400 p-4 rounded shadow-sm fade-in">
+                    <div class="flex items-start">
+                        <div class="text-2xl mr-3">🌍</div>
+                        <div>
+                            <h4 class="font-bold text-blue-700 text-sm uppercase">目的 (Goal)</h4>
+                            <p class="text-gray-700">將焦點轉向行為後果，提升社交覺察。 🟢</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card 3 -->
+            <div class="flex flex-col gap-4">
+                <div class="card-flip h-48 cursor-pointer group" onclick="flipCard(this, 'goal3')">
+                    <div class="card-inner">
+                        <!-- Front: Punitive -->
+                        <div class="card-front bg-white border-2 border-red-200 hover:border-red-400">
+                            <div class="text-4xl mb-3">💸</div>
+                            <h3 class="text-red-500 font-bold text-lg mb-2">懲罰性提問</h3>
+                            <p class="text-gray-700 text-xl font-medium">你要付出什麼代價？ 🙅‍♂️</p>
+                            <div class="mt-4 text-xs text-gray-400">點擊翻轉</div>
+                        </div>
+                        <!-- Back: Restorative -->
+                        <div class="card-back bg-green-50 border-2 border-green-400">
+                            <div class="text-4xl mb-3">🛠️</div>
+                            <h3 class="text-green-600 font-bold text-lg mb-2">修復性提問</h3>
+                            <p class="text-gray-800 text-xl font-medium">如何修復關係？ 🛠️</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- Goal Box -->
+                <div id="goal3" class="hidden bg-blue-50 border-l-4 border-blue-400 p-4 rounded shadow-sm fade-in">
+                    <div class="flex items-start">
+                        <div class="text-2xl mr-3">🌱</div>
+                        <div>
+                            <h4 class="font-bold text-blue-700 text-sm uppercase">目的 (Goal)</h4>
+                            <p class="text-gray-700">讓學生參與制定修復計畫，強化人際關係技巧。 ❤️</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Part 2: Roleplay Simulation -->
+        <div class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200">
+            <div class="bg-indigo-600 text-white p-4 flex justify-between items-center">
+                <h2 class="text-xl font-bold flex items-center">
+                    <span class="text-2xl mr-2">💬</span> 實戰演練：課堂衝突
+                </h2>
+                <button onclick="resetSimulation()" class="text-xs bg-indigo-800 hover:bg-indigo-700 px-3 py-1 rounded transition">重新開始</button>
+            </div>
+            
+            <div class="p-6 bg-gray-50 min-h-[300px] flex flex-col">
+                <!-- Chat Area -->
+                <div id="chat-container" class="flex-grow flex flex-col space-y-4 mb-6 overflow-y-auto h-64 p-2">
+                    <div class="text-center text-gray-400 text-sm my-2">情境：學生在課堂上突然打斷你說話...</div>
+                    <!-- Initial Message will be injected by JS -->
+                </div>
+
+                <!-- Controls -->
+                <div id="choices-container" class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <!-- Choices will be injected by JS -->
+                    <button onclick="startSimulation()" class="col-span-1 md:col-span-2 bg-indigo-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-indigo-700 transition shadow">
+                        開始演練
+                    </button>
+                </div>
+                
+                <div id="feedback-area" class="hidden mt-4 p-3 rounded text-center text-sm font-medium"></div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="bg-gray-800 text-gray-400 py-6 text-center text-sm">
+        <p>Based on "懲罰性 vs 修復性對話" Educational Chart</p>
+        <p>Interactive Learning Tool</p>
+    </footer>
+
+    <script>
+        // --- Card Flip Logic ---
+        function flipCard(element, goalId) {
+            element.classList.toggle('flipped');
+            const goalEl = document.getElementById(goalId);
+            
+            // Show goal if flipped to green side
+            if (element.classList.contains('flipped')) {
+                setTimeout(() => {
+                    goalEl.classList.remove('hidden');
+                }, 200);
+            } else {
+                goalEl.classList.add('hidden');
+            }
+        }
+
+        // --- Simulation Logic ---
+        const chatContainer = document.getElementById('chat-container');
+        const choicesContainer = document.getElementById('choices-container');
+        const feedbackArea = document.getElementById('feedback-area');
+
+        let currentStep = 0;
+
+        const scenario = [
+            {
+                // Step 0: Initial State
+                action: "start"
+            },
+            {
+                // Step 1: Teacher's first response
+                prompt: "學生打斷了你的話。你該怎麼說？",
+                choices: [
+                    {
+                        text: "你做了什麼？為什麼這麼沒禮貌？ 😠",
+                        type: "punitive",
+                        feedback: "學生感到被指責，變得防衛。試試另一種方式。",
+                        nextStep: 1 // Stay on this step
+                    },
+                    {
+                        text: "發生了什麼事讓你這麼急著想插話？ 🤔",
+                        type: "restorative",
+                        feedback: "很好！這能鼓勵學生描述情境，而不是感到被攻擊。",
+                        nextStep: 2
+                    }
+                ]
+            },
+            {
+                // Step 2: Student responds
+                action: "student_reply",
+                text: "我只是想快點說我的想法，怕等一下就忘了。",
+                nextStep: 3
+            },
+            {
+                // Step 3: Teacher's second response
+                prompt: "學生解釋了原因。你該如何引導？",
+                choices: [
+                    {
+                        text: "不管怎樣，打斷人就是不對，你要付出什麼代價？ 🛑",
+                        type: "punitive",
+                        feedback: "這會破壞關係，學生學不到如何尊重他人，只學會恐懼。",
+                        nextStep: 3 // Stay
+                    },
+                    {
+                        text: "我懂你很興奮想分享，但當你打斷時，同學可能覺得沒被聽到。 🤝",
+                        type: "restorative",
+                        feedback: "太棒了！這將焦點轉向行為對他人的影響 (社交覺察)。",
+                        nextStep: 4
+                    }
+                ]
+            },
+            {
+                // Step 4: Conclusion
+                action: "conclusion",
+                text: "我們可以怎麼做讓大家感覺更好？ (修復關係)",
+                subtext: "學生：那我下次先寫下來，等大家說完再舉手。"
+            }
+        ];
+
+        function addMessage(role, text) {
+            const div = document.createElement('div');
+            div.className = `chat-bubble ${role === 'teacher' ? 'chat-teacher' : 'chat-student'}`;
+            
+            const icon = role === 'teacher' ? '👩‍🏫' : '🧑‍🎓';
+            const label = role === 'teacher' ? '老師' : '學生';
+            
+            div.innerHTML = `<div class="text-xs font-bold opacity-75 mb-1">${icon} ${label}</div>${text}`;
+            chatContainer.appendChild(div);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        function showFeedback(msg, type) {
+            feedbackArea.textContent = msg;
+            feedbackArea.className = `mt-4 p-3 rounded text-center text-sm font-medium fade-in ${type === 'punitive' ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}`;
+            feedbackArea.classList.remove('hidden');
+        }
+
+        function hideFeedback() {
+            feedbackArea.classList.add('hidden');
+        }
+
+        function renderChoices(stepIndex) {
+            choicesContainer.innerHTML = '';
+            const stepData = scenario[stepIndex];
+            
+            stepData.choices.forEach(choice => {
+                const btn = document.createElement('button');
+                btn.className = `p-3 rounded-lg border-2 text-left transition hover:shadow-md ${choice.type === 'punitive' ? 'border-red-200 hover:bg-red-50 text-red-800' : 'border-green-200 hover:bg-green-50 text-green-800'}`;
+                btn.innerHTML = choice.text;
+                btn.onclick = () => handleChoice(choice);
+                choicesContainer.appendChild(btn);
+            });
+        }
+
+        function handleChoice(choice) {
+            // Add teacher's message
+            addMessage('teacher', choice.text);
+            
+            // Show feedback
+            showFeedback(choice.feedback, choice.type);
+
+            if (choice.type === 'restorative') {
+                // Disable buttons temporarily
+                const btns = choicesContainer.querySelectorAll('button');
+                btns.forEach(b => b.disabled = true);
+                
+                setTimeout(() => {
+                    hideFeedback();
+                    currentStep = choice.nextStep;
+                    processStep();
+                }, 2000);
+            }
+        }
+
+        function processStep() {
+            const stepData = scenario[currentStep];
+
+            if (stepData.action === 'student_reply') {
+                setTimeout(() => {
+                    addMessage('student', stepData.text);
+                    setTimeout(() => {
+                        currentStep = stepData.nextStep;
+                        processStep();
+                    }, 1000);
+                }, 500);
+            } else if (stepData.action === 'conclusion') {
+                setTimeout(() => {
+                    addMessage('teacher', stepData.text);
+                    setTimeout(() => {
+                        addMessage('student', stepData.subtext);
+                        choicesContainer.innerHTML = `<div class="col-span-1 md:col-span-2 text-center p-4 bg-blue-100 text-blue-800 rounded-lg font-bold">🎉 演練完成！你成功運用了修復性對話。</div>`;
+                    }, 1000);
+                }, 500);
+            } else if (stepData.choices) {
+                renderChoices(currentStep);
+            }
+        }
+
+        function startSimulation() {
+            currentStep = 1;
+            chatContainer.innerHTML = '<div class="text-center text-gray-400 text-sm my-2">情境：學生在課堂上突然打斷你說話...</div>';
+            hideFeedback();
+            processStep();
+        }
+
+        function resetSimulation() {
+            currentStep = 0;
+            chatContainer.innerHTML = '<div class="text-center text-gray-400 text-sm my-2">情境：學生在課堂上突然打斷你說話...</div>';
+            choicesContainer.innerHTML = `
+                <button onclick="startSimulation()" class="col-span-1 md:col-span-2 bg-indigo-600 text-white py-3 px-6 rounded-lg font-semibold hover:bg-indigo-700 transition shadow">
+                    開始演練
+                </button>
+            `;
+            hideFeedback();
+        }
+
+    </script>
+</body>
+</html>

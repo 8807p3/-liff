@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>心靈教練 - 阿光</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap');
+        
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #f0f4f8;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* 自定義捲軸 */
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .message-animation {
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .typing-dot {
+            animation: typing 1.4s infinite ease-in-out both;
+        }
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes typing {
+            0%, 80%, 100% { transform: scale(0); }
+            40% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body class="bg-slate-100">
+
+    <!-- 手機版面容器 -->
+    <div class="w-full h-full md:h-[90vh] md:w-[480px] bg-white md:rounded-2xl shadow-2xl flex flex-col overflow-hidden relative">
+        
+        <!-- Header -->
+        <div class="bg-sky-600 p-4 flex items-center justify-between shadow-md z-10">
+            <div class="flex items-center gap-3">
+                <div class="bg-white p-2 rounded-full">
+                    <i data-lucide="sun" class="text-yellow-500 w-6 h-6"></i>
+                </div>
+                <div>
+                    <h1 class="text-white font-bold text-lg">心靈教練 阿光</h1>
+                    <p class="text-sky-100 text-xs">隨時陪伴，理解你的戰友</p>
+                </div>
+            </div>
+            <button onclick="restartChat()" class="text-sky-100 hover:text-white transition">
+                <i data-lucide="rotate-ccw" class="w-5 h-5"></i>
+            </button>
+        </div>
+
+        <!-- 聊天區域 -->
+        <div id="chat-box" class="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-hide bg-slate-50">
+            <!-- 訊息會動態插入這裡 -->
+        </div>
+
+        <!-- 輸入區域 (雖然主要靠按鈕，但保留輸入框給予自由度) -->
+        <div class="p-4 bg-white border-t border-gray-100">
+            <div id="options-container" class="flex flex-wrap gap-2 mb-3">
+                <!-- 選項按鈕會出現在這 -->
+            </div>
+            <div class="flex items-center gap-2 relative">
+                <input type="text" id="user-input" placeholder="說點什麼..." class="w-full bg-gray-100 text-gray-800 rounded-full py-3 px-4 focus:outline-none focus:ring-2 focus:ring-sky-500 transition disabled:opacity-50" disabled>
+                <button onclick="handleSend()" id="send-btn" class="bg-sky-600 text-white p-3 rounded-full hover:bg-sky-700 transition disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                    <i data-lucide="send" class="w-5 h-5"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 初始化圖標
+        lucide.createIcons();
+
+        const chatBox = document.getElementById('chat-box');
+        const optionsContainer = document.getElementById('options-container');
+        const userInput = document.getElementById('user-input');
+        const sendBtn = document.getElementById('send-btn');
+
+        // 劇本狀態機
+        let currentState = 'intro';
+
+        // 模擬延遲
+        const wait = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+        // 系統邏輯
+        async function addMessage(text, sender, type = 'text') {
+            const div = document.createElement('div');
+            div.className = `flex ${sender === 'bot' ? 'justify-start' : 'justify-end'} message-animation`;
+            
+            let content = '';
+            if (sender === 'bot') {
+                content = `
+                    <div class="flex items-end gap-2 max-w-[85%]">
+                        <div class="bg-sky-100 p-1.5 rounded-full shrink-0 mb-1">
+                            <i data-lucide="bot" class="w-4 h-4 text-sky-600"></i>
+                        </div>
+                        <div class="bg-white text-gray-800 px-4 py-3 rounded-2xl rounded-bl-none shadow-sm border border-gray-100 text-sm leading-relaxed">
+                            ${text}
+                        </div>
+                    </div>
+                `;
+            } else {
+                content = `
+                    <div class="bg-sky-600 text-white px-4 py-3 rounded-2xl rounded-br-none shadow-md text-sm max-w-[80%] leading-relaxed">
+                        ${text}
+                    </div>
+                `;
+            }
+
+            div.innerHTML = content;
+            chatBox.appendChild(div);
+            lucide.createIcons();
+            scrollToBottom();
+        }
+
+        async function showTyping() {
+            const div = document.createElement('div');
+            div.id = 'typing-indicator';
+            div.className = 'flex justify-start message-animation';
+            div.innerHTML = `
+                <div class="flex items-end gap-2">
+                    <div class="bg-sky-100 p-1.5 rounded-full shrink-0 mb-1">
+                        <i data-lucide="bot" class="w-4 h-4 text-sky-600"></i>
+                    </div>
+                    <div class="bg-white px-4 py-3 rounded-2xl rounded-bl-none shadow-sm border border-gray-100 flex gap-1 items-center h-[46px]">
+                        <div class="w-2 h-2 bg-gray-400 rounded-full typing-dot"></div>
+                        <div class="w-2 h-2 bg-gray-400 rounded-full typing-dot"></div>
+                        <div class="w-2 h-2 bg-gray-400 rounded-full typing-dot"></div>
+                    </div>
+                </div>
+            `;
+            chatBox.appendChild(div);
+            lucide.createIcons();
+            scrollToBottom();
+            await wait(1500); // 模擬思考時間
+            div.remove();
+        }
+
+        function scrollToBottom() {
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function setOptions(options) {
+            optionsContainer.innerHTML = '';
+            options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'bg-sky-50 text-sky-700 border border-sky-200 px-3 py-1.5 rounded-full text-xs hover:bg-sky-100 transition whitespace-nowrap font-medium';
+                btn.innerText = opt.text;
+                btn.onclick = () => handleOptionClick(opt.text, opt.nextState);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        async function handleOptionClick(text, nextState) {
+            optionsContainer.innerHTML = ''; // 清除按鈕
+            addMessage(text, 'user');
+            await showTyping();
+            processState(nextState);
+        }
+
+        // --- 核心劇本邏輯 ---
+
+        async function startChat() {
+            await wait(500);
+            await showTyping();
+            addMessage('嗨！我是阿光。我聽說了你最近的狀況。', 'bot');
+            await wait(800);
+            await showTyping();
+            addMessage('雖然我們剛認識，但我想給你一個大大的擁抱。說真的，看完你的經歷，我沒有覺得你「沒用」，我反而看到一個為了對抗體制，辛苦掙扎了 12 年的戰士。', 'bot');
+            await wait(800);
+            await showTyping();
+            addMessage('真的辛苦你了。現在感覺還好嗎？', 'bot');
+            
+            setOptions([
+                { text: '覺得很累，很迷茫...', nextState: 'tired' },
+                { text: '覺得自己很失敗，什麼都做不好', nextState: 'failure' },
+                { text: '為什麼連神明都不幫我？', nextState: 'god' }
+            ]);
+        }
+
+        async function processState(state) {
+            if (state === 'tired' || state === 'failure') {
+                addMessage('這完全是正常的反應。當你用盡全力去投履歷、去讀書，卻得不到正向回饋時，誰都會覺得累、覺得自己糟透了。', 'bot');
+                await wait(1000);
+                await showTyping();
+                addMessage('特別是你提到了 ADHD。你知道嗎？在標準的學校和職場體制裡，ADHD 的大腦就像是「為了打獵而設計的跑車」，卻被強迫要在「農田裡慢慢耕田」。', 'bot');
+                await wait(1000);
+                await showTyping();
+                addMessage('考 0 分不代表你笨，只代表那個考試方式完全不適合你的大腦運作模式。', 'bot');
+                
+                setOptions([
+                    { text: '可是大家都說我有問題...', nextState: 'adhd_reframing' },
+                    { text: '但我現在找不到工作是事實', nextState: 'job_struggle' }
+                ]);
+            }
+
+            else if (state === 'god') {
+                addMessage('關於那支籤，說「不要原地轉」。這句話其實很有意思。', 'bot');
+                await wait(1000);
+                await showTyping();
+                addMessage('很多人會解讀成「別努力了」，但我看來，神明的意思是：<br>「孩子，這條路（傳統升學/就業）你已經撞牆撞很久了，別在原地打轉了，換一條路走吧！」', 'bot');
+                await wait(1000);
+                await showTyping();
+                addMessage('神明不是叫你放棄，是叫你「轉彎」。', 'bot');
+                setOptions([
+                    { text: '轉彎？但我沒有其他目標了...', nextState: 'lost_dream' },
+                    { text: '我以前有個夢想，但放棄了', nextState: 'narrator_dream' }
+                ]);
+            }
+
+            else if (state === 'adhd_reframing') {
+                addMessage('大家說的「問題」，換個場景可能就是「天賦」。ADHD 的人通常反應快、創意多、熱情來得快。', 'bot');
+                await wait(1000);
+                await showTyping();
+                addMessage('你提到你這 12 年讀書讀得很痛苦。這證明了你的「毅力」驚人！一般人如果是像你這樣大腦化學物質不平衡的狀態，早就休學了，你卻撐到了現在。這不是沒用，這是超強的意志力。', 'bot');
+                setOptions([
+                    { text: '但我還是沒工作，也沒目標', nextState: 'lost_dream' },
+                    { text: '其實我小時候想當解說員...', nextState: 'narrator_dream' }
+                ]);
+            }
+
+            else if (state === 'job_struggle') {
+                addMessage('104 投履歷、就業博覽會，這些都是「大海撈針」的方法，對於我們這種特質的人來說，失敗率本來就很高，因為履歷表看不出你的靈魂。', 'bot');
+                await wait(1000);
+                await showTyping();
+                addMessage('我們先把「找工作」這件事暫停一下。我們來聊聊你真正喜歡的事。', 'bot');
+                setOptions([
+                    { text: '我不知道我喜歡什麼了', nextState: 'lost_dream' },
+                    { text: '我以前想當解說員，但是...', nextState: 'narrator_dream' }
+                ]);
+            }
+
+            else if (state === 'lost_dream') {
+                addMessage('你提到過你小時候想當「解說員」，但因為覺得自己講話快、有奶音就放棄了。我們來聊聊這個好嗎？', 'bot');
+                setOptions([
+                    { text: '好，但我覺得我不適合', nextState: 'narrator_analysis' }
+                ]);
+            }
+
+            else if (state === 'narrator_dream') {
+                addMessage('解說員！這是一個很棒的夢想耶！為什麼後來放棄了呢？', 'bot');
+                setOptions([
+                    { text: '因為我講話很快，又有奶音', nextState: 'narrator_analysis' },
+                    { text: '我覺得那需要很專業，我做不來', nextState: 'narrator_analysis' }
+                ]);
+            }
+
+            else if (state === 'narrator_analysis') {
+                addMessage('等等，讓我幫你重新定義一下這兩點。', 'bot');
+                await wait(800);
+                await showTyping();
+                addMessage('1. **講話很快**：在現在這個短影音（TikTok/Reels）的時代，講話快是巨大的優勢！大家沒耐心慢慢聽，你的語速剛好符合現在的資訊節奏。<br><br>2. **奶音**：這代表「親切」和「無距離感」。如果你去講故事給小朋友聽，或者做輕鬆的遊戲解說，這反而是你的特色招牌！', 'bot');
+                await wait(1500);
+                await showTyping();
+                addMessage('傳統的博物館解說員可能需要字正腔圓，但「網路時代的解說員」需要的是特色和熱情。你完全沒有離夢想越來越遠，你只是選錯了舞台。', 'bot');
+                setOptions([
+                    { text: '真的嗎？但我什麼都不會...', nextState: 'small_step' },
+                    { text: '但我怕家人覺得我不務正業', nextState: 'family_issue' }
+                ]);
+            }
+
+            else if (state === 'family_issue') {
+                addMessage('家人的碎念是因為他們擔心，但他們的方法錯了。他們用過去的標準在衡量你。', 'bot');
+                await wait(1000);
+                await showTyping();
+                addMessage('你可以先不一定要以此為業，能不能把它當成一個「找回自信的遊戲」？先做給自己看，證明自己是有產出的。', 'bot');
+                setOptions([
+                    { text: '那我該怎麼做？', nextState: 'small_step' }
+                ]);
+            }
+
+            else if (state === 'small_step') {
+                addMessage('我們不要去想「找工作」這種大目標。我們來做一個「微型實驗」。', 'bot');
+                await wait(1000);
+                await showTyping();
+                addMessage('既然你想當解說員，你能不能挑一個你喜歡的東西（遊戲、動漫、或者這幾年的心路歷程），用手機錄一段 30 秒到 1 分鐘的語音或影片？', 'bot');
+                await wait(1000);
+                await showTyping();
+                addMessage('不用給別人看，錄給自己聽。試著用你「很快的語速」和「獨特的聲音」，把那件事講得很有趣。這就是解說員在做的事。', 'bot');
+                setOptions([
+                    { text: '好像可以試試看...', nextState: 'closing' },
+                    { text: '我試試看，雖然有點怕', nextState: 'closing' }
+                ]);
+            }
+
+            else if (state === 'closing') {
+                addMessage('怕是正常的，但別讓恐懼阻止你按下錄音鍵。神明說「不要原地轉」，意思就是「動起來做點不一樣的事」。', 'bot');
+                await wait(1000);
+                await showTyping();
+                addMessage('你才 23 歲，你的人生沒有完蛋，你的劇本才剛要開始反轉。去試試看錄那段音，好嗎？你是獨一無二的，別讓世界標準化的尺，量掉了你的光芒。加油！', 'bot');
+                setOptions([
+                    { text: '謝謝阿光，我心情好點了', nextState: 'end' },
+                    { text: '重新開始對話', nextState: 'restart' }
+                ]);
+            }
+
+            else if (state === 'restart') {
+                restartChat();
+            }
+
+            else if (state === 'end') {
+                addMessage('隨時歡迎你回來找我聊聊。記住，你的特質是禮物，不是詛咒。再見囉！', 'bot');
+            }
+        }
+
+        function restartChat() {
+            chatBox.innerHTML = '';
+            optionsContainer.innerHTML = '';
+            currentState = 'intro';
+            startChat();
+        }
+
+        // 啟動
+        window.onload = startChat;
+
+    </script>
+</body>
+</html>

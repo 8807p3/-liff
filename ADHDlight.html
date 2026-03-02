@@ -5,46 +5,70 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>環境光影與心理狀態研究</title>
     <style>
-        body { font-family: sans-serif; background: #f0f2f5; display: flex; justify-content: center; padding: 20px; }
+        :root { --primary-color: #3498db; --bg-color: #f0f2f5; }
+        body { font-family: sans-serif; background: var(--bg-color); display: flex; justify-content: center; padding: 20px; }
         .card { background: white; padding: 30px; border-radius: 15px; max-width: 500px; width: 100%; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        h2 { text-align: center; color: #2c3e50; }
+        .note { font-size: 0.85em; color: #7f8c8d; background: #ebf5fb; padding: 12px; border-radius: 8px; margin-bottom: 20px; }
+        
+        /* 區塊隱藏控制 */
+        #calibrationSection, #surveySection { display: none; }
+        
+        /* 校準畫面樣式 */
+        .loader-box { text-align: center; padding: 40px 0; }
+        .spinner { border: 4px solid #f3f3f3; border-top: 4px solid var(--primary-color); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto 20px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* 問卷樣式 */
         .question { margin: 25px 0; }
+        label { display: block; margin-bottom: 10px; font-weight: bold; color: #34495e; }
         input[type=range] { width: 100%; margin: 10px 0; }
-        .labels { display: flex; justify-content: space-between; font-size: 0.8em; color: #666; }
-        button { width: 100%; padding: 15px; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; transition: 0.3s; }
+        .labels { display: flex; justify-content: space-between; font-size: 0.8em; color: #7f8c8d; }
+        
+        button { width: 100%; padding: 15px; border: none; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; transition: 0.3s; }
         #startBtn { background: #2ecc71; color: white; }
-        #submitBtn { background: #3498db; color: white; margin-top: 20px; }
-        #submitBtn:disabled { background: #ccc; }
-        #status { text-align: center; margin-top: 15px; color: #e67e22; font-weight: bold; }
+        #submitBtn { background: var(--primary-color); color: white; margin-top: 20px; }
+        
+        #status { text-align: center; margin-top: 15px; color: #e67e22; font-size: 0.9em; }
         video, canvas { display: none; }
     </style>
 </head>
 <body>
 
 <div class="card">
-    <h2 style="text-align:center;">數位生物標記採集</h2>
+    <h2>數位生物標記採集</h2>
+    <p class="note"><strong>隱私聲明：</strong> 僅紀錄環境亮度數值，<b>不會</b>儲存任何影像畫面。</p>
     
-    <div id="setup">
-        <p>本研究將透過您的鏡頭分析「環境亮度」變化，<b>不會記錄影像畫面</b>。請點擊按鈕授權並開始。</p>
+    <div id="setupSection">
+        <p style="color: #34495e; line-height: 1.6;">本研究需要分析您填答時的環境光影變化。請點擊下方按鈕啟動感應器並開始研究。</p>
         <button id="startBtn">啟動環境感應器</button>
     </div>
 
-    <div id="survey" style="display:none;">
+    <div id="calibrationSection">
+        <div class="loader-box">
+            <div class="spinner"></div>
+            <p id="calibText">環境校準中，請稍候...</p>
+            <p style="font-size: 0.9em; color: #95a5a6;">請保持目前的位置與光線環境</p>
+        </div>
+    </div>
+
+    <div id="surveySection">
         <div class="question">
-            <label>1. 專注程度：</label>
+            <label>1. 您現在的「專注程度」：</label>
             <input type="range" id="focus" min="0" max="100" value="50">
-            <div class="labels"><span>分心</span><span>專注</span></div>
+            <div class="labels"><span>分心</span><span>極度專注</span></div>
         </div>
         <div class="question">
-            <label>2. 情緒愉悅度：</label>
+            <label>2. 您現在的「情緒愉悅度」：</label>
             <input type="range" id="mood" min="0" max="100" value="50">
             <div class="labels"><span>低落</span><span>愉悅</span></div>
         </div>
         <div class="question">
-            <label>3. 內心煩躁感：</label>
+            <label>3. 您現在的「內心煩躁感」：</label>
             <input type="range" id="irritability" min="0" max="100" value="50">
-            <div class="labels"><span>平靜</span><span>煩躁</span></div>
+            <div class="labels"><span>平靜</span><span>非常煩躁</span></div>
         </div>
-        <button id="submitBtn" disabled>環境校準中 (5s)...</button>
+        <button id="submitBtn">提交數據</button>
     </div>
 
     <div id="status"></div>
@@ -54,45 +78,53 @@
 <canvas id="canvas" width="50" height="50"></canvas>
 
 <script>
-    // --- 請在此處填入您的 GAS 部署網址 ---
+    // --- 請填入您的 GAS 部署網址 ---
     const GAS_URL = "https://script.google.com/macros/s/AKfycbypE3-3d0dBZlg_381RPIktGmeigHTQnuK9n6qj3hBgHEu0XFlbwjUvtNkqQXOcllrV/exec"; 
 
-    const startBtn = document.getElementById('startBtn');
-    const submitBtn = document.getElementById('submitBtn');
+    const setupSection = document.getElementById('setupSection');
+    const calibrationSection = document.getElementById('calibrationSection');
+    const surveySection = document.getElementById('surveySection');
+    const calibText = document.getElementById('calibText');
     const video = document.getElementById('video');
     const canvas = document.getElementById('canvas');
     const ctx = canvas.getContext('2d');
+    
     let lightLogs = [];
     let isMonitoring = false;
 
-    startBtn.onclick = async () => {
+    // 1. 按下啟動：開啟相機並進入校準
+    document.getElementById('startBtn').onclick = async () => {
         try {
             const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
             video.srcObject = stream;
-            document.getElementById('setup').style.display = 'none';
-            document.getElementById('survey').style.display = 'block';
-            document.getElementById('status').innerText = "感應器監測中...";
-            isMonitoring = true;
             
-            // 啟動監測與倒數
+            // UI 切換：顯示校準區，隱藏啟動區
+            setupSection.style.display = 'none';
+            calibrationSection.style.display = 'block';
+            
+            isMonitoring = true;
             startMonitoring();
+
+            // 執行 5 秒校準倒數
             let count = 5;
             const timer = setInterval(() => {
                 count--;
                 if(count <= 0) {
-                    submitBtn.disabled = false;
-                    submitBtn.innerText = "提交數據";
                     clearInterval(timer);
+                    // 校準結束：隱藏校準區，顯示問卷區
+                    calibrationSection.style.display = 'none';
+                    surveySection.style.display = 'block';
                 } else {
-                    submitBtn.innerText = `環境校準中 (${count}s)...`;
+                    calibText.innerText = `環境校準中 (${count}s)...`;
                 }
             }, 1000);
 
         } catch (err) {
-            alert("錯誤：無法存取相機。請確保使用 HTTPS 連結並允許權限。");
+            alert("無法啟動：請確保已授權相機權限。");
         }
     };
 
+    // 2. 持續監測亮度
     function startMonitoring() {
         setInterval(() => {
             if (isMonitoring && video.readyState === video.HAVE_ENOUGH_DATA) {
@@ -107,10 +139,12 @@
         }, 1000);
     }
 
-    submitBtn.onclick = async () => {
-        submitBtn.disabled = true;
-        submitBtn.innerText = "傳送中...";
-        isMonitoring = false;
+    // 3. 提交數據
+    document.getElementById('submitBtn').onclick = async () => {
+        const btn = document.getElementById('submitBtn');
+        btn.disabled = true;
+        btn.innerText = "資料上傳中...";
+        isMonitoring = false; // 停止監測
 
         const payload = {
             focus: document.getElementById('focus').value,
@@ -119,18 +153,18 @@
             lightLogs: JSON.stringify(lightLogs)
         };
 
-        // 使用 fetch 傳送到 GAS
         try {
             await fetch(GAS_URL, {
                 method: "POST",
-                mode: "no-cors", // 重要：GAS 跨網域通常需使用 no-cors
+                mode: "no-cors",
                 body: JSON.stringify(payload),
                 headers: { "Content-Type": "text/plain" }
             });
-            document.querySelector('.card').innerHTML = "<h3>傳送完成</h3><p>感謝您的參與！</p>";
+            document.querySelector('.card').innerHTML = "<div style='text-align:center;'><h3>傳送完成</h3><p>感謝您的參與，數據已成功錄入。</p></div>";
         } catch (err) {
-            document.getElementById('status').innerText = "傳送失敗，請稍後再試。";
-            submitBtn.disabled = false;
+            alert("傳送失敗，請確認網路連線。");
+            btn.disabled = false;
+            btn.innerText = "重試提交";
         }
     };
 </script>

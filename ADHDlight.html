@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>環境光影與心理狀態研究</title>
+    <style>
+        body { font-family: sans-serif; background: #f0f2f5; display: flex; justify-content: center; padding: 20px; }
+        .card { background: white; padding: 30px; border-radius: 15px; max-width: 500px; width: 100%; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+        .question { margin: 25px 0; }
+        input[type=range] { width: 100%; margin: 10px 0; }
+        .labels { display: flex; justify-content: space-between; font-size: 0.8em; color: #666; }
+        button { width: 100%; padding: 15px; border: none; border-radius: 8px; font-size: 16px; cursor: pointer; transition: 0.3s; }
+        #startBtn { background: #2ecc71; color: white; }
+        #submitBtn { background: #3498db; color: white; margin-top: 20px; }
+        #submitBtn:disabled { background: #ccc; }
+        #status { text-align: center; margin-top: 15px; color: #e67e22; font-weight: bold; }
+        video, canvas { display: none; }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h2 style="text-align:center;">數位生物標記採集</h2>
+    
+    <div id="setup">
+        <p>本研究將透過您的鏡頭分析「環境亮度」變化，<b>不會記錄影像畫面</b>。請點擊按鈕授權並開始。</p>
+        <button id="startBtn">啟動環境感應器</button>
+    </div>
+
+    <div id="survey" style="display:none;">
+        <div class="question">
+            <label>1. 專注程度：</label>
+            <input type="range" id="focus" min="0" max="100" value="50">
+            <div class="labels"><span>分心</span><span>專注</span></div>
+        </div>
+        <div class="question">
+            <label>2. 情緒愉悅度：</label>
+            <input type="range" id="mood" min="0" max="100" value="50">
+            <div class="labels"><span>低落</span><span>愉悅</span></div>
+        </div>
+        <div class="question">
+            <label>3. 內心煩躁感：</label>
+            <input type="range" id="irritability" min="0" max="100" value="50">
+            <div class="labels"><span>平靜</span><span>煩躁</span></div>
+        </div>
+        <button id="submitBtn" disabled>環境校準中 (5s)...</button>
+    </div>
+
+    <div id="status"></div>
+</div>
+
+<video id="video" autoplay playsinline></video>
+<canvas id="canvas" width="50" height="50"></canvas>
+
+<script>
+    // --- 請在此處填入您的 GAS 部署網址 ---
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbypE3-3d0dBZlg_381RPIktGmeigHTQnuK9n6qj3hBgHEu0XFlbwjUvtNkqQXOcllrV/exec"; 
+
+    const startBtn = document.getElementById('startBtn');
+    const submitBtn = document.getElementById('submitBtn');
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    let lightLogs = [];
+    let isMonitoring = false;
+
+    startBtn.onclick = async () => {
+        try {
+            const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" } });
+            video.srcObject = stream;
+            document.getElementById('setup').style.display = 'none';
+            document.getElementById('survey').style.display = 'block';
+            document.getElementById('status').innerText = "感應器監測中...";
+            isMonitoring = true;
+            
+            // 啟動監測與倒數
+            startMonitoring();
+            let count = 5;
+            const timer = setInterval(() => {
+                count--;
+                if(count <= 0) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = "提交數據";
+                    clearInterval(timer);
+                } else {
+                    submitBtn.innerText = `環境校準中 (${count}s)...`;
+                }
+            }, 1000);
+
+        } catch (err) {
+            alert("錯誤：無法存取相機。請確保使用 HTTPS 連結並允許權限。");
+        }
+    };
+
+    function startMonitoring() {
+        setInterval(() => {
+            if (isMonitoring && video.readyState === video.HAVE_ENOUGH_DATA) {
+                ctx.drawImage(video, 0, 0, 50, 50);
+                const data = ctx.getImageData(0, 0, 50, 50).data;
+                let brightness = 0;
+                for (let i = 0; i < data.length; i += 4) {
+                    brightness += (0.299 * data[i] + 0.587 * data[i+1] + 0.114 * data[i+2]);
+                }
+                lightLogs.push(Math.round(brightness / (data.length / 4)));
+            }
+        }, 1000);
+    }
+
+    submitBtn.onclick = async () => {
+        submitBtn.disabled = true;
+        submitBtn.innerText = "傳送中...";
+        isMonitoring = false;
+
+        const payload = {
+            focus: document.getElementById('focus').value,
+            mood: document.getElementById('mood').value,
+            irritability: document.getElementById('irritability').value,
+            lightLogs: JSON.stringify(lightLogs)
+        };
+
+        // 使用 fetch 傳送到 GAS
+        try {
+            await fetch(GAS_URL, {
+                method: "POST",
+                mode: "no-cors", // 重要：GAS 跨網域通常需使用 no-cors
+                body: JSON.stringify(payload),
+                headers: { "Content-Type": "text/plain" }
+            });
+            document.querySelector('.card').innerHTML = "<h3>傳送完成</h3><p>感謝您的參與！</p>";
+        } catch (err) {
+            document.getElementById('status').innerText = "傳送失敗，請稍後再試。";
+            submitBtn.disabled = false;
+        }
+    };
+</script>
+</body>
+</html>

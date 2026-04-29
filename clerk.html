@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>ClerNote AI — 臨床速記助理</title>
+  <style>
+    *,*::before,*::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --sky: #0ea5e9; --sky-d: #0284c7; --blue: #1d4ed8; --navy: #0f172a;
+      --slate: #334155; --muted: #64748b; --border: #e2e8f0; --bg: #f8fafc;
+      --white: #ffffff; --green: #22c55e; --amber: #f59e0b; --red: #ef4444; --radius: 12px;
+    }
+    html.dark { --navy:#dde6f0; --slate:#b0bec5; --muted:#7890a8; --border:#1c2d47; --bg:#060d1f; --white:#0d1b35; }
+    html.dark body { background:var(--bg); color:var(--navy); }
+    html.dark .header { background:#0a1628; border-color:var(--border); }
+    html.dark .steps-bar { background:#0a1628; border-color:var(--border); }
+    html.dark .step-item { color:var(--muted); }
+    html.dark .card { background:var(--white); border-color:var(--border); box-shadow:0 1px 8px rgba(0,0,0,0.4); }
+    html.dark input[type="text"], html.dark textarea { background:#060d1f; border-color:var(--border); color:var(--navy); }
+    html.dark input[type="text"]:focus, html.dark textarea:focus { background:#0a1628; border-color:var(--sky); }
+    html.dark .chat-wrap { background:#060d1f; border-color:var(--border); }
+    html.dark .msg.assistant .msg-bubble { background:#0a1628; border-color:var(--border); color:var(--navy); }
+    html.dark .msg.system .msg-bubble { background:#1a1400; border-color:#7a5c00; color:#fde68a; }
+    html.dark .typing { background:#0a1628; border-color:var(--border); }
+    html.dark .feature-tag { background:#0a1628; border-color:#1c3d5a; color:#7dd3fc; }
+    html.dark .chip { background:#0a1628; border-color:var(--border); color:var(--slate); }
+    html.dark .chip:hover { background:#0f2040; border-color:#1c3d5a; color:#7dd3fc; }
+    html.dark .force-btn { background:#0a1628; border-color:#1c3d5a; color:#7dd3fc; }
+    html.dark .force-btn:hover:not(:disabled) { background:#0f2040; }
+    html.dark .btn-secondary { background:#0a1628; border-color:#1c3d5a; color:#7dd3fc; }
+    html.dark .btn-secondary:hover:not(:disabled) { background:#0f2040; }
+    html.dark .btn-ghost { background:transparent; border-color:#7f1d1d; color:#f87171; }
+    html.dark .info-block.edu { background:#052e16; border-left-color:var(--green); }
+    html.dark .info-block.edu p { color:#bbf7d0; }
+    html.dark .info-block.teach { background:#2e1065; border-left-color:#a855f7; }
+    html.dark .info-block.teach p { color:#e9d5ff; }
+    html.dark .warn-box { background:#1a1400; border-color:#7a5c00; color:#fde68a; }
+    html.dark .privacy-note { background:#1a1400; border-color:#7a5c00; color:#fde68a; }
+    html.dark .his-wrap textarea { background:#060d1f; border-color:var(--sky); color:var(--navy); }
+    html.dark .copy-pill { background:#0a1628; border-color:#1c3d5a; color:#7dd3fc; }
+    html.dark .copy-pill:hover { background:#0f2040; }
+    html.dark .patient-badge { background:#0a1628; border-color:#1c3d5a; color:#7dd3fc; }
+    html.dark .loading-overlay { background:rgba(6,13,31,0.85); }
+    body { font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Helvetica Neue",Arial,sans-serif; background:var(--bg); color:var(--navy); min-height:100vh; }
+    .header { background:var(--white); border-bottom:1px solid var(--border); padding:12px 20px; display:flex; align-items:center; gap:10px; position:sticky; top:0; z-index:100; }
+    .logo-icon { width:32px; height:32px; border-radius:8px; background:linear-gradient(135deg,var(--sky),var(--blue)); display:flex; align-items:center; justify-content:center; color:white; font-size:16px; flex-shrink:0; box-shadow:0 2px 8px rgba(14,165,233,0.35); }
+    .header-text h1 { font-size:15px; font-weight:700; color:var(--navy); letter-spacing:0.2px; }
+    .header-text p { font-size:11px; color:var(--muted); }
+    .header-right { margin-left:auto; display:flex; align-items:center; gap:8px; }
+    .theme-toggle { width:32px; height:32px; border-radius:8px; border:1px solid var(--border); background:transparent; color:var(--muted); font-size:16px; display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all 0.18s; }
+    .theme-toggle:hover { background:var(--border); color:var(--navy); }
+    .patient-badge { background:linear-gradient(135deg,#eff6ff,#e0f2fe); border:1px solid #bae6fd; color:var(--sky-d); font-size:12px; font-weight:600; padding:4px 12px; border-radius:20px; }
+    .steps-bar { background:var(--white); border-bottom:1px solid var(--border); display:flex; overflow-x:auto; scrollbar-width:none; }
+    .steps-bar::-webkit-scrollbar { display:none; }
+    .step-item { flex:1; min-width:60px; display:flex; flex-direction:column; align-items:center; padding:10px 8px; font-size:11px; color:var(--muted); border-bottom:2px solid transparent; transition:all 0.2s; white-space:nowrap; }
+    .step-dot { width:22px; height:22px; border-radius:50%; background:var(--border); color:var(--muted); font-size:11px; font-weight:700; display:flex; align-items:center; justify-content:center; margin-bottom:4px; }
+    .step-item.active { color:var(--sky-d); border-bottom-color:var(--sky); }
+    .step-item.active .step-dot { background:linear-gradient(135deg,var(--sky),var(--blue)); color:white; }
+    .step-item.done { color:var(--green); border-bottom-color:var(--green); }
+    .step-item.done .step-dot { background:var(--green); color:white; }
+    .container { width:100%; max-width:min(1100px,100%); margin:0 auto; padding:24px 20px 60px; }
+    @media (min-width:900px) { .container { padding:28px 40px 60px; } }
+    .card { background:var(--white); border:1px solid var(--border); border-radius:var(--radius); padding:24px; box-shadow:0 1px 4px rgba(0,0,0,0.05); margin-bottom:16px; }
+    .card-label { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:0.8px; color:var(--sky-d); margin-bottom:16px; }
+    .landing-hero { text-align:center; padding:32px 20px 24px; }
+    .landing-icon { width:64px; height:64px; border-radius:16px; background:linear-gradient(135deg,var(--sky),var(--blue)); display:flex; align-items:center; justify-content:center; font-size:30px; color:white; margin:0 auto 20px; box-shadow:0 8px 24px rgba(14,165,233,0.35); }
+    .landing-title { font-size:24px; font-weight:800; color:var(--navy); margin-bottom:6px; }
+    .landing-sub { font-size:14px; color:var(--muted); margin-bottom:28px; line-height:1.6; }
+    .feature-tags { display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-bottom:28px; }
+    .feature-tag { background:#f0f9ff; border:1px solid #bae6fd; color:var(--sky-d); font-size:12px; font-weight:600; padding:6px 14px; border-radius:20px; }
+    .privacy-note { background:#fffbeb; border:1px solid #fde68a; border-radius:8px; padding:10px 14px; font-size:12px; color:#92400e; text-align:left; margin-top:16px; }
+    .field { margin-bottom:18px; }
+    .field label { display:block; font-size:13px; font-weight:600; color:var(--slate); margin-bottom:6px; }
+    .field .hint { font-size:11px; color:var(--muted); margin-top:4px; }
+    input[type="text"], textarea { width:100%; border:1.5px solid var(--border); border-radius:8px; padding:10px 14px; font-size:15px; font-family:inherit; color:var(--navy); background:var(--bg); transition:border-color 0.2s,box-shadow 0.2s; outline:none; }
+    input[type="text"]:focus, textarea:focus { border-color:var(--sky); box-shadow:0 0 0 3px rgba(14,165,233,0.12); background:var(--white); }
+    textarea { resize:none; min-height:88px; line-height:1.6; }
+    .btn { display:inline-flex; align-items:center; justify-content:center; gap:6px; padding:11px 22px; border-radius:8px; font-size:14px; font-weight:600; border:none; cursor:pointer; transition:all 0.18s; }
+    .btn:disabled { opacity:0.45; cursor:not-allowed; }
+    .btn-primary { background:linear-gradient(135deg,var(--sky),var(--blue)); color:white; box-shadow:0 2px 8px rgba(14,165,233,0.3); }
+    .btn-primary:hover:not(:disabled) { box-shadow:0 4px 16px rgba(14,165,233,0.45); transform:translateY(-1px); }
+    .btn-secondary { background:var(--white); color:var(--sky-d); border:1.5px solid #bae6fd; }
+    .btn-secondary:hover:not(:disabled) { background:#f0f9ff; }
+    .btn-success { background:linear-gradient(135deg,#22c55e,#16a34a); color:white; box-shadow:0 2px 8px rgba(34,197,94,0.3); }
+    .btn-success:hover:not(:disabled) { box-shadow:0 4px 16px rgba(34,197,94,0.4); transform:translateY(-1px); }
+    .btn-ghost { background:transparent; color:var(--red); border:1.5px solid #fecaca; }
+    .btn-ghost:hover:not(:disabled) { background:#fef2f2; }
+    .btn-full { width:100%; }
+    .btn-row { display:flex; gap:10px; flex-wrap:wrap; margin-top:16px; }
+    .btn-row .btn { flex:1; min-width:120px; }
+    .force-btn { width:100%; padding:12px 16px; border-radius:10px; background:#f0f9ff; border:1.5px dashed #7dd3fc; color:var(--sky-d); font-size:13px; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px; transition:all 0.18s; margin-bottom:12px; }
+    .force-btn:hover:not(:disabled) { background:#e0f2fe; border-color:var(--sky); }
+    .force-btn:disabled { opacity:0.4; cursor:not-allowed; }
+    .quick-chips { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px; }
+    .chip { background:var(--white); border:1px solid var(--border); color:var(--slate); font-size:11px; padding:5px 10px; border-radius:20px; cursor:pointer; transition:all 0.15s; }
+    .chip:hover { background:#f0f9ff; border-color:#bae6fd; color:var(--sky-d); }
+    .chat-wrap { background:var(--bg); border:1px solid var(--border); border-radius:10px; padding:14px; min-height:180px; max-height:320px; overflow-y:auto; margin-bottom:12px; scroll-behavior:smooth; }
+    .msg { margin-bottom:14px; display:flex; flex-direction:column; }
+    .msg-label { font-size:10px; font-weight:700; letter-spacing:0.6px; text-transform:uppercase; margin-bottom:4px; color:var(--muted); }
+    .msg-bubble { padding:10px 14px; border-radius:10px; font-size:14px; line-height:1.6; max-width:88%; word-break:break-word; }
+    .msg.user .msg-label { align-self:flex-end; }
+    .msg.user .msg-bubble { align-self:flex-end; background:linear-gradient(135deg,var(--sky),var(--blue)); color:white; border-bottom-right-radius:3px; }
+    .msg.assistant .msg-bubble { align-self:flex-start; background:var(--white); border:1px solid var(--border); color:var(--navy); border-bottom-left-radius:3px; }
+    .msg.system .msg-bubble { align-self:center; background:#fffbeb; border:1px solid #fde68a; color:#92400e; font-size:12px; border-radius:8px; }
+    .typing { display:flex; gap:4px; padding:10px 14px; background:var(--white); border:1px solid var(--border); border-radius:10px; border-bottom-left-radius:3px; width:fit-content; }
+    .typing span { width:7px; height:7px; background:var(--sky); border-radius:50%; animation:bounce 1.2s infinite; }
+    .typing span:nth-child(2) { animation-delay:0.2s; }
+    .typing span:nth-child(3) { animation-delay:0.4s; }
+    @keyframes bounce { 0%,80%,100% { transform:scale(0.65); opacity:0.45; } 40% { transform:scale(1); opacity:1; } }
+    .his-wrap { position:relative; }
+    textarea.his-text { font-family:"SF Mono","Fira Code","Courier New",monospace; font-size:13px; min-height:100px; background:var(--bg); border-color:var(--sky); line-height:1.7; }
+    .copy-pill { position:absolute; top:10px; right:10px; background:var(--white); border:1px solid var(--sky); color:var(--sky-d); font-size:11px; font-weight:600; padding:4px 12px; border-radius:20px; cursor:pointer; transition:all 0.15s; }
+    .copy-pill:hover { background:#f0f9ff; }
+    .byte-row { display:flex; align-items:center; gap:10px; margin-top:8px; }
+    .byte-track { flex:1; height:5px; background:var(--border); border-radius:3px; overflow:hidden; }
+    .byte-fill { height:100%; border-radius:3px; background:var(--green); transition:width 0.2s,background 0.2s; }
+    .byte-num { font-size:12px; font-weight:700; white-space:nowrap; }
+    .byte-num.ok { color:var(--green); } .byte-num.warn { color:var(--amber); } .byte-num.over { color:var(--red); }
+    .info-block { border-radius:10px; padding:14px 16px; margin-bottom:12px; }
+    .info-block.edu { background:#f0fdf4; border-left:4px solid var(--green); }
+    .info-block.teach { background:#faf5ff; border-left:4px solid #a855f7; }
+    .info-block .blk-label { font-size:10px; font-weight:800; letter-spacing:0.8px; text-transform:uppercase; margin-bottom:6px; }
+    .info-block.edu .blk-label { color:#16a34a; } .info-block.teach .blk-label { color:#9333ea; }
+    .info-block p { font-size:14px; line-height:1.7; }
+    .info-block.edu p { color:#14532d; } .info-block.teach p { color:#3b0764; }
+    .warn-box { background:#fffbeb; border:1px solid #fde68a; border-radius:8px; padding:10px 14px; font-size:13px; color:#92400e; margin-bottom:14px; }
+    .success-screen { text-align:center; padding:40px 20px 32px; }
+    .success-icon { font-size:56px; margin-bottom:16px; }
+    .success-screen h2 { font-size:22px; font-weight:800; color:var(--green); margin-bottom:8px; }
+    .success-screen p { font-size:14px; color:var(--muted); margin-bottom:28px; }
+    .session-tag { display:inline-block; background:#f0f9ff; border:1px solid #bae6fd; color:var(--sky-d); font-size:12px; font-weight:600; padding:4px 14px; border-radius:20px; margin-bottom:28px; }
+    .draft-panel { background:var(--white); border:1px solid var(--border); border-radius:var(--radius); padding:16px 20px; margin-bottom:16px; }
+    .draft-panel .card-label { margin-bottom:12px; }
+    .draft-his-box { font-family:"SF Mono","Fira Code","Courier New",monospace; font-size:13px; line-height:1.7; padding:10px 14px; border-radius:8px; background:var(--bg); border:1px solid var(--border); color:var(--navy); word-break:break-all; white-space:pre-wrap; }
+    .draft-section-label { font-size:10px; font-weight:800; letter-spacing:0.8px; text-transform:uppercase; margin-bottom:6px; }
+    .draft-edu-box { font-size:13px; line-height:1.7; padding:10px 14px; border-radius:8px; background:#f0fdf4; border-left:3px solid var(--green); color:#14532d; margin-top:10px; }
+    .draft-pending { text-align:center; font-size:13px; color:var(--muted); padding:12px 0; }
+    .draft-status-tag { display:inline-flex; align-items:center; gap:5px; font-size:11px; font-weight:600; padding:3px 10px; border-radius:20px; margin-bottom:12px; background:#f0f9ff; border:1px solid #bae6fd; color:var(--sky-d); }
+    .draft-status-tag.interim { background:#fffbeb; border-color:#fde68a; color:#92400e; }
+    .draft-status-tag.final { background:#f0fdf4; border-color:#86efac; color:#15803d; }
+    html.dark .draft-panel { background:var(--white); border-color:var(--border); }
+    html.dark .draft-his-box { background:#060d1f; border-color:var(--border); color:var(--navy); }
+    html.dark .draft-edu-box { background:#052e16; border-left-color:var(--green); color:#bbf7d0; }
+    html.dark .draft-status-tag { background:#0a1628; border-color:#1c3d5a; color:#7dd3fc; }
+    html.dark .draft-status-tag.interim { background:#1a1400; border-color:#7a5c00; color:#fde68a; }
+    html.dark .draft-status-tag.final { background:#052e16; border-color:#166534; color:#86efac; }
+    .hidden { display:none !important; }
+    .loading-overlay { position:fixed; inset:0; background:rgba(255,255,255,0.8); backdrop-filter:blur(2px); display:flex; align-items:center; justify-content:center; z-index:999; }
+    .loading-overlay.hidden { display:none !important; }
+    .spinner { width:36px; height:36px; border:3px solid var(--border); border-top-color:var(--sky); border-radius:50%; animation:spin 0.75s linear infinite; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+  </style>
+</head>
+<body>
+  <div class="loading-overlay hidden" id="loadingOverlay"><div class="spinner"></div></div>
+  <div class="header">
+    <div class="logo-icon">🩺</div>
+    <div class="header-text"><h1>ClerNote AI</h1><p>臨床速記助理</p></div>
+    <div class="header-right">
+      <span class="patient-badge" id="sessionBadge">新看診</span>
+      <button class="theme-toggle" id="themeBtn" onclick="toggleTheme()" title="切換深/淺色模式">🌙</button>
+    </div>
+  </div>
+  <div class="steps-bar" id="stepsBar">
+    <div class="step-item active" id="step-tab-1"><div class="step-dot">1</div>開始</div>
+    <div class="step-item" id="step-tab-2"><div class="step-dot">2</div>身份</div>
+    <div class="step-item" id="step-tab-3"><div class="step-dot">3</div>對話</div>
+    <div class="step-item" id="step-tab-4"><div class="step-dot">4</div>確認</div>
+    <div class="step-item" id="step-tab-5"><div class="step-dot">5</div>完成</div>
+  </div>
+  <div class="container">
+    <div id="screen-1">
+      <div class="card">
+        <div class="landing-hero">
+          <div class="landing-icon">🩺</div>
+          <div class="landing-title">ClerNote AI</div>
+          <div class="landing-sub">將碎片化病史轉化為 HIS 電報式摘要<br>並生成教學討論素材</div>
+          <div class="feature-tags">
+            <span class="feature-tag">✦ HIS 500 Byte 格式</span>
+            <span class="feature-tag">✦ 教學討論素材</span>
+            <span class="feature-tag">✦ 倫理隱私守門</span>
+          </div>
+          <button class="btn btn-primary btn-full" onclick="goToStep(2)" style="font-size:15px;padding:14px;">開始記錄 →</button>
+          <div class="privacy-note">⚠️ 請勿輸入完整病歷號或全名，病歷號請使用去識別化代號。</div>
+        </div>
+      </div>
+    </div>
+    <div id="screen-2" class="hidden">
+      <div class="card">
+        <div class="card-label">本次看診資訊</div>
+        <p style="font-size:13px;color:var(--muted);margin-bottom:20px;">填寫後方可開始記錄，每次看診都會保留這組資訊</p>
+        <div class="field">
+          <label for="clerkName">學生代碼</label>
+          <input type="text" id="clerkName" placeholder="不需使用真實姓名，如：小王、R1陳" autocomplete="off">
+          <div class="hint">老師可透過代碼識別是哪位同學</div>
+        </div>
+        <div class="field">
+          <label for="patientId">門診號 / 看診號</label>
+          <input type="text" id="patientId" placeholder="如住院號末 4 碼：7834" autocomplete="off">
+          <div class="hint">用來對應本次看診記錄，不會與病患全名連結</div>
+        </div>
+        <p style="font-size:11px;color:var(--muted);margin-bottom:16px;">這些資訊只用於識別本次記錄的學生與門診，不會上傳任何病患個資。</p>
+        <button class="btn btn-primary btn-full" onclick="startSession()" style="font-size:14px;padding:13px;">確認，開始記錄 →</button>
+      </div>
+    </div>
+    <div id="screen-3" class="hidden">
+      <div class="card" id="quickChipsCard" style="padding:16px 20px;">
+        <div class="card-label" style="margin-bottom:10px;">快速輸入範例</div>
+        <div class="quick-chips">
+          <span class="chip" onclick="fillQuick('病患情緒低落，睡眠困擾兩週，目前藥物治療中')">情緒低落 + 失眠</span>
+          <span class="chip" onclick="fillQuick('幻聽改善，體重增加，社交功能逐漸恢復')">幻聽改善 + 副作用</span>
+          <span class="chip" onclick="fillQuick('焦慮症狀緩解，自述工作壓力大，偶有心悸')">焦慮 + 身體症狀</span>
+          <span class="chip" onclick="fillQuick('出院後首次門診，服藥規律，無副作用')">出院後追蹤</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-label">對話採集</div>
+        <div class="chat-wrap" id="chatArea"></div>
+        <textarea id="userInput" placeholder="描述病患本次主訴與觀察..." rows="3"></textarea>
+        <div class="btn-row">
+          <button class="btn btn-primary" id="btnSend" onclick="sendMessage()">送出</button>
+          <button class="btn btn-secondary" onclick="goToStep(2)">← 返回</button>
+        </div>
+      </div>
+      <div class="draft-panel hidden" id="draftPanel" style="padding-top:8px;">
+        <div id="draftPending" class="draft-pending">描述病患狀況後即時更新...</div>
+        <div id="draftHisSection" class="hidden">
+          <div class="draft-section-label" style="color:var(--sky-d);">病歷草稿</div>
+          <div class="draft-his-box" id="draftHisText"></div>
+        </div>
+        <div id="draftEduSection" class="hidden">
+          <div class="draft-section-label" style="color:#16a34a;margin-top:10px;">衛教方向</div>
+          <div class="draft-edu-box" id="draftEduText"></div>
+        </div>
+      </div>
+      <button class="force-btn" id="btnOutput" onclick="forceOutput()" style="margin-top:12px;">✦ 就這樣，產出病歷摘要</button>
+    </div>
+    <div id="screen-4" class="hidden">
+      <div class="warn-box hidden" id="piiWarning"></div>
+      <div class="card">
+        <div class="card-label">HIS 一鍵貼上區</div>
+        <div class="his-wrap">
+          <textarea class="his-text" id="hisOutput" oninput="updateByteCount()" rows="5"></textarea>
+          <button class="copy-pill" onclick="copyHIS()">複製</button>
+        </div>
+        <div class="byte-row">
+          <div class="byte-track"><div class="byte-fill" id="byteFill"></div></div>
+          <span class="byte-num ok" id="byteLabel">0 / 450 Bytes</span>
+        </div>
+      </div>
+      <div class="info-block edu" id="eduBlock"><div class="blk-label">衛教加強版</div><p id="eduText"></p></div>
+      <div class="info-block teach" id="teachBlock"><div class="blk-label">教學討論點</div><p id="teachText"></p></div>
+      <div class="btn-row">
+        <button class="btn btn-success" onclick="saveRecord()">✓ 確認寫入</button>
+        <button class="btn btn-ghost" onclick="resetToChat()">重新對話</button>
+      </div>
+    </div>
+    <div id="screen-5" class="hidden">
+      <div class="card">
+        <div class="success-screen">
+          <div class="success-icon">✅</div>
+          <h2>已成功存入紀錄</h2>
+          <div class="session-tag" id="savedSessionId"></div>
+          <p>可繼續下一位病患或結束本次門診</p>
+          <div class="btn-row" style="justify-content:center;">
+            <button class="btn btn-primary" onclick="nextPatient()">換下一位病患</button>
+            <button class="btn btn-secondary" onclick="endSession()">結束門診</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+    const N8N_CHAT_URL = 'https://n8n.yuping.myds.me/webhook/chat';
+    const N8N_SAVE_URL = 'https://n8n.yuping.myds.me/webhook/save';
+    const BYTE_LIMIT = 450;
+    let state = { sessionId:'', clerkName:'', patientId:'', history:[], hisDraft:'', eduSentence:'', teachQ:'', stableFlag:'', byteCount:0 };
+
+    function startSession() {
+      const clerk = document.getElementById('clerkName').value.trim();
+      const patient = document.getElementById('patientId').value.trim();
+      if (!clerk || !patient) { alert('請填寫學生代碼與門診號。'); return; }
+      const now = new Date(); const pad = n => String(n).padStart(2,'0');
+      const d = `${now.getFullYear()}${pad(now.getMonth()+1)}${pad(now.getDate())}`;
+      state.sessionId = `S${d}-${Math.floor(Math.random()*900)+100}`;
+      state.clerkName = clerk; state.patientId = patient; state.history = [];
+      document.getElementById('sessionBadge').textContent = `${clerk} / ${patient}`;
+      goToStep(3);
+      appendMsg('assistant', `您好 ${clerk}，請描述病患本次主訴與目前狀況。`);
+    }
+
+    function fillQuick(text) { document.getElementById('userInput').value = text; document.getElementById('userInput').focus(); }
+
+    async function sendMessage() {
+      const input = document.getElementById('userInput');
+      const text = input.value.trim();
+      if (!text) return;
+      input.value = '';
+      document.getElementById('quickChipsCard').classList.add('hidden');
+      appendMsg('user', text);
+      showTyping(); setLoading(true);
+      try {
+        const res = await callChat(text, false);
+        hideTyping();
+        if (res.pii_warning) showWarn(res.pii_warning);
+        if (res.is_final) {
+          appendMsg('assistant', '已為您完成標準化轉寫。');
+          updateDraftPanel(res.his_draft, res.edu_sentence, true);
+          setTimeout(() => loadStep4(res), 600);
+        } else {
+          appendMsg('assistant', res.reply);
+          updateDraftPanel(res.interim_his || '', res.interim_edu || '', false);
+          state.history.push({ role:'user', content:text });
+          state.history.push({ role:'assistant', content:res.reply });
+        }
+      } catch(e) { hideTyping(); appendMsg('system', '⚠️ 連線失敗，請稍後再試。'); }
+      finally { setLoading(false); }
+    }
+
+    async function forceOutput() {
+      const input = document.getElementById('userInput');
+      const text = input.value.trim() || '（學生要求直接產出）';
+      if (input.value.trim()) { input.value = ''; appendMsg('user', text); }
+      showTyping(); setLoading(true);
+      document.getElementById('btnOutput').disabled = true;
+      document.getElementById('btnSend').disabled = true;
+      try {
+        const res = await callChat(text, true);
+        hideTyping();
+        if (res.pii_warning) showWarn(res.pii_warning);
+        appendMsg('assistant', '已為您完成標準化轉寫。');
+        updateDraftPanel(res.his_draft, res.edu_sentence, true);
+        setTimeout(() => loadStep4(res), 600);
+      } catch(e) {
+        hideTyping(); appendMsg('system', '⚠️ 連線失敗，請稍後再試。');
+        document.getElementById('btnOutput').disabled = false;
+        document.getElementById('btnSend').disabled = false;
+      } finally { setLoading(false); }
+    }
+
+    async function callChat(message, forceOutput) {
+      const resp = await fetch(N8N_CHAT_URL, {
+        method:'POST', headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ session_id:state.sessionId, clerk_name:state.clerkName, patient_id:state.patientId, history:state.history, message, force_output:forceOutput })
+      });
+      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+      return resp.json();
+    }
+
+    function loadStep4(res) {
+      state.hisDraft = res.his_draft || ''; state.eduSentence = res.edu_sentence || '';
+      state.teachQ = res.teaching_question || ''; state.stableFlag = res.stable_flag || 'Uncertain';
+      document.getElementById('hisOutput').value = state.hisDraft;
+      document.getElementById('eduText').textContent = state.eduSentence || '（無）';
+      document.getElementById('teachText').textContent = state.teachQ || '（無）';
+      updateByteCount(); goToStep(4);
+    }
+
+    function updateByteCount() {
+      const text = document.getElementById('hisOutput').value;
+      const bytes = new TextEncoder().encode(text).length;
+      state.byteCount = bytes;
+      const pct = Math.min(bytes/BYTE_LIMIT*100, 100);
+      const fill = document.getElementById('byteFill'); const label = document.getElementById('byteLabel');
+      fill.style.width = pct + '%'; label.textContent = `${bytes} / ${BYTE_LIMIT} Bytes`;
+      if (bytes > BYTE_LIMIT) { fill.style.background='var(--red)'; label.className='byte-num over'; }
+      else if (bytes > BYTE_LIMIT*0.85) { fill.style.background='var(--amber)'; label.className='byte-num warn'; }
+      else { fill.style.background='var(--green)'; label.className='byte-num ok'; }
+    }
+
+    function copyHIS() {
+      navigator.clipboard.writeText(document.getElementById('hisOutput').value).then(() => {
+        const btn = document.querySelector('.copy-pill'); btn.textContent = '✓ 已複製';
+        setTimeout(() => { btn.textContent = '複製'; }, 2000);
+      });
+    }
+
+    async function saveRecord() {
+      const hisText = document.getElementById('hisOutput').value.trim();
+      const bytes = new TextEncoder().encode(hisText).length;
+      if (!hisText) { alert('HIS 摘要不能為空。'); return; }
+      if (bytes > 500) { alert(`HIS 超過 500 Bytes（目前 ${bytes} Bytes），請縮短後再存入。`); return; }
+      setLoading(true);
+      try {
+        const resp = await fetch(N8N_SAVE_URL, {
+          method:'POST', headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({ session_id:state.sessionId, clerk_name:state.clerkName, patient_id:state.patientId, his_output:hisText, byte_count:bytes, stable_flag:state.stableFlag, edu_sentence:state.eduSentence, teaching_question:state.teachQ })
+        });
+        const result = await resp.json();
+        if (result.success) { document.getElementById('savedSessionId').textContent = `Session ID：${state.sessionId}`; goToStep(5); }
+        else { showWarn(result.error || '寫入失敗，請稍後再試。'); }
+      } catch(e) { showWarn('⚠️ 連線失敗，請稍後再試。'); }
+      finally { setLoading(false); }
+    }
+
+    function nextPatient() { const clerk = state.clerkName; resetState(); state.clerkName = clerk; document.getElementById('clerkName').value = clerk; document.getElementById('patientId').value = ''; goToStep(2); }
+    function endSession() { resetState(); document.getElementById('clerkName').value = ''; document.getElementById('patientId').value = ''; goToStep(1); }
+    function resetToChat() {
+      document.getElementById('chatArea').innerHTML = ''; state.history = []; resetDraftPanel();
+      appendMsg('assistant', '好的，請重新描述病患狀況。');
+      document.getElementById('btnOutput').disabled = false; document.getElementById('btnSend').disabled = false;
+      document.getElementById('quickChipsCard').classList.remove('hidden'); hideWarn(); goToStep(3);
+    }
+
+    function resetState() {
+      state = { sessionId:'', clerkName:'', patientId:'', history:[], hisDraft:'', eduSentence:'', teachQ:'', stableFlag:'', byteCount:0 };
+      document.getElementById('chatArea').innerHTML = '';
+      document.getElementById('sessionBadge').textContent = '新看診';
+      document.getElementById('quickChipsCard').classList.remove('hidden');
+      document.getElementById('btnOutput').disabled = false; document.getElementById('btnSend').disabled = false;
+      resetDraftPanel(); hideWarn();
+    }
+
+    function updateDraftPanel(his, edu, isFinal) {
+      const panel = document.getElementById('draftPanel');
+      const pendingEl = document.getElementById('draftPending');
+      const hisSection = document.getElementById('draftHisSection');
+      const eduSection = document.getElementById('draftEduSection');
+      panel.classList.remove('hidden');
+      if (his) { document.getElementById('draftHisText').textContent = his; hisSection.classList.remove('hidden'); if (pendingEl) pendingEl.classList.add('hidden'); }
+      if (edu) { document.getElementById('draftEduText').textContent = edu; eduSection.classList.remove('hidden'); }
+    }
+
+    function resetDraftPanel() {
+      document.getElementById('draftPanel').classList.add('hidden');
+      const pendingEl = document.getElementById('draftPending');
+      if (pendingEl) pendingEl.classList.remove('hidden');
+      document.getElementById('draftHisSection').classList.add('hidden');
+      document.getElementById('draftEduSection').classList.add('hidden');
+      document.getElementById('draftHisText').textContent = '';
+      document.getElementById('draftEduText').textContent = '';
+    }
+
+    function goToStep(n) {
+      ['screen-1','screen-2','screen-3','screen-4','screen-5'].forEach((id,i) => document.getElementById(id).classList.toggle('hidden', i+1 !== n));
+      ['step-tab-1','step-tab-2','step-tab-3','step-tab-4','step-tab-5'].forEach((id,i) => {
+        const el = document.getElementById(id); el.classList.remove('active','done');
+        if (i+1 === n) el.classList.add('active'); else if (i+1 < n) el.classList.add('done');
+      });
+      window.scrollTo({ top:0, behavior:'smooth' });
+    }
+
+    function appendMsg(role, text) {
+      const area = document.getElementById('chatArea'); const div = document.createElement('div'); div.className = `msg ${role}`;
+      const lbl = { user:'學生', assistant:'Agent', system:'系統' }[role] || role;
+      div.innerHTML = `<span class="msg-label">${lbl}</span><div class="msg-bubble">${escHtml(text)}</div>`;
+      area.appendChild(div); area.scrollTop = area.scrollHeight;
+    }
+    function showTyping() {
+      const area = document.getElementById('chatArea'); const div = document.createElement('div');
+      div.id = 'typingDiv'; div.className = 'msg assistant';
+      div.innerHTML = `<span class="msg-label">Agent</span><div class="typing"><span></span><span></span><span></span></div>`;
+      area.appendChild(div); area.scrollTop = area.scrollHeight;
+    }
+    function hideTyping() { const el = document.getElementById('typingDiv'); if (el) el.remove(); }
+    function showWarn(msg) { const b = document.getElementById('piiWarning'); b.textContent = msg; b.classList.remove('hidden'); }
+    function hideWarn() { document.getElementById('piiWarning').classList.add('hidden'); }
+    function setLoading(v) { document.getElementById('loadingOverlay').classList.toggle('hidden', !v); }
+    function escHtml(s) { return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/\n/g,'<br>'); }
+
+    function toggleTheme() {
+      const isDark = document.documentElement.classList.toggle('dark');
+      document.getElementById('themeBtn').textContent = isDark ? '☀️' : '🌙';
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      if (localStorage.getItem('theme') === 'dark' || (!localStorage.getItem('theme') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+        document.documentElement.classList.add('dark'); document.getElementById('themeBtn').textContent = '☀️';
+      }
+      document.getElementById('userInput').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } });
+    });
+  </script>
+</body>
+</html>

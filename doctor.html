@@ -1,0 +1,892 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>看診紀錄總覽 — 醫師端</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
+      background: #F0F4FA;
+      color: #1a1a1a;
+      min-height: 100vh;
+    }
+
+    /* ── Header ── */
+    .header {
+      background: #1F3864;
+      color: #fff;
+      padding: 14px 20px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+    .header h1 { font-size: 16px; font-weight: 600; }
+    .header .role-badge {
+      margin-left: auto;
+      background: #c0392b;
+      font-size: 12px;
+      padding: 3px 10px;
+      border-radius: 20px;
+    }
+    .logout-btn {
+      background: rgba(255,255,255,0.15);
+      border: 1px solid rgba(255,255,255,0.3);
+      color: #fff;
+      font-size: 12px;
+      padding: 4px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .logout-btn:hover { background: rgba(255,255,255,0.25); }
+
+    /* ── Login Screen ── */
+    .login-screen {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #1F3864 0%, #2E75B6 100%);
+      padding: 20px;
+    }
+    .login-card {
+      background: #fff;
+      border-radius: 16px;
+      padding: 36px 32px;
+      width: 100%;
+      max-width: 380px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+    }
+    .login-card .logo {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    .login-card .logo h2 {
+      font-size: 20px;
+      color: #1F3864;
+      margin-bottom: 4px;
+    }
+    .login-card .logo p {
+      font-size: 13px;
+      color: #888;
+    }
+    .login-field { margin-bottom: 16px; }
+    .login-field label {
+      font-size: 13px;
+      font-weight: 600;
+      color: #555;
+      display: block;
+      margin-bottom: 6px;
+    }
+    .login-field input {
+      width: 100%;
+      border: 1.5px solid #dde3ed;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 15px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .login-field input:focus { border-color: #2E75B6; }
+    .login-error {
+      background: #fdf0ef;
+      border: 1px solid #e74c3c;
+      border-radius: 8px;
+      padding: 10px 14px;
+      font-size: 13px;
+      color: #c0392b;
+      margin-bottom: 14px;
+      display: none;
+    }
+    .btn-login {
+      width: 100%;
+      background: #1F3864;
+      color: #fff;
+      border: none;
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.18s;
+    }
+    .btn-login:hover { background: #2E75B6; }
+
+    /* ── Main App ── */
+    .app { display: none; }
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 20px 16px 40px;
+    }
+
+    /* ── 篩選列 ── */
+    .filter-bar {
+      background: #fff;
+      border-radius: 12px;
+      padding: 14px 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      margin-bottom: 16px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      align-items: center;
+    }
+    .filter-btn {
+      padding: 7px 16px;
+      border-radius: 20px;
+      border: 1.5px solid #dde3ed;
+      background: #fff;
+      font-size: 13px;
+      color: #555;
+      cursor: pointer;
+      transition: all 0.18s;
+    }
+    .filter-btn.active {
+      background: #2E75B6;
+      border-color: #2E75B6;
+      color: #fff;
+      font-weight: 600;
+    }
+    .filter-btn:hover:not(.active) { border-color: #2E75B6; color: #2E75B6; }
+    .search-input {
+      flex: 1;
+      min-width: 180px;
+      border: 1.5px solid #dde3ed;
+      border-radius: 20px;
+      padding: 7px 16px;
+      font-size: 13px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .search-input:focus { border-color: #2E75B6; }
+    .refresh-btn {
+      padding: 7px 16px;
+      border-radius: 20px;
+      border: 1.5px solid #2E75B6;
+      background: #fff;
+      color: #2E75B6;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.18s;
+    }
+    .refresh-btn:hover { background: #e8f4fd; }
+    .record-count {
+      font-size: 12px;
+      color: #999;
+      margin-left: auto;
+    }
+
+    /* ── 統計卡片 ── */
+    .stats-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .stat-card {
+      background: #fff;
+      border-radius: 10px;
+      padding: 14px 16px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      text-align: center;
+    }
+    .stat-card .num { font-size: 26px; font-weight: 700; color: #2E75B6; }
+    .stat-card .lbl { font-size: 11px; color: #888; margin-top: 2px; }
+    .stat-card.unstable .num { color: #e74c3c; }
+    .stat-card.uncertain .num { color: #e67e22; }
+
+    /* ── 紀錄列表 ── */
+    .record-list { display: flex; flex-direction: column; gap: 10px; }
+
+    .record-item {
+      background: #fff;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+      overflow: hidden;
+      transition: box-shadow 0.2s;
+    }
+    .record-item:hover { box-shadow: 0 4px 14px rgba(0,0,0,0.1); }
+
+    .record-header {
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      user-select: none;
+    }
+    .stable-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .stable-dot.Stable    { background: #27ae60; }
+    .stable-dot.Unstable  { background: #e74c3c; }
+    .stable-dot.Uncertain { background: #e67e22; }
+
+    .record-meta {
+      flex: 1;
+      min-width: 0;
+    }
+    .record-meta .top-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 4px;
+      flex-wrap: wrap;
+    }
+    .record-meta .clerk-tag {
+      font-size: 12px;
+      background: #e8f4fd;
+      color: #2E75B6;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-weight: 600;
+    }
+    .record-meta .patient-tag {
+      font-size: 12px;
+      color: #888;
+    }
+    .record-meta .timestamp {
+      font-size: 11px;
+      color: #aaa;
+      margin-left: auto;
+    }
+    .record-meta .his-preview {
+      font-size: 13px;
+      color: #555;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      font-family: "Courier New", monospace;
+    }
+
+    .stable-badge {
+      font-size: 11px;
+      padding: 3px 10px;
+      border-radius: 10px;
+      font-weight: 600;
+      flex-shrink: 0;
+    }
+    .stable-badge.Stable    { background: #d5f5e3; color: #1e8449; }
+    .stable-badge.Unstable  { background: #fde8e8; color: #c0392b; }
+    .stable-badge.Uncertain { background: #fef3e2; color: #9a6b00; }
+
+    .expand-arrow {
+      font-size: 12px;
+      color: #aaa;
+      transition: transform 0.2s;
+      flex-shrink: 0;
+    }
+    .record-item.expanded .expand-arrow { transform: rotate(180deg); }
+
+    /* ── 展開詳情 ── */
+    .record-detail {
+      display: none;
+      border-top: 1px solid #eef1f7;
+      padding: 16px;
+    }
+    .record-item.expanded .record-detail { display: block; }
+
+    .detail-section { margin-bottom: 14px; }
+    .detail-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: #2E75B6;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .his-box {
+      background: #f8f9fb;
+      border: 1.5px solid #dde3ed;
+      border-radius: 8px;
+      padding: 12px 14px;
+      font-family: "Courier New", monospace;
+      font-size: 13px;
+      line-height: 1.7;
+      color: #1a1a1a;
+      word-break: break-all;
+      position: relative;
+    }
+    .byte-tag {
+      display: inline-block;
+      font-size: 11px;
+      background: #e8f4fd;
+      color: #2E75B6;
+      padding: 2px 8px;
+      border-radius: 10px;
+      margin-top: 6px;
+      font-family: sans-serif;
+    }
+
+    .edu-box {
+      background: #f0f8f4;
+      border-left: 3px solid #27ae60;
+      border-radius: 0 6px 6px 0;
+      padding: 10px 12px;
+      font-size: 13px;
+      line-height: 1.7;
+      color: #2d4a38;
+    }
+    .teach-box {
+      background: #f5f0fb;
+      border-left: 3px solid #8e44ad;
+      border-radius: 0 6px 6px 0;
+      padding: 10px 12px;
+      font-size: 13px;
+      line-height: 1.7;
+      color: #3b1f5c;
+    }
+
+    .comment-area textarea {
+      width: 100%;
+      border: 1.5px solid #dde3ed;
+      border-radius: 8px;
+      padding: 10px 12px;
+      font-size: 14px;
+      font-family: inherit;
+      resize: none;
+      min-height: 70px;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    .comment-area textarea:focus { border-color: #2E75B6; }
+
+    /* ── 按鈕 ── */
+    .btn {
+      display: inline-block;
+      padding: 8px 18px;
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      border: none;
+      cursor: pointer;
+      transition: all 0.18s;
+    }
+    .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+    .btn-copy    { background: #e8f4fd; color: #2E75B6; border: 1px solid #2E75B6; }
+    .btn-copy:hover:not(:disabled) { background: #d0e8f9; }
+    .btn-save    { background: #1F3864; color: #fff; }
+    .btn-save:hover:not(:disabled) { background: #2E75B6; }
+    .btn-row { display: flex; gap: 8px; margin-top: 10px; align-items: center; }
+    .save-msg {
+      font-size: 12px;
+      color: #27ae60;
+      font-weight: 600;
+      display: none;
+    }
+
+    /* ── 空狀態 ── */
+    .empty-state {
+      text-align: center;
+      padding: 60px 20px;
+      color: #aaa;
+    }
+    .empty-state .icon { font-size: 48px; margin-bottom: 12px; }
+    .empty-state p { font-size: 14px; }
+
+    /* ── Loading ── */
+    .loading-overlay {
+      position: fixed; inset: 0;
+      background: rgba(255,255,255,0.75);
+      display: flex; align-items: center; justify-content: center;
+      z-index: 999;
+    }
+    .loading-overlay.hidden { display: none !important; }
+    .spinner {
+      width: 40px; height: 40px;
+      border: 4px solid #dde3ed;
+      border-top-color: #2E75B6;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .hidden { display: none !important; }
+
+    /* ── RWD ── */
+    @media (max-width: 500px) {
+      .stats-row { grid-template-columns: repeat(3, 1fr); }
+      .stat-card .num { font-size: 20px; }
+      .record-meta .timestamp { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── Loading ── -->
+<div class="loading-overlay hidden" id="loadingOverlay">
+  <div class="spinner"></div>
+</div>
+
+<!-- ════ 登入頁 ════ -->
+<div class="login-screen" id="loginScreen">
+  <div class="login-card">
+    <div class="logo">
+      <h2>精神科看診輔助 Agent</h2>
+      <p>醫師閱覽介面</p>
+    </div>
+    <div class="login-error" id="loginError">帳號或密碼錯誤，請再試一次。</div>
+    <div class="login-field">
+      <label>帳號</label>
+      <input type="text" id="loginUser" autocomplete="username" placeholder="doctor">
+    </div>
+    <div class="login-field">
+      <label>密碼</label>
+      <input type="password" id="loginPass" autocomplete="current-password">
+    </div>
+    <button class="btn-login" onclick="doLogin()">登入</button>
+  </div>
+</div>
+
+<!-- ════ 主介面 ════ -->
+<div class="app" id="mainApp">
+
+  <!-- Header -->
+  <div class="header">
+    <h1>看診紀錄總覽</h1>
+    <span class="role-badge">醫師端</span>
+    <button class="logout-btn" onclick="doLogout()">登出</button>
+  </div>
+
+  <div class="container">
+
+    <!-- 統計卡片 -->
+    <div class="stats-row">
+      <div class="stat-card">
+        <div class="num" id="statTotal">—</div>
+        <div class="lbl">今日總筆數</div>
+      </div>
+      <div class="stat-card unstable">
+        <div class="num" id="statUnstable">—</div>
+        <div class="lbl">Unstable</div>
+      </div>
+      <div class="stat-card uncertain">
+        <div class="num" id="statUncertain">—</div>
+        <div class="lbl">Uncertain</div>
+      </div>
+    </div>
+
+    <!-- 篩選列 -->
+    <div class="filter-bar">
+      <button class="filter-btn active" id="filter-today"   onclick="setFilter('today')">今日</button>
+      <button class="filter-btn"        id="filter-week"    onclick="setFilter('week')">本週</button>
+      <button class="filter-btn"        id="filter-all"     onclick="setFilter('all')">全部</button>
+      <input  class="search-input" id="searchInput" placeholder="搜尋學生代號…" oninput="applySearch()">
+      <button class="refresh-btn" onclick="loadRecords()">↻ 更新</button>
+      <span class="record-count" id="recordCount"></span>
+    </div>
+
+    <!-- 紀錄列表 -->
+    <div class="record-list" id="recordList">
+      <div class="empty-state">
+        <div class="icon">📋</div>
+        <p>載入中…</p>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /mainApp -->
+
+<script>
+// ══════════════════════════════════════
+// 設定：填入你的 n8n Webhook URLs
+// ══════════════════════════════════════
+const N8N_RECORDS_URL = 'https://n8n.yuping.myds.me/webhook/records';
+const N8N_COMMENT_URL = 'https://n8n.yuping.myds.me/webhook/comment';
+
+// ══════════════════════════════════════
+// 狀態
+// ══════════════════════════════════════
+let authHeader   = '';
+let allRecords   = [];
+let activeFilter = 'today';
+
+// ══════════════════════════════════════
+// 登入
+// ══════════════════════════════════════
+async function doLogin() {
+  const user = document.getElementById('loginUser').value.trim();
+  const pass = document.getElementById('loginPass').value;
+  const errEl = document.getElementById('loginError');
+
+  if (!user || !pass) {
+    errEl.textContent = '請填寫帳號和密碼。';
+    errEl.style.display = 'block';
+    return;
+  }
+
+  errEl.style.display = 'none';
+  setLoading(true);
+  authHeader = 'Basic ' + btoa(`${user}:${pass}`);
+
+  // 15 秒 timeout，避免 server 無回應時畫面凍結
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 15000);
+
+  try {
+    const resp = await fetch(N8N_RECORDS_URL + '?filter=all', {
+      headers: { 'Authorization': authHeader },
+      signal: controller.signal
+    });
+    clearTimeout(timer);
+
+    if (resp.status === 401) {
+      errEl.textContent = '帳號或密碼錯誤，請再試一次。';
+      errEl.style.display = 'block';
+      authHeader = '';
+      return;
+    }
+
+    if (!resp.ok) {
+      errEl.textContent = `伺服器錯誤（HTTP ${resp.status}），請確認 n8n /records workflow 已啟用。`;
+      errEl.style.display = 'block';
+      authHeader = '';
+      return;
+    }
+
+    let data;
+    try {
+      data = await resp.json();
+    } catch {
+      errEl.textContent = '回傳格式錯誤，請確認 n8n /records workflow 設定正確。';
+      errEl.style.display = 'block';
+      authHeader = '';
+      return;
+    }
+
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('mainApp').style.display = 'block';
+    processRecords(data);
+
+  } catch (e) {
+    clearTimeout(timer);
+    const msg = e.name === 'AbortError'
+      ? '連線逾時（15秒），請確認 n8n 伺服器正常運作且 /records workflow 已啟用。'
+      : `連線失敗：${e.message}`;
+    errEl.textContent = msg;
+    errEl.style.display = 'block';
+    authHeader = '';
+  } finally {
+    setLoading(false);
+  }
+}
+
+function doLogout() {
+  authHeader = '';
+  allRecords = [];
+  document.getElementById('loginUser').value = '';
+  document.getElementById('loginPass').value = '';
+  document.getElementById('mainApp').style.display   = 'none';
+  document.getElementById('loginScreen').style.display = 'flex';
+}
+
+// Enter 登入
+document.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('loginPass').addEventListener('keydown', e => {
+    if (e.key === 'Enter') doLogin();
+  });
+});
+
+// ══════════════════════════════════════
+// 載入紀錄
+// ══════════════════════════════════════
+async function loadRecords() {
+  setLoading(true);
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 15000);
+  try {
+    const resp = await fetch(`${N8N_RECORDS_URL}?filter=all`, {
+      headers: { 'Authorization': authHeader },
+      signal: controller.signal
+    });
+    clearTimeout(timer);
+    if (resp.status === 401) { doLogout(); return; }
+    if (!resp.ok) { renderEmpty(`伺服器錯誤（HTTP ${resp.status}），請稍後再試。`); return; }
+    const data = await resp.json();
+    processRecords(data);
+  } catch (e) {
+    clearTimeout(timer);
+    renderEmpty(e.name === 'AbortError' ? '連線逾時，請點「↻ 更新」重試。' : '連線失敗，請點「↻ 更新」重試。');
+  } finally {
+    setLoading(false);
+  }
+}
+
+function processRecords(data) {
+  // n8n 回傳可能是陣列或 { records: [...] }
+  allRecords = Array.isArray(data) ? data : (data.records || []);
+
+  // 排序：最新在上
+  allRecords.sort((a, b) => parseTimestamp(b.timestamp) - parseTimestamp(a.timestamp));
+
+  updateStats();
+  applyFilter();
+}
+
+// ══════════════════════════════════════
+// 篩選
+// ══════════════════════════════════════
+function setFilter(f) {
+  activeFilter = f;
+  ['today','week','all'].forEach(id => {
+    document.getElementById(`filter-${id}`).classList.toggle('active', id === f);
+  });
+  applyFilter();   // 前端篩選，不重新 fetch
+}
+
+function applySearch() {
+  applyFilter();
+}
+
+// 前端日期篩選（使用瀏覽器本地時區，避免 server UTC 時差問題）
+function applyFilter() {
+  const now        = new Date();
+  const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate());  // 今天 00:00 本地時間
+  const weekStart  = new Date(todayStart);
+  weekStart.setDate(weekStart.getDate() - 6);   // 7天前 00:00 本地時間
+
+  let filtered = allRecords.filter(r => {
+    if (activeFilter === 'all') return true;
+    let d;
+    try { d = parseTimestamp(r.timestamp); } catch { return false; }
+    if (isNaN(d)) return false;
+    if (activeFilter === 'today') return d >= todayStart;
+    if (activeFilter === 'week')  return d >= weekStart;
+    return true;
+  });
+
+  // 再套搜尋關鍵字
+  const q = document.getElementById('searchInput').value.trim().toLowerCase();
+  if (q) filtered = filtered.filter(r => (r.clerk_name || '').toLowerCase().includes(q));
+
+  renderRecords(filtered);
+}
+
+// ══════════════════════════════════════
+// 統計
+// ══════════════════════════════════════
+function updateStats() {
+  const todayStr = new Date().toLocaleDateString('zh-TW');
+  const today = allRecords.filter(r => {
+    try { 
+      const d = parseTimestamp(r.timestamp);
+      return !isNaN(d) && d.toLocaleDateString('zh-TW') === todayStr; 
+    }
+    catch { return false; }
+  });
+
+  document.getElementById('statTotal').textContent    = today.length;
+  document.getElementById('statUnstable').textContent = today.filter(r => r.stable_flag === 'Unstable').length;
+  document.getElementById('statUncertain').textContent= today.filter(r => r.stable_flag === 'Uncertain').length;
+}
+
+// ══════════════════════════════════════
+// 渲染列表
+// ══════════════════════════════════════
+function renderRecords(records) {
+  const list = document.getElementById('recordList');
+  document.getElementById('recordCount').textContent = `共 ${records.length} 筆`;
+
+  if (!records.length) {
+    renderEmpty('目前沒有符合條件的紀錄。');
+    return;
+  }
+
+  list.innerHTML = '';
+  records.forEach((r, i) => {
+    const item = document.createElement('div');
+    item.className = 'record-item';
+    item.dataset.index = i;
+
+    const stableClass = r.stable_flag || 'Uncertain';
+    const ts = formatTime(r.timestamp);
+    const preview = (r.his_output || '').slice(0, 60) + ((r.his_output || '').length > 60 ? '…' : '');
+
+    item.innerHTML = `
+      <div class="record-header" onclick="toggleDetail(this)">
+        <div class="stable-dot ${stableClass}"></div>
+        <div class="record-meta">
+          <div class="top-row">
+            <span class="clerk-tag">${esc(r.clerk_name || '—')}</span>
+            <span class="patient-tag">ID: ${esc(r.patient_id || '—')}</span>
+            <span class="timestamp">${ts}</span>
+          </div>
+          <div class="his-preview">${esc(preview)}</div>
+        </div>
+        <span class="stable-badge ${stableClass}">${stableClass}</span>
+        <span class="expand-arrow">▼</span>
+      </div>
+      <div class="record-detail">
+        ${renderDetail(r)}
+      </div>
+    `;
+    list.appendChild(item);
+  });
+}
+
+function renderDetail(r) {
+  const bytes = r.byte_count || new TextEncoder().encode(r.his_output || '').length;
+  const hasComment = r.doctor_comment && r.doctor_comment.trim();
+
+  return `
+    <div class="detail-section">
+      <div class="detail-label">HIS 一鍵貼上區</div>
+      <div class="his-box" id="his-${esc(r.session_id)}">${esc(r.his_output || '（無）')}</div>
+      <span class="byte-tag">${bytes} Bytes</span>
+      <div class="btn-row">
+        <button class="btn btn-copy" onclick="copyText('his-${esc(r.session_id)}', this)">複製 HIS</button>
+      </div>
+    </div>
+
+    <div class="detail-section">
+      <div class="detail-label">衛教加強版</div>
+      <div class="edu-box">${esc(r.edu_sentence || '（無）')}</div>
+    </div>
+
+    <div class="detail-section">
+      <div class="detail-label">教學討論點</div>
+      <div class="teach-box">${esc(r.teaching_question || '（無）')}</div>
+    </div>
+
+    <div class="detail-section comment-area">
+      <div class="detail-label">醫師批注</div>
+      <textarea id="comment-${esc(r.session_id)}" placeholder="輸入批注…" rows="3">${esc(hasComment ? r.doctor_comment : '')}</textarea>
+      <div class="btn-row">
+        <button class="btn btn-save"
+          onclick="saveComment('${esc(r.session_id)}', this)">儲存批注</button>
+        <span class="save-msg" id="save-msg-${esc(r.session_id)}">✓ 已儲存</span>
+      </div>
+    </div>
+  `;
+}
+
+function renderEmpty(msg) {
+  document.getElementById('recordList').innerHTML = `
+    <div class="empty-state">
+      <div class="icon">📋</div>
+      <p>${msg}</p>
+    </div>`;
+  document.getElementById('recordCount').textContent = '';
+}
+
+// ══════════════════════════════════════
+// 展開 / 收合
+// ══════════════════════════════════════
+function toggleDetail(headerEl) {
+  const item = headerEl.closest('.record-item');
+  const wasExpanded = item.classList.contains('expanded');
+
+  // 收合所有
+  document.querySelectorAll('.record-item.expanded').forEach(el => {
+    el.classList.remove('expanded');
+  });
+
+  // 若原本未展開則展開
+  if (!wasExpanded) item.classList.add('expanded');
+}
+
+// ══════════════════════════════════════
+// 複製 HIS
+// ══════════════════════════════════════
+function copyText(elId, btn) {
+  const text = document.getElementById(elId).textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const orig = btn.textContent;
+    btn.textContent = '✓ 已複製';
+    btn.disabled = true;
+    setTimeout(() => { btn.textContent = orig; btn.disabled = false; }, 2000);
+  });
+}
+
+// ══════════════════════════════════════
+// 儲存醫師批注
+// ══════════════════════════════════════
+async function saveComment(sessionId, btn) {
+  const textarea = document.getElementById(`comment-${sessionId}`);
+  const comment  = textarea.value.trim();
+  const msgEl    = document.getElementById(`save-msg-${sessionId}`);
+
+  btn.disabled = true;
+  try {
+    const resp = await fetch(N8N_COMMENT_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': authHeader
+      },
+      body: JSON.stringify({ session_id: sessionId, doctor_comment: comment })
+    });
+
+    if (resp.status === 401) { doLogout(); return; }
+    const result = await resp.json();
+
+    if (result.success) {
+      msgEl.style.display = 'inline';
+      // 同步更新本地資料
+      const rec = allRecords.find(r => r.session_id === sessionId);
+      if (rec) rec.doctor_comment = comment;
+      setTimeout(() => { msgEl.style.display = 'none'; }, 3000);
+    } else {
+      alert('儲存失敗：' + (result.error || '未知錯誤'));
+    }
+  } catch (e) {
+    alert('連線失敗，請稍後再試。');
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+// ══════════════════════════════════════
+// 工具函式
+// ══════════════════════════════════════
+function setLoading(show) {
+  document.getElementById('loadingOverlay').classList.toggle('hidden', !show);
+}
+
+function esc(s) {
+  return String(s || '')
+    .replace(/&/g,'&amp;')
+    .replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;');
+}
+
+function parseTimestamp(ts) {
+  if (!ts) return new Date(NaN);
+  let str = String(ts).trim();
+
+  // 處理 "上午/下午" 格式 (例如: "2026/4/28 下午10:53:44")
+  const ampmMatch = str.match(/(上午|下午)\s*(\d+)/);
+  if (ampmMatch) {
+    let ampm = ampmMatch[1];
+    let hr = parseInt(ampmMatch[2], 10);
+    if (ampm === '下午' && hr < 12) hr += 12;
+    if (ampm === '上午' && hr === 12) hr = 0;
+    str = str.replace(ampmMatch[0], hr.toString().padStart(2, '0'));
+  }
+
+  // 拔除結尾的 Z 或時區標記，強迫瀏覽器當作本地時間
+  str = str.replace(/Z$/, '');
+
+  return new Date(str);
+}
+
+function formatTime(ts) {
+  if (!ts) return '—';
+  try {
+    const d = parseTimestamp(ts);
+    if (isNaN(d)) return ts; // 解析失敗則原樣顯示
+    const pad = n => String(n).padStart(2,'0');
+    return `${pad(d.getMonth()+1)}/${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  } catch { return ts; }
+}
+</script>
+</body>
+</html>

@@ -3,28 +3,33 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>六十甲子籤詩 × 314成人ADHD心智健康錦囊網</title>
+  <title>六十甲子籤詩 × 314腦科學與成人ADHD解籤指南</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@500;700;900&family=Outfit:wght@400;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --primary: #1D3557;
-      --primary-dark: #112233;
-      --accent: #E63946;
-      --bg: #F8F9FA;
+      --primary: #1D4ED8;
+      --primary-dark: #0F172A;
+      --accent: #2563EB;
+      --accent-light: #EFF6FF;
+      --bg: #F8FAFC;
       --card-bg: #FFFFFF;
-      --text-main: #2B2D42;
-      --text-muted: #6C757D;
-      --border-color: #DEE2E6;
-      --shadow: 0 10px 30px rgba(29, 53, 87, 0.08);
+      --text-main: #0F172A;
+      --text-muted: #64748B;
+      --border-color: #E2E8F0;
+      --shadow: 0 10px 30px rgba(29, 78, 216, 0.10);
       --radius: 16px;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
     body {
-      font-family: 'Outfit', 'Noto Serif TC', sans-serif;
+      font-family: 'Outfit', 'Noto Serif TC', -apple-system, sans-serif;
       background-color: var(--bg);
       color: var(--text-main);
       line-height: 1.6;
@@ -32,11 +37,12 @@
     }
 
     header {
-      background: linear-gradient(135deg, #112233 0%, #1D3557 100%);
-      color: #FFF;
+      background: linear-gradient(135deg, #0F172A, #1D4ED8);
+      color: white;
+      padding: 45px 20px 35px;
       text-align: center;
-      padding: 40px 20px 30px;
       box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      position: relative;
     }
 
     header h1 {
@@ -44,7 +50,7 @@
       font-size: 2.2rem;
       font-weight: 900;
       letter-spacing: 2px;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
 
     header p {
@@ -55,89 +61,137 @@
     }
 
     .container {
-      max-width: 1100px;
-      margin: 30px auto;
-      padding: 0 20px;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 25px 20px;
     }
 
-    .mode-nav {
+    /* Controls Bar */
+    .controls {
       display: flex;
-      justify-content: center;
-      gap: 12px;
-      margin-bottom: 30px;
       flex-wrap: wrap;
+      gap: 15px;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+      background: white;
+      padding: 18px 24px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      position: sticky;
+      top: 15px;
+      z-index: 100;
     }
 
-    .mode-btn {
-      background: #FFF;
-      border: 2px solid #CBD5E1;
-      color: var(--primary);
-      font-weight: 700;
-      padding: 12px 24px;
-      border-radius: 50px;
-      cursor: pointer;
-      transition: all 0.3s ease;
+    .search-box {
+      position: relative;
+      flex: 1;
+      min-width: 260px;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 12px 16px 12px 42px;
+      border: 1px solid var(--border-color);
+      border-radius: 30px;
       font-size: 0.95rem;
+      outline: none;
+      transition: all 0.3s;
+    }
+
+    .search-box input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(158, 42, 43, 0.15);
+    }
+
+    .search-box::before {
+      content: '🔍';
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 1rem;
+    }
+
+    .filter-tags {
       display: flex;
-      align-items: center;
+      flex-wrap: wrap;
       gap: 8px;
     }
 
-    .mode-btn.active, .mode-btn:hover {
-      background: var(--primary);
-      color: #FFF;
-      border-color: var(--primary);
-      box-shadow: 0 6px 15px rgba(29, 53, 87, 0.25);
-    }
-
-    .cat-tags {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-bottom: 25px;
-    }
-
     .tag-btn {
-      background: #E2E8F0;
-      border: none;
-      color: var(--text-main);
       padding: 8px 16px;
+      border: 1px solid var(--border-color);
       border-radius: 20px;
-      font-size: 0.9rem;
-      font-weight: 600;
+      background: white;
+      color: var(--text-main);
+      font-size: 0.88rem;
       cursor: pointer;
-      transition: 0.2s;
+      transition: all 0.2s;
     }
 
-    .tag-btn.active {
+    .tag-btn:hover, .tag-btn.active {
       background: var(--primary);
-      color: #FFF;
+      color: white;
+      border-color: var(--primary);
     }
 
-    .poem-grid {
+    .draw-btn {
+      background: linear-gradient(135deg, #D4A373, #B8860B);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 30px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 15px rgba(212, 163, 115, 0.4);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .draw-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(212, 163, 115, 0.6);
+    }
+
+    /* Grid */
+    .poems-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
       gap: 20px;
     }
 
     .poem-card {
       background: var(--card-bg);
       border-radius: var(--radius);
-      padding: 22px;
-      border: 1px solid var(--border-color);
+      padding: 20px;
       box-shadow: var(--shadow);
-      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      border: 1px solid rgba(0,0,0,0.03);
       cursor: pointer;
+      transition: transform 0.3s, box-shadow 0.3s;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .poem-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: var(--primary);
     }
 
     .poem-card:hover {
       transform: translateY(-5px);
-      box-shadow: 0 15px 35px rgba(29, 53, 87, 0.15);
-      border-color: var(--primary);
+      box-shadow: 0 15px 35px rgba(158, 42, 43, 0.15);
     }
 
     .card-header {
@@ -147,399 +201,569 @@
       margin-bottom: 12px;
     }
 
-    .poem-tag {
-      background: #E0F2FE;
-      color: var(--primary-dark);
-      font-size: 0.75rem;
-      font-weight: 700;
-      padding: 4px 10px;
-      border-radius: 12px;
-    }
-
     .poem-title {
       font-family: 'Noto Serif TC', serif;
-      font-size: 1.25rem;
+      font-size: 1.15rem;
       font-weight: 700;
-      color: var(--primary);
+      color: var(--primary-dark);
+    }
+
+    .poem-tag {
+      font-size: 0.75rem;
+      padding: 4px 10px;
+      background: #F8F9FA;
+      color: var(--text-muted);
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
     }
 
     .poem-preview {
-      font-size: 0.9rem;
-      color: var(--text-muted);
-      margin: 10px 0;
-      line-height: 1.5;
+      font-size: 0.95rem;
+      color: var(--text-main);
+      margin-bottom: 15px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      font-weight: 600;
     }
 
     .card-footer {
       font-size: 0.85rem;
-      font-weight: 700;
       color: var(--accent);
-      text-align: right;
-    }
-
-    .draw-section {
-      text-align: center;
-      padding: 50px 20px;
-      background: #FFF;
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
-      max-width: 500px;
-      margin: 0 auto;
-    }
-
-    .tube-icon {
-      font-size: 5rem;
-      margin-bottom: 20px;
-      display: inline-block;
-    }
-
-    .shaking {
-      animation: shake 0.5s infinite;
-    }
-
-    @keyframes shake {
-      0% { transform: rotate(0deg); }
-      25% { transform: rotate(10deg); }
-      75% { transform: rotate(-10deg); }
-      100% { transform: rotate(0deg); }
-    }
-
-    .draw-btn {
-      background: linear-gradient(135deg, #1D3557, #112233);
-      color: #FFF;
-      border: none;
-      font-size: 1.1rem;
-      font-weight: 700;
-      padding: 14px 36px;
-      border-radius: 50px;
-      cursor: pointer;
-      box-shadow: 0 8px 20px rgba(29, 53, 87, 0.3);
-      transition: 0.3s;
-    }
-
-    .draw-btn:hover {
-      transform: scale(1.05);
-    }
-
-    .search-box {
-      width: 100%;
-      max-width: 600px;
-      margin: 0 auto 30px;
+      font-weight: 600;
       display: flex;
-      gap: 10px;
+      align-items: center;
+      gap: 4px;
     }
 
-    .search-input {
-      flex: 1;
-      padding: 12px 20px;
-      border: 2px solid #CBD5E1;
-      border-radius: 50px;
-      font-size: 1rem;
-      outline: none;
-      transition: 0.3s;
-    }
-
-    .search-input:focus {
-      border-color: var(--primary);
-      box-shadow: 0 0 10px rgba(29, 53, 87, 0.15);
-    }
-
+    /* Modals */
     .modal-overlay {
       position: fixed;
       top: 0;
       left: 0;
-      width: 100%;
-      height: 100%;
+      right: 0;
+      bottom: 0;
       background: rgba(0,0,0,0.65);
       backdrop-filter: blur(5px);
       display: none;
       justify-content: center;
       align-items: center;
       z-index: 1000;
-      padding: 15px;
+      padding: 20px;
     }
 
-    .modal-card {
-      background: #FFF;
+    .modal-content {
+      background: white;
       width: 100%;
-      max-width: 750px;
+      max-width: 800px;
       max-height: 90vh;
       border-radius: var(--radius);
-      overflow-y: auto;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+      box-shadow: 0 25px 50px rgba(0,0,0,0.25);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      animation: modalUp 0.3s ease-out;
       position: relative;
     }
 
+    @keyframes modalUp {
+      from { transform: translateY(30px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
     .modal-header {
-      background: linear-gradient(135deg, #112233, #1D3557);
-      color: #FFF;
-      padding: 22px 60px 22px 25px;
-      position: sticky;
-      top: 0;
-      z-index: 10;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      background: linear-gradient(135deg, #0F172A, #1D4ED8);
+      color: white;
+      padding: 20px 25px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-header-title h2 {
+      font-family: 'Noto Serif TC', serif;
+      font-size: 1.4rem;
+      font-weight: 700;
     }
 
     .close-btn {
-      position: absolute;
-      top: 16px;
-      right: 18px;
-      background: rgba(255,255,255,0.25);
-      border: 2px solid rgba(255,255,255,0.4);
-      color: #FFF;
-      width: 42px;
-      height: 42px;
+      background: rgba(255,255,255,0.2);
+      border: none;
+      color: white;
+      width: 36px;
+      height: 36px;
       border-radius: 50%;
-      font-size: 1.4rem;
-      font-weight: bold;
+      font-size: 1.2rem;
       cursor: pointer;
       display: flex;
-      justify-content: center;
       align-items: center;
-      transition: all 0.2s ease;
-      z-index: 20;
+      justify-content: center;
+      transition: background 0.2s;
     }
 
     .close-btn:hover {
       background: rgba(255,255,255,0.4);
-      transform: scale(1.1);
     }
 
-    .modal-body { padding: 25px 30px 35px; }
+    .modal-body {
+      padding: 25px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
 
-    .section-title {
+    /* RITUAL MODAL STYLES */
+    .ritual-box {
+      text-align: center;
+      padding: 30px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .tube-container {
+      width: 120px;
+      height: 160px;
+      background: linear-gradient(135deg, #D4A373, #8B5A2B);
+      border-radius: 20px 20px 10px 10px;
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: flex-end;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      border: 3px solid #6E401F;
+    }
+
+    .stick-out {
+      width: 16px;
+      height: 140px;
+      background: linear-gradient(to bottom, #9E2A2B 30px, #FDFBF7 30px);
+      border-radius: 8px;
+      border: 1px solid #7B1E1F;
+      position: absolute;
+      bottom: 20px;
+      transition: transform 0.5s ease-out;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    }
+
+    .stick-out.pulled {
+      transform: translateY(-60px);
+    }
+
+    .poat-poe-container {
+      display: flex;
+      gap: 25px;
+      margin: 15px 0;
+      justify-content: center;
+    }
+
+    .poe-block {
+      width: 60px;
+      height: 90px;
+      background: #9E2A2B;
+      border-radius: 50px 10px 50px 10px;
+      box-shadow: inset -3px -3px 8px rgba(0,0,0,0.3), 0 6px 15px rgba(158,42,43,0.3);
+      transition: transform 0.6s ease-in-out;
+    }
+
+    .poe-block.flat {
+      background: #D4A373;
+      border-radius: 10px 50px 10px 50px;
+    }
+
+    .poe-spinning {
+      animation: spinPoe 0.6s ease-in-out infinite;
+    }
+
+    @keyframes spinPoe {
+      0% { transform: rotate(0deg) scale(1); }
+      50% { transform: rotate(180deg) scale(1.2); }
+      100% { transform: rotate(360deg) scale(1); }
+    }
+
+    .ritual-step-title {
       font-family: 'Noto Serif TC', serif;
-      font-size: 1.15rem;
+      font-size: 1.3rem;
       font-weight: 700;
       color: var(--primary-dark);
-      border-bottom: 2px solid #E2E8F0;
-      padding-bottom: 6px;
-      margin: 20px 0 12px;
     }
 
-    .trans-list { list-style: none; }
+    .ritual-step-desc {
+      font-size: 0.95rem;
+      color: var(--text-muted);
+      max-width: 450px;
+    }
+
+    .action-big-btn {
+      background: linear-gradient(135deg, #0F172A, #1D4ED8);
+      color: white;
+      border: none;
+      padding: 14px 32px;
+      border-radius: 30px;
+      font-size: 1.05rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 6px 20px rgba(158, 42, 43, 0.3);
+      transition: transform 0.2s;
+    }
+
+    .action-big-btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .action-big-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Common Components */
+    .section-title {
+      font-family: 'Noto Serif TC', serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--primary-dark);
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 2px solid var(--accent-light);
+      padding-bottom: 6px;
+    }
+
+    .trans-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      list-style: none;
+    }
 
     .trans-item {
-      background: #F1F5F9;
+      background: var(--bg);
+      padding: 14px 18px;
+      border-radius: 12px;
       border-left: 4px solid var(--primary);
-      padding: 12px 16px;
-      margin-bottom: 10px;
-      border-radius: 4px;
     }
 
-    .trans-orig { font-weight: 700; color: var(--primary-dark); margin-bottom: 4px; }
-    .trans-explain { font-size: 0.95rem; color: #333; }
+    .trans-orig {
+      font-family: 'Noto Serif TC', serif;
+      font-weight: 700;
+      font-size: 1.05rem;
+      color: var(--primary-dark);
+      margin-bottom: 4px;
+    }
+
+    .trans-explain {
+      font-size: 0.95rem;
+      color: var(--text-main);
+      line-height: 1.5;
+    }
+
+    .core-card {
+      background: var(--accent-light);
+      border: 1px solid var(--accent);
+      border-radius: 14px;
+      padding: 18px;
+    }
+
+    .quote-box {
+      background: white;
+      border-left: 4px solid var(--accent);
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-bottom: 14px;
+      font-size: 0.95rem;
+    }
+
+    .quote-title {
+      font-weight: 700;
+      color: var(--primary-dark);
+      margin-bottom: 4px;
+    }
+
+    .quote-text {
+      font-style: italic;
+      color: var(--text-main);
+    }
+
+    .core-explain {
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    .micro-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 12px;
+    }
+
+    .micro-item {
+      background: #F4F9F5;
+      border: 1px solid #C8E6C9;
+      padding: 14px 16px;
+      border-radius: 12px;
+    }
+
+    .micro-item-title {
+      font-weight: 700;
+      color: #2E7D32;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .micro-item-desc {
+      font-size: 0.9rem;
+      color: #1B5E20;
+    }
+
+    .articles-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
 
     .article-box {
-      background: #EFF6FF;
-      border: 1px solid #BFDBFE;
-      border-radius: 8px;
+      background: #F8F9FA;
+      border: 1px solid var(--border-color);
       padding: 12px 16px;
-      margin-top: 8px;
+      border-radius: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
     }
 
-    .article-title { font-weight: 700; color: #1E40AF; }
+    .article-title {
+      font-size: 0.92rem;
+      font-weight: 600;
+      color: var(--text-main);
+    }
 
-    .action-btn-group { display: flex; gap: 12px; margin-top: 25px; }
+    .modal-footer {
+      background: #F8F9FA;
+      padding: 15px 25px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid var(--border-color);
+    }
 
     .copy-btn {
-      flex: 2;
       background: var(--primary);
-      color: #FFF;
+      color: white;
       border: none;
-      padding: 14px;
-      font-size: 1rem;
-      font-weight: 700;
-      border-radius: 8px;
+      padding: 10px 20px;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 0.9rem;
       cursor: pointer;
-      transition: 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.2s;
     }
 
-    .copy-btn:hover { background: var(--primary-dark); }
-
-    .bottom-close-btn {
-      flex: 1;
-      background: #E2E8F0;
-      color: var(--text-main);
-      border: 1px solid #CBD5E1;
-      padding: 14px;
-      font-size: 1rem;
-      font-weight: 700;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: 0.2s;
+    .copy-btn:hover {
+      background: var(--primary-dark);
     }
-
-    .bottom-close-btn:hover { background: #CBD5E1; }
 
     .toast {
       position: fixed;
       bottom: 30px;
       left: 50%;
       transform: translateX(-50%);
-      background: #2B2D42;
-      color: #FFF;
+      background: rgba(0,0,0,0.85);
+      color: white;
       padding: 12px 24px;
-      border-radius: 50px;
-      font-size: 0.9rem;
+      border-radius: 25px;
+      font-size: 0.92rem;
       display: none;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.2);
       z-index: 2000;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    }
+
+    .tube-shake {
+      animation: tubeShake 0.6s ease-in-out infinite;
+    }
+
+    @keyframes tubeShake {
+      0%, 100% { transform: rotate(0deg); }
+      25% { transform: rotate(-12deg); }
+      75% { transform: rotate(12deg); }
+    }
+
+    @media (max-width: 768px) {
+      header h1 { font-size: 1.6rem; }
+      .controls { flex-direction: column; align-items: stretch; }
+      .draw-btn { justify-content: center; }
     }
   </style>
 </head>
 <body>
 
   <header>
-    <h1>六十甲子籤詩 × 314成人ADHD心智健康錦囊網</h1>
-    <p>專為成人 ADHD 設計的職場執行力、自我接納、親密關係與 314 知識庫實證對照指引</p>
+    <h1>六十甲子籤詩 × 314腦科學與成人ADHD解籤指南</h1>
+    <p>結合傳統求籤文化與 314 風神網精神醫學衛教資料庫，為成人 ADHD、職場工作者與心智成長者提供具備實證、溫暖且具體的解籤錦囊。</p>
   </header>
 
   <div class="container">
-    <div class="mode-nav">
-      <button class="mode-btn active" onclick="switchMode('category', event)">💼 痛點分類探索</button>
-      <button class="mode-btn" onclick="switchMode('draw', event)">🔮 誠心求籤／今日處方</button>
-      <button class="mode-btn" onclick="switchMode('search', event)">🔍 成人 60 籤目錄搜尋</button>
-    </div>
-
-    <div id="view-category">
-      <div class="cat-tags">
-        <button class="tag-btn active" onclick="filterCategory('ALL', event)">🌟 全部主題</button>
-        <button class="tag-btn" onclick="filterCategory('💼 職場與工作執行', event)">💼 職場與工作執行</button>
-        <button class="tag-btn" onclick="filterCategory('🧘 自我接納與冒牌者', event)">🧘 自我接納與冒牌者</button>
-        <button class="tag-btn" onclick="filterCategory('❤️ 伴侶與親密關係', event)">❤️ 伴侶與親密關係</button>
-        <button class="tag-btn" onclick="filterCategory('⚡ 情緒調控與 RSD', event)">⚡ 情緒調控與 RSD</button>
-        <button class="tag-btn" onclick="filterCategory('🏡 生活管理與睡眠', event)">🏡 生活管理與睡眠</button>
-        <button class="tag-btn" onclick="filterCategory('🩺 成人就醫與藥物', event)">🩺 成人就醫與藥物</button>
-      </div>
-      <div class="poem-grid" id="category-grid"></div>
-    </div>
-
-    <div id="view-draw" style="display: none;">
-      <div class="draw-section">
-        <div class="tube-icon" id="tube-icon">🎋</div>
-        <h2 style="font-family: 'Noto Serif TC'; color: var(--primary); margin-bottom: 12px;">靜心默想當下的職涯或生活挑戰</h2>
-        <p style="color: var(--text-muted); margin-bottom: 25px;">誠心祈求今日的成人 ADHD 心智健康錦囊</p>
-        <button class="draw-btn" onclick="drawPoem()">誠心搖籤</button>
-      </div>
-    </div>
-
-    <div id="view-search" style="display: none;">
+    <div class="controls">
       <div class="search-box">
-        <input type="text" class="search-input" id="search-input" placeholder="輸入籤號（如 1）或關鍵字（如 職場, 拖延, 冒牌者, 睡眠）..." oninput="searchPoems()">
+        <input type="text" id="search" placeholder="搜尋籤號、籤詩原文、腦科學關鍵字..." oninput="filterPoems()">
       </div>
-      <div class="poem-grid" id="search-grid"></div>
+      
+      <div class="filter-tags" id="tags-container">
+        <button class="tag-btn active" onclick="setCategory('全部')">全部分類 (60)</button>
+        <button class="tag-btn" onclick="setCategory('💼 職場與工作執行')">💼 職場與工作執行</button>
+        <button class="tag-btn" onclick="setCategory('🧘 自我接納與冒牌者')">🧘 自我接納與冒牌者</button>
+        <button class="tag-btn" onclick="setCategory('❤️ 伴侶與親密關係')">❤️ 伴侶與親密關係</button>
+        <button class="tag-btn" onclick="setCategory('⚡ 情緒調控與 RSD')">⚡ 情緒調控與 RSD</button>
+        <button class="tag-btn" onclick="setCategory('🏡 生活管理與睡眠')">🏡 生活管理與睡眠</button>
+        <button class="tag-btn" onclick="setCategory('🩺 成人就醫與藥物')">🩺 成人就醫與藥物</button>
+        <button class="tag-btn" onclick="setCategory('🤝 同儕與社交人際')">🤝 同儕與社交人際</button>
+        <button class="tag-btn" onclick="setCategory('💭 走神恍神與專注')">💭 走神恍神與專注</button>
+      </div>
+
+      <button class="draw-btn" onclick="startRitual()">
+        <span>⛩️</span> 線上求籤
+      </button>
     </div>
+
+    <div class="poems-grid" id="poems-grid"></div>
   </div>
 
-  <div class="modal-overlay" id="modal-overlay" onclick="handleOverlayClick(event)">
-    <div class="modal-card" onclick="event.stopPropagation()">
+  <!-- RITUAL MODAL -->
+  <div class="modal-overlay" id="ritual-overlay" onclick="handleRitualOverlayClick(event)">
+    <div class="modal-content" style="max-width: 550px;">
       <div class="modal-header">
-        <button class="close-btn" onclick="closeModal()" title="關閉視窗">✕</button>
-        <div style="font-size: 0.85rem; opacity: 0.85; margin-bottom: 4px;" id="m-cat">分類</div>
-        <h2 style="font-family: 'Noto Serif TC'; font-size: 1.6rem;" id="m-header">籤號與干支</h2>
+        <div class="modal-header-title">
+          <h2>⛩️ 線上求籤與擲筊</h2>
+          <span>靜心誠問 • 請示大腦智慧與成人心智指引</span>
+        </div>
+        <button class="close-btn" onclick="closeRitualModal()">✕</button>
       </div>
       <div class="modal-body">
-        <div class="section-title">📜 籤詩原文與成人 ADHD 白話對譯</div>
-        <ul class="trans-list" id="m-trans"></ul>
+        
+        <!-- STEP 1: SHAKE TUBE -->
+        <div class="ritual-box" id="r-step1">
+          <div class="ritual-step-title">第一步：誠心搖籤筒</div>
+          <div class="ritual-step-desc">請在心中默想最近讓您感到困擾的生活、職場或心智難題，點擊下方開始搖籤筒...</div>
+          
+          <div class="tube-container" id="r-tube">
+            <div class="stick-out" id="r-stick"></div>
+          </div>
 
-        <div class="section-title">💡 核心指引與神經多樣性解析</div>
-        <h4 style="color: var(--primary); margin-bottom: 8px;" id="m-core-title">核心標題</h4>
-        <p style="font-size: 0.95rem; color: #444; margin-bottom: 15px;" id="m-core-desc">描述內容</p>
-
-        <div class="section-title">📚 建議延伸閱讀（314 資料庫真實原創文章）</div>
-        <div id="m-articles"></div>
-
-        <div class="action-btn-group">
-          <button class="copy-btn" onclick="copyPrescription()">📋 複製成人處方</button>
-          <button class="bottom-close-btn" onclick="closeModal()">關閉錦囊</button>
+          <button class="action-big-btn" id="btn-shake" onclick="shakeStick()">🎋 誠心搖籤筒</button>
         </div>
+
+        <!-- STEP 2: POAT POE (擲筊) -->
+        <div class="ritual-box" id="r-step2" style="display: none;">
+          <div class="ritual-step-title" id="r-drawn-header">抽得 第十七籤【丙寅】</div>
+          <div class="ritual-step-desc" id="r-drawn-sub">籤枝已出，請點擊「擲筊請示」，確認是否獲得【聖杯】...</div>
+
+          <div class="poat-poe-container" id="poe-container">
+            <div class="poe-block" id="poe1"></div>
+            <div class="poe-block flat" id="poe2"></div>
+          </div>
+
+          <div id="r-poe-result" style="font-weight: 700; font-size: 1.1rem; color: var(--primary); min-height: 30px;"></div>
+
+          <button class="action-big-btn" id="btn-poe" onclick="castPoe()">🔴🟡 擲筊請示 (求聖杯)</button>
+          <button class="action-big-btn" id="btn-open-result" style="display: none; background: linear-gradient(135deg, #2E7D32, #1B5E20);" onclick="unlockPrescription()">✨ 開啟成人解籤錦囊 →</button>
+        </div>
+
       </div>
     </div>
   </div>
 
-  <div class="toast" id="toast">已成功複製成人 ADHD 處方至剪貼簿！</div>
+  <!-- INTERPRETATION MODAL -->
+  <div class="modal-overlay" id="modal-overlay" onclick="handleOverlayClick(event)">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div class="modal-header-title">
+          <h2 id="m-header">第一籤【甲子】</h2>
+          <span id="m-cat">學習與拖延</span>
+        </div>
+        <button class="close-btn" onclick="closeModal()">✕</button>
+      </div>
+      <div class="modal-body">
+        
+        <div>
+          <div class="section-title">📜 籤詩原文與現代腦科學對譯</div>
+          <ul class="trans-list" id="m-trans"></ul>
+        </div>
+
+        <div>
+          <div class="section-title">💡 成人核心心智指南：<span id="m-core-title"></span></div>
+          <div class="core-card">
+            <div class="quote-box" id="m-quote-box">
+              <div class="quote-title" id="m-quote-title"></div>
+              <div class="quote-text" id="m-quote-text"></div>
+            </div>
+            <div class="core-explain" id="m-core-desc"></div>
+          </div>
+        </div>
+
+        <div id="m-micro-section">
+          <div class="section-title">🛠️ 今晚可以試著做的「微行動」</div>
+          <div class="micro-grid" id="m-micro"></div>
+        </div>
+
+        <div>
+          <div class="section-title">📚 延伸閱讀（314 資料庫推薦）</div>
+          <div class="articles-grid" id="m-articles"></div>
+        </div>
+
+      </div>
+      <div class="modal-footer">
+        <button class="copy-btn" onclick="copyPrescription()">📋 複製成人心智錦囊</button>
+        <button class="tag-btn" onclick="closeModal()">關閉視窗</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast">📋 已成功複製成人心智錦囊至剪貼簿！</div>
 
   <script>
-    const POEMS_DATA = [{"id": 1, "header": "第一籤【甲子】", "category": "💼 職場與工作執行", "orig": ["日出便見風雲散", "光明清淨照世間", "一向前途通大道", "萬事清吉保平安"], "trans": ["🌅 （日出便見風雲散 ➔ 點亮大腦專注高光時刻，讓職涯與生活的困頓逐漸散去）", "⚡ （光明清淨照世間 ➔ 擺脫拖延與執行功能障礙，邁向自信與成功）", "🎯 （一向前途通大道 ➔ 善用成人 ADHD 的超專注與創造力特質，大展身手）", "⛵ （萬事清吉保平安 ➔ 順應神經多樣性天性前行，終將獲得圓滿成果）"], "core_title": "成人 ADHD 的工作記憶卸載：PACK 實體與數位簡化術", "core_desc": "ADHD 孩子的腦前額葉發展平均比同齡慢 2~3 年。家長常因眼前的拖延、遺忘感到焦慮（如烏雲遮日）。但這不是孩子壞，而是大腦執行功能尚未成熟。只要大人不放棄，持續提供適當的環境支持，大腦發育成熟後自然能邁向康莊大道。（本篇延伸引用自 314 實證知識庫，提供最堅實的神經醫學與心理調適依據）。", "articles": [{"title": "ADHD 小朋友的書包、抽屜是大黑洞!!!", "year": "2019年"}, {"title": "ADHD維持投入的秘訣", "year": "2019年"}]}, {"id": 2, "header": "第二籤【甲戌】", "category": "🧘 自我接納與冒牌者", "orig": ["於今此景正當時", "看看欲吐百花魁", "若能遇得春色到", "一洒清吉脫塵埃"], "trans": ["🌅 （於今此景正當時 ➔ 點亮大腦專注高光時刻，讓職涯與生活的困頓逐漸散去）", "⚡ （看看欲吐百花魁 ➔ 擺脫拖延與執行功能障礙，邁向自信與成功）", "🎯 （若能遇得春色到 ➔ 善用成人 ADHD 的超專注與創造力特質，大展身手）", "⛵ （一洒清吉脫塵埃 ➔ 順應神經多樣性天性前行，終將獲得圓滿成果）"], "core_title": "告別冒牌者症候群：成人 ADHD 的自尊重建與神經韌性", "core_desc": "當孩子說「被退學也沒差」時，是不可控挫折引發的「習得無助」。只要讓孩子感受到「事情是我可以控制的」，大腦內側前額葉（mPFC）就會啟動煞車與韌性迴路。（本篇延伸引用自 314 實證知識庫，提供最堅實的神經醫學與心理調適依據）。", "articles": [{"title": "「被退學也沒差」：從無助到韌性的希望", "year": "2026年"}]}, {"id": 3, "header": "第三籤【甲申】", "category": "❤️ 伴侶與親密關係", "orig": ["勸君把定心莫虛", "天註衣祿自有餘", "和合重重常吉慶", "時來終遇得明珠"], "trans": ["🌅 （勸君把定心莫虛 ➔ 點亮大腦專注高光時刻，讓職涯與生活的困頓逐漸散去）", "⚡ （天註衣祿自有餘 ➔ 擺脫拖延與執行功能障礙，邁向自信與成功）", "🎯 （和合重重常吉慶 ➔ 善用成人 ADHD 的超專注與創造力特質，大展身手）", "⛵ （時來終遇得明珠 ➔ 順應神經多樣性天性前行，終將獲得圓滿成果）"], "core_title": "成人伴侶關係：告別不對等管教，建立平等溝通界線", "core_desc": "家長常因害怕破壞關係而退讓（過度通融 Over Accommodation），導致孩子行為升級。權威型教養的核心是「接納所有感受（和合），但堅定行為界線（把定心）」。（本篇延伸引用自 314 實證知識庫，提供最堅實的神經醫學與心理調適依據）。", "articles": [{"title": "維持和平的代價：我越忍讓，孩子越失控？", "year": "2026年"}]}, {"id": 4, "header": "第四籤【甲午】", "category": "⚡ 情緒調控與 RSD", "orig": ["風恬浪靜可行舟", "恰是中秋月一輪", "凡事不須多憂慮", "福祿自有慶家門"], "trans": ["🌅 （風恬浪靜可行舟 ➔ 點亮大腦專注高光時刻，讓職涯與生活的困頓逐漸散去）", "⚡ （恰是中秋月一輪 ➔ 擺脫拖延與執行功能障礙，邁向自信與成功）", "🎯 （凡事不須多憂慮 ➔ 善用成人 ADHD 的超專注與創造力特質，大展身手）", "⛵ （福祿自有慶家門 ➔ 順應神經多樣性天性前行，終將獲得圓滿成果）"], "core_title": "情緒絕緣體：成人 ADHD 的情緒癱瘓與微小衝動煞車", "core_desc": "孩子的情緒暴怒常傳染給大人。當家長陷入災難化思考時，焦慮便瀰漫全家。大人的平靜就是孩子大腦最好的調節器。（本篇延伸引用自 314 實證知識庫，提供最堅實的神經醫學與心理調適依據）。", "articles": [{"title": "【孩子怒了😡，爸媽也火了😤—談兒童情緒控制】", "year": "2020年"}]}, {"id": 5, "header": "第五籤【甲辰】", "category": "💼 職場與工作執行", "orig": ["只恐前途命有變", "勸君作急可宜先", "且守長江無大事", "命逢太白守身邊"], "trans": ["🌅 （只恐前途命有變 ➔ 點亮大腦專注高光時刻，讓職涯與生活的困頓逐漸散去）", "⚡ （勸君作急可宜先 ➔ 擺脫拖延與執行功能障礙，邁向自信與成功）", "🎯 （且守長江無大事 ➔ 善用成人 ADHD 的超專注與創造力特質，大展身手）", "⛵ （命逢太白守身邊 ➔ 順應神經多樣性天性前行，終將獲得圓滿成果）"], "core_title": "職場名聲經紀人：克服時盲症，建立團隊卡位與正向夥伴", "core_desc": "ADHD 孩子的改變無法急就章。家長需預先提示（如 STOP 口訣）。同時不要單打獨鬥，家長應扮演孩子的「社交名聲經紀人」，協助打破同儕標籤。（本篇延伸引用自 314 實證知識庫，提供最堅實的神經醫學與心理調適依據）。", "articles": [{"title": "ADHD的自我控制能力", "year": "2019年"}, {"title": "為何孩子乖乖吃藥、上了社交課，人緣還是沒變好？打破 ADHD 社交困境的迷思", "year": "2025年"}]}, {"id": 6, "header": "第六籤【甲寅】", "category": "🏡 生活管理與睡眠", "orig": ["風雲致雨落洋洋", "天災時氣必有傷", "命內此事難和合", "更逢一足出外鄉"], "trans": ["🌅 （風雲致雨落洋洋 ➔ 點亮大腦專注高光時刻，讓職涯與生活的困頓逐漸散去）", "⚡ （天災時氣必有傷 ➔ 擺脫拖延與執行功能障礙，邁向自信與成功）", "🎯 （命內此事難和合 ➔ 善用成人 ADHD 的超專注與創造力特質，大展身手）", "⛵ （更逢一足出外鄉 ➔ 順應神經多樣性天性前行，終將獲得圓滿成果）"], "core_title": "睡眠相位後移 (DSPS) 與深夜報復性熬夜處方", "core_desc": "被欺負經驗會增加孩子大腦對壓力的敏感度。教導孩子直接反擊若沒效會更無助，若有效則會習得暴力。解決之道在於強化親子溝通、增進自尊韌性，並主動與學校系統合作。（本篇延伸引用自 314 實證知識庫，提供最堅實的神經醫學與心理調適依據）。", "articles": [{"title": "孩子在學校長期遭受欺負的處理策略", "year": "2024年"}]}, {"id": 7, "header": "第七籤【辛亥/庚戌】", "category": "🩺 成人就醫與藥物", "orig": ["雲開月出正分明", "不須進退問前程", "婚姻皆由天註定", "和合清吉萬事成"], "trans": ["🌅 （雲開月出正分明 ➔ 點亮大腦專注高光時刻，讓職涯與生活的困頓逐漸散去）", "⚡ （不須進退問前程 ➔ 擺脫拖延與執行功能障礙，邁向自信與成功）", "🎯 （婚姻皆由天註定 ➔ 善用成人 ADHD 的超專注與創造力特質，大展身手）", "⛵ （和合清吉萬事成 ➔ 順應神經多樣性天性前行，終將獲得圓滿成果）"], "core_title": "成人就醫與藥物評估：重新找回大腦多巴胺與血清素平衡", "core_desc": "最新神經學 MRI 研究（荷蘭團隊）發現，ADHD 兒童在發育階段接受 MPH（利他能）治療，其大腦白質（神經纖維路徑）有顯著增加與成熟。藥物能提升多巴胺/正腎上腺素信噪比，幫助大腦發展。（本篇延伸引用自 314 實證知識庫，提供最堅實的神經醫學與心理調適依據）。", "articles": [{"title": "MPH( 利他能) 藥物對大腦的影響", "year": "2019年"}, {"title": "治療ADHD藥物的作用機轉", "year": "2019年"}]}, {"id": 8, "header": "第八籤【辛丑】", "category": "🧘 自我接納與冒牌者", "orig": ["禾稻看看結成完", "此事必定兩相全", "回到家中寬心坐", "妻兒鼓舞樂團圓"], "trans": ["🌅 （禾稻看看結成完 ➔ 點亮大腦專注高光時刻，讓職涯與生活的困頓逐漸散去）", "⚡ （此事必定兩相全 ➔ 擺脫拖延與執行功能障礙，邁向自信與成功）", "🎯 （回到家中寬心坐 ➔ 善用成人 ADHD 的超專注與創造力特質，大展身手）", "⛵ （妻兒鼓舞樂團圓 ➔ 順應神經多樣性天性前行，終將獲得圓滿成果）"], "core_title": "發掘成人 ADHD 超能力：選對優勢賽道，停止弱項內耗", "core_desc": "依據 H. Gardner 多元智力理論，每個人有不同的智力組合（語言、動作、人際等）。特教的核心是發掘強處。若只逼孩子苦苦追趕弱項，就算趕上也沒有成就感，反而磨滅學習動機。（本篇延伸引用自 314 實證知識庫，提供最堅實的神經醫學與心理調適依據）。", "articles": [{"title": "對事情不感興趣怎麼辦？（發掘孩子強處）", "year": "2022年"}]}, {"id": 9, "header": "第九籤【壬申】", "category": "❤️ 伴侶與親密關係", "orig": ["龍虎相隨在深山", "君爾何須背後看", "不知此去相愛愉", "他日與我卻無干"], "trans": ["🌅 （龍虎相隨在深山 ➔ 點亮大腦專注高光時刻，讓職涯與生活的困頓逐漸散去）", "⚡ （君爾何須背後看 ➔ 擺脫拖延與執行功能障礙，邁向自信與成功）", "🎯 （不知此去相愛愉 ➔ 善用成人 ADHD 的超專注與創造力特質，大展身手）", "⛵ （他日與我卻無干 ➔ 順應神經多樣性天性前行，終將獲得圓滿成果）"], "core_title": "親密關係溝通：非防禦性對話與感官過載充電機制", "core_desc": "少子化讓同儕關係更關鍵。但有些「學校的朋友」只是因為同班被指派，不具備深刻聯繫。若孩子說「全班都是好朋友」或「只跟一個人好」，可能是孤立的訊號。家長需要主動關心質化互動。（本篇延伸引用自 314 實證知識庫，提供最堅實的神經醫學與心理調適依據）。", "articles": [{"title": "孩子的朋友是「分配」 來的嗎?", "year": "2023年"}]}, {"id": 10, "header": "第十籤【癸酉】", "category": "💼 職場與工作執行", "orig": ["花開結子一半枯", "可惜今年汝虛度", "漸漸日落西山去", "勸君不用向前途"], "trans": ["🌅 （花開結子一半枯 ➔ 點亮大腦專注高光時刻，讓職涯與生活的困頓逐漸散去）", "⚡ （可惜今年汝虛度 ➔ 擺脫拖延與執行功能障礙，邁向自信與成功）", "🎯 （漸漸日落西山去 ➔ 善用成人 ADHD 的超專注與創造力特質，大展身手）", "⛵ （勸君不用向前途 ➔ 順應神經多樣性天性前行，終將獲得圓滿成果）"], "core_title": "數位斷捨離：主動過濾無用訊息，讓成人大腦輕盈呼吸", "core_desc": "認知心理學（Willingham）指出：「大腦其實是設計來避免思考的」。當背景知識不足或認知負荷超出工作記憶時，大腦會本能尋求省力替代。此外，大腦也需要主動「遺忘」來清理記憶體。（本篇延伸引用自 314 實證知識庫，提供最堅實的神經醫學與心理調適依據）。", "articles": [{"title": "大腦不是設計來思考，而是來避免思考的", "year": "2024年"}, {"title": "學會放手，大腦才能輕盈呼吸：談談遺忘的藝術", "year": "2024年"}]}, {"id": 11, "header": "第十一籤【乙卯】", "category": "💼 職場與工作執行", "orig": ["靈雞漸漸見分明", "凡事且看子丑寅", "雲開月出照天下", "郎君即便見太平"], "trans": ["🌅 （靈雞漸漸見分明 ➔ 點亮大腦專注高光時刻，讓職涯與生活的困頓逐漸散去）", "⚡ （凡事且看子丑寅 ➔ 擺脫拖延與執行功能障礙，邁向自信與成功）", "🎯 （雲開月出照天下 ➔ 善用成人 ADHD 的超專注與創造力特質，大展身手）", "⛵ （郎君即便見太平 ➔ 順應神經多樣性天性前行，終將獲得圓滿成果）"], "core_title": "克服職場拖延症：戒酒12步驟在專案執行的應用", "core_desc": "拖延是一種迴避焦慮的壞習慣。當孩子面對寫作業的心煩時，開啟手機或分心能立即緩解焦慮，因而形成強烈的行為依賴。戒除拖延需要像「戒酒12步驟」一樣：第一步承認自己遇到困難、第二步許下改變希望、第七步謙卑求助並改變環境（如離開封閉房間或移除干擾源）。（本篇延伸引用自 314 實證知識庫，提供最堅實的神經醫學與心理調適依據）。", "articles": [{"title": "運用戒酒12步驟 改善 ADHD拖延問題", "year": "2019年"}]}, {"id": 12, "header": "第十二籤【乙巳】", "category": "⚡ 情緒調控與 RSD", "orig": ["長江風浪漸漸靜", "于今得進可安寧", "必有貴人相扶助", "凶事脫出見太平"], "trans": ["🌅 （長江風浪漸漸靜 ➔ 點亮大腦專注高光時刻，讓職涯與生活的困頓逐漸散去）", "⚡ （于今得進可安寧 ➔ 擺脫拖延與執行功能障礙，邁向自信與成功）", "🎯 （必有貴人相扶助 ➔ 善用成人 ADHD 的超專注與創造力特質，大展身手）", "⛵ （凶事脫出見太平 ➔ 順應神經多樣性天性前行，終將獲得圓滿成果）"], "core_title": "職場情緒緊急煞車：覺察心跳與大聲喘息隔離法", "core_desc": "當孩子發脾氣時，家長常手足無措，甚至連自己的情緒也隨之高漲造成兩敗俱傷。大人必須先練習自我情緒管理，允許孩子的生氣反應，暫時扮演「情緒絕緣體」。深呼吸讓怒氣降溫，必要時運用「離開現場」技巧，並告知孩子會再回來，給彼此寧靜空間。（本篇延伸引用自 314 實證知識庫，提供最堅實的神經醫學與心理調適依據）。", "articles": [{"title": "心情溫度計【孩子怒了😡，爸媽也火了😤—談兒童情緒控制】", "year": "2020年"}]}, {"id": 13, "header": "第十三籤【乙未】", "category": "⚡ 情緒調控與 RSD", "orig": ["命中正逢羅孛關", "用盡心機總未休", "作福問神難得過", "恰是行舟上高灘"], "trans": ["🌅 （命中正逢羅孛關 ➔ 點亮大腦專注高光時刻，讓職涯與生活的困頓逐漸散去）", "⚡ （用盡心機總未休 ➔ 擺脫拖延與執行功能障礙，邁向自信與成功）", "🎯 （作福問神難得過 ➔ 善用成人 ADHD 的超專注與創造力特質，大展身手）", "⛵ （恰是行舟上高灘 ➔ 順應神經多樣性天性前行，終將獲得圓滿成果）"], "core_title": "成人述情障礙 (Alexithymia)：覺察內在感受與焦慮", "core_desc": "許多衝動暴怒或退縮拒學的孩子，背後存在「述情障礙」——無法用言語精準識別與表達內心複雜的焦慮與身體感受，只能轉化為行為失控。當家長用盡心機仍未休時，應停止無效說理，協助孩子建立情緒詞彙卡，從底層解鎖內心困境。（本篇延伸引用自 314 實證知識庫，提供最堅實的神經醫學與心理調適依據）。", "articles": [{"title": "述情障礙 Alexithymia 與兒童情緒表達困境", "year": "2020年"}]}, {"id": 14, "header": "第十四籤【乙酉】", "category": "💼 職場與工作執行", "orig": ["財中漸漸見分明", "花開花謝結子成", "寬心且看月中桂", "郎君即便見太平"], "trans": ["🌅 （財中漸漸見分明 ➔ 點亮大腦專注高光時刻，讓職涯與生活的困頓逐漸散去）", "⚡ （花開花謝結子成 ➔ 擺脫拖延與執行功能障礙，邁向自信與成功）", "🎯 （寬心且看月中桂 ➔ 善用成人 ADHD 的超專注與創造力特質，大展身手）", "⛵ （郎君即便見太平 ➔ 順應神經多樣性天性前行，終將獲得圓滿成果）"], "core_title": "每日工作報告卡 (DRC/CICO) 在成人職涯目標的實踐", "core_desc": "ADHD 孩子的內部生理時鐘不穩定，對「遠期目標」容易發生時間折價（覺得沒價值）。這首籤詩強調「一分耕耘一分收穫，寬心且看月中桂」。家長可運用每日行為報告卡（DRC）與簽到退系統（CICO），提供即時的外部獎勵回饋，驅動大腦行為改變。（本篇延伸引用自 314 實證知識庫，提供最堅實的神經醫學與心理調適依據）。", "articles": [{"title": "克服拖延的 12步驟與每日行為報告卡 DRC 實踐", "year": "2021年"}]}, {"id": 15, "header": "第十五籤【乙亥】", "category": "💼 職場與工作執行", "orig": ["八十原來是太公", "看看晚景遇文王", "目下緊事休相問", "勸君且守待運通"], "trans": ["🌅 （八十原來是太公 ➔ 點亮大腦專注高光時刻，讓職涯與生活的困頓逐漸散去）", "⚡ （看看晚景遇文王 ➔ 擺脫拖延與執行功能障礙，邁向自信與成功）", "🎯 （目下緊事休相問 ➔ 善用成人 ADHD 的超專注與創造力特質，大展身手）", "⛵ （勸君且守待運通 ➔ 順應神經多樣性天性前行，終將獲得圓滿成果）"], "core_title": "大器晚成與耐心等待：成人 ADHD 的刻意練習與蓄力", "core_desc": "抽得此籤表示目前做事總不如意，但這不是因為孩子不努力，而是發育時機未到。最重要的事是「發掘並充實孩子的強處」。只要具備優勢能力，絕不會被埋沒。（本篇延伸引用自 314 實證知識庫，提供最堅實的神經醫學與心理調適依據）。", "articles": [{"title": "ADHD 孩子的學習策略：設定目標，分解任務，刻意練習", "year": "2019年"}]}, {"id": 16, "header": "第十六籤【丙子】", "category": "🩺 成人就醫與藥物", "orig": ["不須作福不須求", "用盡心機總未休", "陽世不知陰世事", "官法如爐不自由"], "trans": ["🌅 （不須作福不須求 ➔ 點亮大腦專注高光時刻，讓職涯與生活的困頓逐漸散去）", "⚡ （用盡心機總未休 ➔ 擺脫拖延與執行功能障礙，邁向自信與成功）", "🎯 （陽世不知陰世事 ➔ 善用成人 ADHD 的超專注與創造力特質，大展身手）", "⛵ （官法如爐不自由 ➔ 順應神經多樣性天性前行，終將獲得圓滿成果）"], "core_title": "睡眠衛生與大腦膠狀淋巴系統：修復夜間腦力疲勞", "core_desc": "許多注意力不集中與情緒易怒，根本原因在於「睡眠債務」與生理時鐘失調。大腦在睡眠時會清除代謝廢物並進行突觸修剪。若忽視睡眠品質與警醒系統（Arousal System）的規律，任何學習訓練都事倍功半。（本篇延伸引用自 314 實證知識庫，提供最堅實的神經醫學與心理調適依據）。", "articles": [{"title": "揭開孩子入睡之謎：生理時鐘、警醒系統、睡眠債務你知多少？", "year": "2021年"}]}, {"id": 17, "header": "第十七籤【丙寅】", "category": "🧘 自我接納與冒牌者", "orig": ["舊恨重重未改為", "家中禍患不臨身", "須當謹防宜作福", "龍蛇交會得和合"], "trans": ["🌅 （舊恨重重未改為 ➔ 點亮大腦專注高光時刻，讓職涯與生活的困頓逐漸散去）", "⚡ （家中禍患不臨身 ➔ 擺脫拖延與執行功能障礙，邁向自信與成功）", "🎯 （須當謹防宜作福 ➔ 善用成人 ADHD 的超專注與創造力特質，大展身手）", "⛵ （龍蛇交會得和合 ➔ 順應神經多樣性天性前行，終將獲得圓滿成果）"], "core_title": "療癒過往學習創傷：重建內在安全感與心理防禦", "core_desc": "長期的失敗經驗會在大腦留下創傷記號。即使經歷無數次辛酸，也不必耿耿於懷。家長要振作起來，保持心地善良與非批判式的接納，多給予正面肯定，帶領孩子化險為夷。（本篇延伸引用自 314 實證知識庫，提供最堅實的神經醫學與心理調適依據）。", "articles": [{"title": "長期嚴重精神創傷會不會導致注意力不集中，易怒？", "year": "2024年"}]}, {"id": 18, "header": "第十八籤【丙辰】", "category": "🤝 同儕與社交人際", "orig": ["君問中間此言因", "看看祿馬拱前程", "若得貴人多得利", "和合自有兩分明"], "trans": ["🌅 （君問中間此言因 ➔ 點亮大腦專注高光時刻，讓職涯與生活的困頓逐漸散去）", "⚡ （看看祿馬拱前程 ➔ 擺脫拖延與執行功能障礙，邁向自信與成功）", "🎯 （若得貴人多得利 ➔ 善用成人 ADHD 的超專注與創造力特質，大展身手）", "⛵ （和合自有兩分明 ➔ 順應神經多樣性天性前行，終將獲得圓滿成果）"], "core_title": "職場正向回饋：4:1 讚美法則與同儕肯定機制", "core_desc": "孩子心田善良，善心自會有善報。在進行行為矯正時，家長應運用「正向行為支持（PBS）」。在朋友與同儕面前，維持「4 個讚美：1 個修正」的黃金比例，幫孩子做面子，引導貴人相助。（本篇延伸引用自 314 實證知識庫，提供最堅實的神經醫學與心理調適依據）。", "articles": [{"title": "家長友誼教練（PFC）與 4:1 讚美修正法則", "year": "2025年"}]}, {"id": 19, "header": "第十九籤【丙午】", "category": "💼 職場與工作執行", "orig": ["富貴由命天註定", "心高必然誤君期", "不然且回依舊路", "雲開月出自分明"], "trans": ["🌅 （富貴由命天註定 ➔ 點亮大腦專注高光時刻，讓職涯與生活的困頓逐漸散去）", "⚡ （心高必然誤君期 ➔ 擺脫拖延與執行功能障礙，邁向自信與成功）", "🎯 （不然且回依舊路 ➔ 善用成人 ADHD 的超專注與創造力特質，大展身手）", "⛵ （雲開月出自分明 ➔ 順應神經多樣性天性前行，終將獲得圓滿成果）"], "core_title": "複雜任務分解：工作分析法在職場專案的應用", "core_desc": "野心太大或期望過高反會招致失敗。同樣的努力不一定有同樣的結果，明理的家長不要奢求孩子一躍登頂。應將任務化整為零，進行「工作分析（Task Analysis）」，設定合理可達成的目標。（本篇延伸引用自 314 實證知識庫，提供最堅實的神經醫學與心理調適依據）。", "articles": [{"title": "ADHD維持投入的秘訣：明確目標與多步驟變化", "year": "2019年"}]}, {"id": 20, "header": "第二十籤【丙申】", "category": "🩺 成人就醫與藥物", "orig": ["前人積德後人收", "積善之家必有餘", "娶妻生子身安樂", "命逢太白多吉慶"], "trans": ["🌅 （前人積德後人收 ➔ 點亮大腦專注高光時刻，讓職涯與生活的困頓逐漸散去）", "⚡ （積善之家必有餘 ➔ 擺脫拖延與執行功能障礙，邁向自信與成功）", "🎯 （娶妻生子身安樂 ➔ 善用成人 ADHD 的超專注與創造力特質，大展身手）", "⛵ （命逢太白多吉慶 ➔ 順應神經多樣性天性前行，終將獲得圓滿成果）"], "core_title": "早一步尋求醫療評估：防範職場次發性焦慮與低潮", "core_desc": "前人種樹後人乘涼。在兒童發育早期發現疑似 ADHD 或發展問題，早期進行環境調整與就醫評估，能避免青少年時期的挫折與對立。建立家長、老師、醫師共組的防護網，是給孩子最好的禮物。（本篇延伸引用自 314 實證知識庫，提供最堅實的神經醫學與心理調適依據）。", "articles": [{"title": "ADHD 早期診斷與就醫流程：家長與老師的防護網", "year": "2021年"}]}, {"id": 21, "header": "第二十一籤【丁亥】", "category": "💼 職場與工作執行", "orig": ["十方佛羽讚君卿", "歡喜冤家自相爭", "看君早晚見太平", "榮華富貴得安寧"], "trans": ["🌅 （十方佛羽讚君卿 ➔ 點亮大腦專注高光時刻，讓職涯與生活的困頓逐漸散去）", "⚡ （歡喜冤家自相爭 ➔ 擺脫拖延與執行功能障礙，邁向自信與成功）", "🎯 （看君早晚見太平 ➔ 善用成人 ADHD 的超專注與創造力特質，大展身手）", "⛵ （榮華富貴得安寧 ➔ 順應神經多樣性天性前行，終將獲得圓滿成果）"], "core_title": "聚光燈策略：建立成人 ADHD 的正向職業名聲與品牌", "core_desc": "孩子在同儕中常因過動或衝動被貼上「愛搗蛋」的單一標籤。家長應扮演名聲經紀人，使用「聚光燈策略」——在老師或其他家長面前刻意提及孩子的優點（如樂高很強、對小動物溫柔）。當周遭環境開始讚賞孩子，好印象就能取代舊偏見。（本篇延伸引用自 314 實證知識庫，提供最堅實的神經醫學與心理調適依據）。", "articles": [{"title": "打破 ADHD 社交困境：聚光燈策略與正向名聲", "year": "2025年"}]}, {"id": 22, "header": "第二十二籤【丁丑】", "category": "🩺 成人就醫與藥物", "orig": ["太公家業八十成", "月出光輝照大庭", "心下莫慌宜作福", "未來順利得安寧"], "trans": ["🌅 （太公家業八十成 ➔ 點亮大腦專注高光時刻，讓職涯與生活的困頓逐漸散去）", "⚡ （月出光輝照大庭 ➔ 擺脫拖延與執行功能障礙，邁向自信與成功）", "🎯 （心下莫慌宜作福 ➔ 善用成人 ADHD 的超專注與創造力特質，大展身手）", "⛵ （未來順利得安寧 ➔ 順應神經多樣性天性前行，終將獲得圓滿成果）"], "core_title": "成人女性 ADHD 的隱性遮蔽 (Masking) 與診斷過遲議題", "core_desc": "有些孩子（特別是女性 ADHD）因為沒有明顯的過動行為，小時候常被誤認為「害羞」或「不專心」，直到長大或成年後才被正確診斷。家長不必急於一時的爆發，只要持續提供支持，大腦發育成熟後依然能成就不凡。（本篇延伸引用自 314 實證知識庫，提供最堅實的神經醫學與心理調適依據）。", "articles": [{"title": "女性 ADHD 漏診與成人 ADHD 職場與生活調適", "year": "2023年"}]}, {"id": 23, "header": "第二十三籤【丁卯】", "category": "⚡ 情緒調控與 RSD", "orig": ["欲去長江水浪急", "行舟陸上未安全", "寬心且在沙灘坐", "聽得雷聲笑歡顏"], "trans": ["🌅 （欲去長江水浪急 ➔ 點亮大腦專注高光時刻，讓職涯與生活的困頓逐漸散去）", "⚡ （行舟陸上未安全 ➔ 擺脫拖延與執行功能障礙，邁向自信與成功）", "🎯 （寬心且在沙灘坐 ➔ 善用成人 ADHD 的超專注與創造力特質，大展身手）", "⛵ （聽得雷聲笑歡顏 ➔ 順應神經多樣性天性前行，終將獲得圓滿成果）"], "core_title": "拒絕社交退縮與職場焦慮：建立安心喘息避風港", "core_desc": "拒學與網路成癮背後，常隱藏著強烈的社交焦慮與無力感。當水浪太急時，硬推孩子向前只會加重對立。家長應「寬心且在沙灘坐」，提供無條件接納的家庭避風港，等杏仁核冷卻後再引導孩子逐步回歸。（本篇延伸引用自 314 實證知識庫，提供最堅實的神經醫學與心理調適依據）。", "articles": [{"title": "拒學、社交焦慮與網路成癮背後的心理根源", "year": "2023年"}]}, {"id": 24, "header": "第二十四籤【丁巳】", "category": "💼 職場與工作執行", "orig": ["月出光輝本清吉", "浮雲總是蔽陰色", "戶內安心寬處坐", "雲開月出照天下"], "trans": ["🌅 （月出光輝本清吉 ➔ 點亮大腦專注高光時刻，讓職涯與生活的困頓逐漸散去）", "⚡ （浮雲總是蔽陰色 ➔ 擺脫拖延與執行功能障礙，邁向自信與成功）", "🎯 （戶內安心寬處坐 ➔ 善用成人 ADHD 的超專注與創造力特質，大展身手）", "⛵ （雲開月出照天下 ➔ 順應神經多樣性天性前行，終將獲得圓滿成果）"], "core_title": "保護好奇心與熱情：成人 ADHD 的超專注 (Hyperfocus) 引擎", "core_desc": "ADHD 孩子從不缺乏動機！他們會研究旋轉椅、探索地板聲音，對世界充滿好奇。但隨著年級增加，苦苦追趕一般標準的挫折讓動機消失了。重點不是如何「改變孩子」，而是大人如何「避免繼續傷害動機」，建立安全的學習環境。（本篇延伸引用自 314 實證知識庫，提供最堅實的神經醫學與心理調適依據）。", "articles": [{"title": "為什麼孩子不愛上學？從大腦學習機制找到答案", "year": "2022年"}]}, {"id": 25, "header": "第二十五籤【丁未】", "category": "💼 職場與工作執行", "orig": ["總是前途莫心勞", "求神問卜枉徒勞", "官法如爐不自由", "施主寬心坐高樓"], "trans": ["🌅 （總是前途莫心勞 ➔ 點亮大腦專注高光時刻，讓職涯與生活的困頓逐漸散去）", "⚡ （求神問卜枉徒勞 ➔ 擺脫拖延與執行功能障礙，邁向自信與成功）", "🎯 （官法如爐不自由 ➔ 善用成人 ADHD 的超專注與創造力特質，大展身手）", "⛵ （施主寬心坐高樓 ➔ 順應神經多樣性天性前行，終將獲得圓滿成果）"], "core_title": "大腦突觸修剪與學習可塑性：建立可持續的習慣", "core_desc": "很多人不是記憶不好，而是無法有效率地「忘記」。無用訊息占用記憶體時大腦就會當機。遺忘是大腦突觸修剪的主動過程。家長應協助孩子建立心理過濾器，透過睡眠與正念清理大腦超載。（本篇延伸引用自 314 實證知識庫，提供最堅實的神經醫學與心理調適依據）。", "articles": [{"title": "前額葉控制的主動遺忘：使記憶適應認知和情緒目標", "year": "2024年"}]}, {"id": 26, "header": "第二十六籤【丁酉】", "category": "🧘 自我接納與冒牌者", "orig": ["選出預頭任君行", "高歌鼓舞樂昇平", "事和意順多吉慶", "前途光明自從容"], "trans": ["🌅 （選出預頭任君行 ➔ 點亮大腦專注高光時刻，讓職涯與生活的困頓逐漸散去）", "⚡ （高歌鼓舞樂昇平 ➔ 擺脫拖延與執行功能障礙，邁向自信與成功）", "🎯 （事和意順多吉慶 ➔ 善用成人 ADHD 的超專注與創造力特質，大展身手）", "⛵ （前途光明自從容 ➔ 順應神經多樣性天性前行，終將獲得圓滿成果）"], "core_title": "適性職涯選擇：尋找符合神經多元優勢的職場賽道", "core_desc": "當孩子的注意力改善、建立安全學習環境後，只要優點能被看見，基於對事物好奇的本性，孩子就能自動繼續前進學習。家長應協助孩子挑選適合的戰場，而非在劣勢項目盲目內耗。（本篇延伸引用自 314 實證知識庫，提供最堅實的神經醫學與心理調適依據）。", "articles": [{"title": "當優點被看見，孩子就能自動繼續前進", "year": "2022年"}]}, {"id": 27, "header": "第二十七籤【戊子】", "category": "🧘 自我接納與冒牌者", "orig": ["君爾寬心且自由", "物色相宜自適求", "順水推舟無不利", "前途清吉保無憂"], "trans": ["🌅 （君爾寬心且自由 ➔ 點亮大腦專注高光時刻，讓職涯與生活的困頓逐漸散去）", "⚡ （物色相宜自適求 ➔ 擺脫拖延與執行功能障礙，邁向自信與成功）", "🎯 （順水推舟無不利 ➔ 善用成人 ADHD 的超專注與創造力特質，大展身手）", "⛵ （前途清吉保無憂 ➔ 順應神經多樣性天性前行，終將獲得圓滿成果）"], "core_title": "視覺化工具在生活與工作的應用：減輕腦力負擔", "core_desc": "對待 ADHD 孩子不應逆水行舟。善用「視覺化線索（標籤、顏色袋）」、「計時器（番茄鐘）」等輔具，順應孩子大腦處理訊息的特點。當教養方法與大腦特性相宜，學習自然順暢無憂。（本篇延伸引用自 314 實證知識庫，提供最堅實的神經醫學與心理調適依據）。", "articles": [{"title": "做好注意力規劃，避免碎片化學習", "year": "2024年"}]}, {"id": 28, "header": "第二十八籤【戊寅】", "category": "🏡 生活管理與睡眠", "orig": ["於今此景正當時", "看看欲吐百花魁", "若能遇得春色到", "一洒清吉脫塵埃"], "trans": ["🌅 （於今此景正當時 ➔ 點亮大腦專注高光時刻，讓職涯與生活的困頓逐漸散去）", "⚡ （看看欲吐百花魁 ➔ 擺脫拖延與執行功能障礙，邁向自信與成功）", "🎯 （若能遇得春色到 ➔ 善用成人 ADHD 的超專注與創造力特質，大展身手）", "⛵ （一洒清吉脫塵埃 ➔ 順應神經多樣性天性前行，終將獲得圓滿成果）"], "core_title": "移除念力工作迷思：建立具體、可量化的行動路徑", "core_desc": "家長應移除「吾心信其可行，則雖移山填海之難，終有成功之日」這種單靠念力的作法。真正的改變來自於環境的調整。建立安全的學習環境後，孩子自然能萌芽茁壯。（本篇延伸引用自 314 實證知識庫，提供最堅實的神經醫學與心理調適依據）。", "articles": [{"title": "移除念力作法，建立安全的學習環境", "year": "2022年"}]}, {"id": 29, "header": "第二十九籤【戊辰】", "category": "🧘 自我接納與冒牌者", "orig": ["枯木可惜逢春時", "如今好運漸漸來", "莫聽人言多短長", "時來運轉自和同"], "trans": ["🌅 （枯木可惜逢春時 ➔ 點亮大腦專注高光時刻，讓職涯與生活的困頓逐漸散去）", "⚡ （如今好運漸漸來 ➔ 擺脫拖延與執行功能障礙，邁向自信與成功）", "🎯 （莫聽人言多短長 ➔ 善用成人 ADHD 的超專注與創造力特質，大展身手）", "⛵ （時來運轉自和同 ➔ 順應神經多樣性天性前行，終將獲得圓滿成果）"], "core_title": "防禦外在負面標籤：建立堅固的成人內在自我认同", "core_desc": "面對鄰居或親友對孩子的指指點點（「就是沒教好」、「長大就好了」），家長要「莫聽人言多短長」。ADHD 是生理性的神經發展議題，堅持專業醫療與實證教養，枯木逢春終有時。（本篇延伸引用自 314 實證知識庫，提供最堅實的神經醫學與心理調適依據）。", "articles": [{"title": "新觀點：韌性的神經迴路與壓力免疫", "year": "2026年"}]}, {"id": 30, "header": "第三十籤【戊午】", "category": "🩺 成人就醫與藥物", "orig": ["漸漸脫出見太平", "推陳出新再立名", "看看欲吐百花魁", "好運必定到家門"], "trans": ["🌅 （漸漸脫出見太平 ➔ 點亮大腦專注高光時刻，讓職涯與生活的困頓逐漸散去）", "⚡ （推陳出新再立名 ➔ 擺脫拖延與執行功能障礙，邁向自信與成功）", "🎯 （看看欲吐百花魁 ➔ 善用成人 ADHD 的超專注與創造力特質，大展身手）", "⛵ （好運必定到家門 ➔ 順應神經多樣性天性前行，終將獲得圓滿成果）"], "core_title": "大腦覺醒與獎勵系統：活化成人多巴胺路徑促進執行力", "core_desc": "2025 年《Cell》最新神經科學研究指出，ADHD 藥物主要作用於大腦的「覺醒 (Arousal)」與「獎勵 (Reward)」區域，而非傳統說法。了解這點能幫助家長推陳出新，理解孩子為何需要過動來尋求刺激，並建立藥物主權與正確治療態度。（本篇延伸引用自 314 實證知識庫，提供最堅實的神經醫學與心理調適依據）。", "articles": [{"title": "Cell 最新研究：ADHD 藥物主要作用於覺醒與獎勵區域", "year": "2025年"}]}, {"id": 31, "header": "第三十一籤【己丑】", "category": "⚡ 情緒調控與 RSD", "orig": ["巽足清香得太平", "花開花謝結子成", "寬心且看月中桂", "郎君即便見太平"], "trans": ["🌅 （巽足清香得太平 ➔ 點亮大腦專注高光時刻，讓職涯與生活的困頓逐漸散去）", "⚡ （花開花謝結子成 ➔ 擺脫拖延與執行功能障礙，邁向自信與成功）", "🎯 （寬心且看月中桂 ➔ 善用成人 ADHD 的超專注與創造力特質，大展身手）", "⛵ （郎君即便見太平 ➔ 順應神經多樣性天性前行，終將獲得圓滿成果）"], "core_title": "正念呼吸 STOP 技巧：成人焦慮與衝動控制處方", "core_desc": "當孩子情緒暴怒或家長火氣上升時，最好的方法是正念 STOP 技巧：S（Stop 動作暫停）、T（Take a breath 深呼吸喝水）、O（Observe 觀察感受與心跳）、P（Process 選擇合適方法）。讓杏仁核冷卻，前額葉重新接管大腦。（本篇延伸引用自 314 實證知識庫，提供最堅實的神經醫學與心理調適依據）。", "articles": [{"title": "正念呼吸 STOP 技巧與情緒調節", "year": "2020年"}]}, {"id": 32, "header": "第三十二籤【己卯】", "category": "⚡ 情緒調控與 RSD", "orig": ["龍虎相交在勝敗", "貞勝貞負自相爭", "看君早晚見太平", "榮華富貴得安寧"], "trans": ["🌅 （龍虎相交在勝敗 ➔ 點亮大腦專注高光時刻，讓職涯與生活的困頓逐漸散去）", "⚡ （貞勝貞負自相爭 ➔ 擺脫拖延與執行功能障礙，邁向自信與成功）", "🎯 （看君早晚見太平 ➔ 善用成人 ADHD 的超專注與創造力特質，大展身手）", "⛵ （榮華富貴得安寧 ➔ 順應神經多樣性天性前行，終將獲得圓滿成果）"], "core_title": "化解職場對立與防衛：合作式問題解決 (CPS) 雙贏策略", "core_desc": "ADHD 青少年常伴隨對立反抗（ODD）。大人若與孩子硬碰硬（龍虎相爭），會強化大腦的威脅路徑。臨床教養建議：封鎖 AI 式的生硬糾正句型（如「這不是...而是...」），改用「接納感受、堅持界線」的語氣，化解對立。（本篇延伸引用自 314 實證知識庫，提供最堅實的神經醫學與心理調適依據）。", "articles": [{"title": "對立反抗症 ODD 與親子衝突處方", "year": "2026年"}]}, {"id": 33, "header": "第三十三籤【己巳】", "category": "❤️ 伴侶與親密關係", "orig": ["欲求勝敗兩相全", "用盡心機總未休", "風雲致雨落洋洋", "命逢太白守身邊"], "trans": ["🌅 （欲求勝敗兩相全 ➔ 點亮大腦專注高光時刻，讓職涯與生活的困頓逐漸散去）", "⚡ （用盡心機總未休 ➔ 擺脫拖延與執行功能障礙，邁向自信與成功）", "🎯 （風雲致雨落洋洋 ➔ 善用成人 ADHD 的超專注與創造力特質，大展身手）", "⛵ （命逢太白守身邊 ➔ 順應神經多樣性天性前行，終將獲得圓滿成果）"], "core_title": "運動作為成人精神健康的第三支柱：促進神經滋養因子", "core_desc": "單方面強加規定只會引發反彈。合作式問題解決（Collaborative Problem Solving）主張：先了解孩子的困難（如寫作業太累或字太難），再表達大人的關切，最後邀請孩子一起腦力激盪出兩全其美的解決方案。（本篇延伸引用自 314 實證知識庫，提供最堅實的神經醫學與心理調適依據）。", "articles": [{"title": "從對立到雙贏：合作式問題解決策略", "year": "2023年"}]}, {"id": 34, "header": "第三十四籤【己未】", "category": "🩺 成人就醫與藥物", "orig": ["漸漸脫出見太平", "推陳出新再立名", "看看欲吐百花魁", "好運必定到家門"], "trans": ["🌅 （漸漸脫出見太平 ➔ 點亮大腦專注高光時刻，讓職涯與生活的困頓逐漸散去）", "⚡ （推陳出新再立名 ➔ 擺脫拖延與執行功能障礙，邁向自信與成功）", "🎯 （看看欲吐百花魁 ➔ 善用成人 ADHD 的超專注與創造力特質，大展身手）", "⛵ （好運必定到家門 ➔ 順應神經多樣性天性前行，終將獲得圓滿成果）"], "core_title": "工作記憶的雙軌機制：語音迴路與視空繪圖板策略", "core_desc": "除了藥物與行為治療，規律的中高強度運動（特別是需要高度認知參與的運動如球類、武術）是 ADHD 治療的第三支柱。運動能直接刺激多巴胺與正腎上腺素分泌，活化前額葉皮質，提升執行功能。（本篇延伸引用自 314 實證知識庫，提供最堅實的神經醫學與心理調適依據）。", "articles": [{"title": "運動作為 ADHD 治療的第三支柱：刺激多巴胺分泌", "year": "2025年"}]}, {"id": 35, "header": "第三十五籤【己酉】", "category": "💼 職場與工作執行", "orig": ["音書許字未曾真", "前途進退總無因", "戶內安心寬處坐", "雲開月出自分明"], "trans": ["🌅 （音書許字未曾真 ➔ 點亮大腦專注高光時刻，讓職涯與生活的困頓逐漸散去）", "⚡ （前途進退總無因 ➔ 擺脫拖延與執行功能障礙，邁向自信與成功）", "🎯 （戶內安心寬處坐 ➔ 善用成人 ADHD 的超專注與創造力特質，大展身手）", "⛵ （雲開月出自分明 ➔ 順應神經多樣性天性前行，終將獲得圓滿成果）"], "core_title": "建立成人依附安全感：擺脫關係焦慮與過度敏感", "core_desc": "ADHD 孩子常有「語音迴路（序列記憶）」缺失，聽完三個口頭指令就會漏掉兩個。但他們的「視空繪圖板（空間視覺）」往往較強。大人應減少口頭碎念（音書未曾真），改用視覺化檢核表、照片或貼紙（清清楚楚陳列），幫大腦做補償。（本篇延伸引用自 314 實證知識庫，提供最堅實的神經醫學與心理調適依據）。", "articles": [{"title": "工作記憶缺失與語音迴路 vs 視空繪圖板補償", "year": "2019年"}]}, {"id": 36, "header": "第三十六籤【庚子】", "category": "🤝 同儕與社交人際", "orig": ["福如東海壽如山", "君爾何須背後看", "不知此去相愛愉", "他日與我卻無干"], "trans": ["🌅 （福如東海壽如山 ➔ 點亮大腦專注高光時刻，讓職涯與生活的困頓逐漸散去）", "⚡ （君爾何須背後看 ➔ 擺脫拖延與執行功能障礙，邁向自信與成功）", "🎯 （不知此去相愛愉 ➔ 善用成人 ADHD 的超專注與創造力特質，大展身手）", "⛵ （他日與我卻無干 ➔ 順應神經多樣性天性前行，終將獲得圓滿成果）"], "core_title": "習慣的力量：自動化行為模式減少決策疲勞", "core_desc": "依附理論指出，孩子透過對大人的依附獲得安全感。當需求獲得滿足時，大腦便能放心地去探索世界。反之，若在家庭中缺乏安全感，孩子常會轉向同儕尋求不成熟的連結，甚至招致人際霸凌。（本篇延伸引用自 314 實證知識庫，提供最堅實的神經醫學與心理調適依據）。", "articles": [{"title": "依附理論：當孩子缺乏安全感時的轉向同儕行為", "year": "2024年"}]}, {"id": 37, "header": "第三十七籤【庚寅】", "category": "💼 職場與工作執行", "orig": ["運逢得意身康泰", "麻衣換綠柳隨風", "一向前途通大道", "萬事清吉保平安"], "trans": ["🌅 （運逢得意身康泰 ➔ 點亮大腦專注高光時刻，讓職涯與生活的困頓逐漸散去）", "⚡ （麻衣換綠柳隨風 ➔ 擺脫拖延與執行功能障礙，邁向自信與成功）", "🎯 （一向前途通大道 ➔ 善用成人 ADHD 的超專注與創造力特質，大展身手）", "⛵ （萬事清吉保平安 ➔ 順應神經多樣性天性前行，終將獲得圓滿成果）"], "core_title": "同理心與傾聽：修復職場與家庭人際張力", "core_desc": "習慣是在「提示、常規、獎勵」三要素中不斷增強的。拖延是一種壞習慣，因為它能立即緩解寫作業的焦慮。要建立好習慣，家長需重新設計提示（如放置書包點），簡化常規，並在完成時給予立即的正向獎勵。（本篇延伸引用自 314 實證知識庫，提供最堅實的神經醫學與心理調適依據）。", "articles": [{"title": "習慣的力量：提示、常規與獎勵迴路", "year": "2019年"}]}, {"id": 38, "header": "第三十八籤【庚辰】", "category": "❤️ 伴侶與親密關係", "orig": ["名顯意揚幸運逢", "花開花謝結子成", "寬心且看月中桂", "郎君即便見太平"], "trans": ["🌅 （名顯意揚幸運逢 ➔ 點亮大腦專注高光時刻，讓職涯與生活的困頓逐漸散去）", "⚡ （花開花謝結子成 ➔ 擺脫拖延與執行功能障礙，邁向自信與成功）", "🎯 （寬心且看月中桂 ➔ 善用成人 ADHD 的超專注與創造力特質，大展身手）", "⛵ （郎君即便見太平 ➔ 順應神經多樣性天性前行，終將獲得圓滿成果）"], "core_title": "建立實體醫療與心理諮商支持底線：拒絕無效內耗", "core_desc": "面對受挫或拒學的孩子，家長常犯的錯誤是急著給建議或講道理（表面同情）。正確做法是運用「真誠同理」——不帶批判地接住孩子的「社會痛（Social Pain）」，將「不良行為」與「孩子的自我價值」分開，給予安全感。（本篇延伸引用自 314 實證知識庫，提供最堅實的神經醫學與心理調適依據）。", "articles": [{"title": "真誠同理 vs 表面同情：接住孩子的社會痛", "year": "2025年"}]}, {"id": 39, "header": "第三十九籤【庚午】", "category": "🤝 同儕與社交人際", "orig": ["意中若問神仙事", "用盡心機總未休", "陽世不知陰世事", "官法如爐不自由"], "trans": ["🌅 （意中若問神仙事 ➔ 點亮大腦專注高光時刻，讓職涯與生活的困頓逐漸散去）", "⚡ （用盡心機總未休 ➔ 擺脫拖延與執行功能障礙，邁向自信與成功）", "🎯 （陽世不知陰世事 ➔ 善用成人 ADHD 的超專注與創造力特質，大展身手）", "⛵ （官法如爐不自由 ➔ 順應神經多樣性天性前行，終將獲得圓滿成果）"], "core_title": "閱讀與背景知識積累：降低成人認知負荷與學習焦慮", "core_desc": "精神健康與 ADHD 有其嚴謹的醫學與神經生物學基礎。嚴禁透過網路遠端確診或聽信未經證實的偏方。當察覺孩子有嚴重情緒失控、暴力或自傷風險時，務必引導至實體醫療機構進行專業評估。（本篇延伸引用自 314 實證知識庫，提供最堅實的神經醫學與心理調適依據）。", "articles": [{"title": "醫療免責底線與實體醫療評估引導", "year": "2026年"}]}, {"id": 40, "header": "第四十籤【庚申】", "category": "💼 職場與工作執行", "orig": ["平生富貴成吉慶", "麻衣換綠柳隨風", "一向前途通大道", "萬事清吉保平安"], "trans": ["🌅 （平生富貴成吉慶 ➔ 點亮大腦專注高光時刻，讓職涯與生活的困頓逐漸散去）", "⚡ （麻衣換綠柳隨風 ➔ 擺脫拖延與執行功能障礙，邁向自信與成功）", "🎯 （一向前途通大道 ➔ 善用成人 ADHD 的超專注與創造力特質，大展身手）", "⛵ （萬事清吉保平安 ➔ 順應神經多樣性天性前行，終將獲得圓滿成果）"], "core_title": "照顧者心理衰竭處方：家長與成人自身的自我關照", "core_desc": "寫作業或學習困難，往往是因為大腦「背景知識不足」。當背景知識匱乏時，學習就像在陌生城市沒有地圖。培養孩子的閱讀習慣能豐富其背景知識，讓前額葉在處理新資訊時大為減壓。（本篇延伸引用自 314 實證知識庫，提供最堅實的神經醫學與心理調適依據）。", "articles": [{"title": "如何培養孩子的閱讀習慣與長效專注", "year": "2022年"}]}, {"id": 41, "header": "第四十一籤【庚戌】", "category": "🧘 自我接納與冒牌者", "orig": ["今行到此實難過", "造化由來未經過", "程序的確須當守", "時來運轉得和合"], "trans": ["🌅 （今行到此實難過 ➔ 點亮大腦專注高光時刻，讓職涯與生活的困頓逐漸散去）", "⚡ （造化由來未經過 ➔ 擺脫拖延與執行功能障礙，邁向自信與成功）", "🎯 （程序的確須當守 ➔ 善用成人 ADHD 的超專注與創造力特質，大展身手）", "⛵ （時來運轉得和合 ➔ 順應神經多樣性天性前行，終將獲得圓滿成果）"], "core_title": "情緒自我反照：覺察生理緊繃與緊急煞車機制", "core_desc": "陪伴 ADHD 或情緒障礙孩子長大，家長常面臨嚴重的「照顧者疲憊（Burnout）」。當感覺「今行到此實難過」時，請記住這不是您的錯。家長先照顧好自己的身心健康，尋求支持團體與專業醫療程序，才能給孩子穩定的力量。（本篇延伸引用自 314 實證知識庫，提供最堅實的神經醫學與心理調適依據）。", "articles": [{"title": "過動兒父母完全指導手冊：照顧者心理支持與自我關照", "year": "2020年"}]}, {"id": 42, "header": "第四十二籤【辛丑】", "category": "⚡ 情緒調控與 RSD", "orig": ["一毫反照因緣動", "萬事清吉保平安", "戶內安心寬處坐", "雲開月出照天下"], "trans": ["🌅 （一毫反照因緣動 ➔ 點亮大腦專注高光時刻，讓職涯與生活的困頓逐漸散去）", "⚡ （萬事清吉保平安 ➔ 擺脫拖延與執行功能障礙，邁向自信與成功）", "🎯 （戶內安心寬處坐 ➔ 善用成人 ADHD 的超專注與創造力特質，大展身手）", "⛵ （雲開月出照天下 ➔ 順應神經多樣性天性前行，終將獲得圓滿成果）"], "core_title": "透視心智防衛機轉：看見情緒暴怒背後的脆弱", "core_desc": "情緒管理必須大人先自我練習。當孩子怒了、爸媽也火了時，第一步是「一毫反照」——覺察自己的情緒是否被孩子牽動，提醒自己緊急煞車。透過深呼吸使怒氣降溫，避免兩敗俱傷。（本篇延伸引用自 314 實證知識庫，提供最堅實的神經醫學與心理調適依據）。", "articles": [{"title": "覺察自己的情緒：提醒自己緊急煞車", "year": "2020年"}]}, {"id": 43, "header": "第四十三籤【辛卯】", "category": "⚡ 情緒調控與 RSD", "orig": ["欲去長江水浪急", "行舟陸上未安全", "寬心且在沙灘坐", "聽得雷聲笑歡顏"], "trans": ["🌅 （欲去長江水浪急 ➔ 點亮大腦專注高光時刻，讓職涯與生活的困頓逐漸散去）", "⚡ （行舟陸上未安全 ➔ 擺脫拖延與執行功能障礙，邁向自信與成功）", "🎯 （寬心且在沙灘坐 ➔ 善用成人 ADHD 的超專注與創造力特質，大展身手）", "⛵ （聽得雷聲笑歡顏 ➔ 順應神經多樣性天性前行，終將獲得圓滿成果）"], "core_title": "職能治療觀點：多步驟職場任務分析與有趣化設計", "core_desc": "孩子展現出對立、嗆聲或「被退學也沒差」的狠話，往往是大腦在面對過大壓力時的「心理防衛機轉」。大人若只看到表面的暴怒而強力壓制，只會惡化對立。寬心看清防衛機轉，才能給予精準支持。（本篇延伸引用自 314 實證知識庫，提供最堅實的神經醫學與心理調適依據）。", "articles": [{"title": "孩子的心理防禦機轉：理解暴怒背後的脆弱", "year": "2024年"}]}, {"id": 44, "header": "第四十四籤【辛巳】", "category": "💼 職場與工作執行", "orig": ["客到前途百事宜", "花開花謝結子成", "寬心且看月中桂", "郎君即便見太平"], "trans": ["🌅 （客到前途百事宜 ➔ 點亮大腦專注高光時刻，讓職涯與生活的困頓逐漸散去）", "⚡ （花開花謝結子成 ➔ 擺脫拖延與執行功能障礙，邁向自信與成功）", "🎯 （寬心且看月中桂 ➔ 善用成人 ADHD 的超專注與創造力特質，大展身手）", "⛵ （郎君即便見太平 ➔ 順應神經多樣性天性前行，終將獲得圓滿成果）"], "core_title": "大腦獎勵路徑：即時正向強化的生生不息", "core_desc": "要讓 ADHD 小朋友願意持續投入，關鍵是活動必須有挑戰性且有趣。職能治療（OT）能幫助孩子進行工作分析，把複雜的家事或學習轉化為多步驟有變化的活動，在成就感中提升注意力。（本篇延伸引用自 314 實證知識庫，提供最堅實的神經醫學與心理調適依據）。", "articles": [{"title": "ADHD維持投入的秘訣：職能治療觀點", "year": "2019年"}]}, {"id": 45, "header": "第四十五籤【辛未】", "category": "💼 職場與工作執行", "orig": ["花開今已結成實", "君子請當報好音", "木火相生生不息", "福祿勝過舊家風"], "trans": ["🌅 （花開今已結成實 ➔ 點亮大腦專注高光時刻，讓職涯與生活的困頓逐漸散去）", "⚡ （君子請當報好音 ➔ 擺脫拖延與執行功能障礙，邁向自信與成功）", "🎯 （木火相生生不息 ➔ 善用成人 ADHD 的超專注與創造力特質，大展身手）", "⛵ （福祿勝過舊家風 ➔ 順應神經多樣性天性前行，終將獲得圓滿成果）"], "core_title": "移除『跟別人一樣好』的迷思：給自己真正的成就感", "core_desc": "大腦的行為改變極度依賴「即時正向強化」。當孩子展現出良好的替代行為時，家長應立即給予具體的讚美與獎勵（木火相生）。這種及時的好消息能活化多巴胺系統，讓正向行為生生不息。（本篇延伸引用自 314 實證知識庫，提供最堅實的神經醫學與心理調適依據）。", "articles": [{"title": "大腦獎勵路徑與即時回饋強化機制", "year": "2025年"}]}, {"id": 46, "header": "第四十六籤【辛酉】", "category": "🧘 自我接納與冒牌者", "orig": ["功名得意在頂尖", "花開花謝結子成", "寬心且看月中桂", "郎君即便見太平"], "trans": ["🌅 （功名得意在頂尖 ➔ 點亮大腦專注高光時刻，讓職涯與生活的困頓逐漸散去）", "⚡ （花開花謝結子成 ➔ 擺脫拖延與執行功能障礙，邁向自信與成功）", "🎯 （寬心且看月中桂 ➔ 善用成人 ADHD 的超專注與創造力特質，大展身手）", "⛵ （郎君即便見太平 ➔ 順應神經多樣性天性前行，終將獲得圓滿成果）"], "core_title": "神經可塑性：撕下過去舊標籤，走向未來新可能性", "core_desc": "許多家長要求特教或輔導老師全力訓練孩子「跟一般孩子一樣」。然而苦苦追趕的結果，孩子就算趕上了也只是跟別人一樣好，毫無成就感。移除這種迷思，發掘孩子的獨特強項，才能帶來真正的自信。（本篇延伸引用自 314 實證知識庫，提供最堅實的神經醫學與心理調適依據）。", "articles": [{"title": "移除『跟別人一樣好』的迷思：給孩子真正的成就感", "year": "2022年"}]}, {"id": 47, "header": "第四十七籤【壬子】", "category": "🧘 自我接納與冒牌者", "orig": ["君爾何須背後看", "木火相生生不息", "前途光明通大道", "萬事清吉保平安"], "trans": ["🌅 （君爾何須背後看 ➔ 點亮大腦專注高光時刻，讓職涯與生活的困頓逐漸散去）", "⚡ （木火相生生不息 ➔ 擺脫拖延與執行功能障礙，邁向自信與成功）", "🎯 （前途光明通大道 ➔ 善用成人 ADHD 的超專注與創造力特質，大展身手）", "⛵ （萬事清吉保平安 ➔ 順應神經多樣性天性前行，終將獲得圓滿成果）"], "core_title": "理解大腦預設模式網路 (DMN)：走神與恍神的神經學解析", "core_desc": "大腦神經具有可塑性（Neuroplasticity）。過去的注意力不集中或衝動失控，不代表未來的定局。家長切莫「背後看」，老是翻舊帳。用發展的眼光看待孩子，透過正向環境刺激重塑大腦連結。（本篇延伸引用自 314 實證知識庫，提供最堅實的神經醫學與心理調適依據）。", "articles": [{"title": "大腦神經可塑性：基因與環境的正向互動", "year": "2024年"}]}, {"id": 48, "header": "第四十八籤【壬寅】", "category": "🧠 預設模式網路DMN", "orig": ["陽世不知陰世事", "官法如爐不自由", "用盡心機總未休", "求神問卜枉徒勞"], "trans": ["🌅 （陽世不知陰世事 ➔ 點亮大腦專注高光時刻，讓職涯與生活的困頓逐漸散去）", "⚡ （官法如爐不自由 ➔ 擺脫拖延與執行功能障礙，邁向自信與成功）", "🎯 （用盡心機總未休 ➔ 善用成人 ADHD 的超專注與創造力特質，大展身手）", "⛵ （求神問卜枉徒勞 ➔ 順應神經多樣性天性前行，終將獲得圓滿成果）"], "core_title": "簡潔有效的指令與溝通：一次一件、精準明確", "core_desc": "當孩子上課發呆、寫作業恍神時，是大腦的「預設模式網絡（DMN）」在過度活化，而負責專注的執行網路未能順利切換。大人常誤以為孩子「故意不聽」。理解這層生理機制，改用輕拍或視覺線索喚回注意力。（本篇延伸引用自 314 實證知識庫，提供最堅實的神經醫學與心理調適依據）。", "articles": [{"title": "大腦預設模式網路 DMN 與走神恍神解析", "year": "2023年"}]}, {"id": 49, "header": "第四十九籤【壬辰】", "category": "💼 職場與工作執行", "orig": ["言語雖多不可從", "風雲致雨落洋洋", "命內此事難和合", "更逢一足出外鄉"], "trans": ["🌅 （言語雖多不可從 ➔ 點亮大腦專注高光時刻，讓職涯與生活的困頓逐漸散去）", "⚡ （風雲致雨落洋洋 ➔ 擺脫拖延與執行功能障礙，邁向自信與成功）", "🎯 （命內此事難和合 ➔ 善用成人 ADHD 的超專注與創造力特質，大展身手）", "⛵ （更逢一足出外鄉 ➔ 順應神經多樣性天性前行，終將獲得圓滿成果）"], "core_title": "教養與生活一致性：建立可預期的家庭與工作結構", "core_desc": "ADHD 孩子的大腦無法處理多重複雜指令。當大人指令超過特定字數或包含太多要求時，孩子的聽覺工作記憶立刻溢位（言語雖多不可從）。給予指令應：眼對眼、一次只給一個明確步驟、字數簡短。（本篇延伸引用自 314 實證知識庫，提供最堅實的神經醫學與心理調適依據）。", "articles": [{"title": "大人指令超過幾個字？如何給予簡潔有效指令", "year": "2019年"}]}, {"id": 50, "header": "第五十籤【壬午】", "category": "❤️ 伴侶與親密關係", "orig": ["佛前發誓無異心", "且看前途得好音", "花開花謝結子成", "郎君即便見太平"], "trans": ["🌅 （佛前發誓無異心 ➔ 點亮大腦專注高光時刻，讓職涯與生活的困頓逐漸散去）", "⚡ （且看前途得好音 ➔ 擺脫拖延與執行功能障礙，邁向自信與成功）", "🎯 （花開花謝結子成 ➔ 善用成人 ADHD 的超專注與創造力特質，大展身手）", "⛵ （郎君即便見太平 ➔ 順應神經多樣性天性前行，終將獲得圓滿成果）"], "core_title": "適性生涯規劃：發掘優勢特質與適宜賽道", "core_desc": "若父母或祖父母教養標準不一（黑臉白臉角力），孩子會感到混亂，甚至學會在漏洞中操弄。教養者之間應「無異心」，討論出共同的底線與獎懲規則，給予孩子一致且可預期的家庭結構。（本篇延伸引用自 314 實證知識庫，提供最堅實的神經醫學與心理調適依據）。", "articles": [{"title": "父母教養一致性與跨代溝通", "year": "2020年"}]}, {"id": 51, "header": "第五十一籤【壬申】", "category": "💼 職場與工作執行", "orig": ["東西南北不堪行", "前途此事正茫茫", "銅盆潑水難收回", "勸君且在戶內坐"], "trans": ["🌅 （東西南北不堪行 ➔ 點亮大腦專注高光時刻，讓職涯與生活的困頓逐漸散去）", "⚡ （前途此事正茫茫 ➔ 擺脫拖延與執行功能障礙，邁向自信與成功）", "🎯 （銅盆潑水難收回 ➔ 善用成人 ADHD 的超專注與創造力特質，大展身手）", "⛵ （勸君且在戶內坐 ➔ 順應神經多樣性天性前行，終將獲得圓滿成果）"], "core_title": "尊重多元智力特質：不要用爬樹能力評估一條魚", "core_desc": "抽得此籤表示目前的方向不適合強求。ADHD 或神經多元孩子（Neurodivergent）有其獨特的能力組合。當傳統學業賽道堪難行時，家長應協助孩子進行適性探索，發掘其高創造力、高行動力等特質，尋找能讓孩子發光發亮的專長領域。（本篇延伸引用自 314 實證知識庫，提供最堅實的神經醫學與心理調適依據）。", "articles": [{"title": "ADHD 的生涯規劃與適性選擇：發掘優勢天賦", "year": "2023年"}]}, {"id": 52, "header": "第五十二籤【壬戌】", "category": "🧘 自我接納與冒牌者", "orig": ["功名事業本由天", "心高必然誤君期", "不然且回依舊路", "雲開月出自分明"], "trans": ["🌅 （功名事業本由天 ➔ 點亮大腦專注高光時刻，讓職涯與生活的困頓逐漸散去）", "⚡ （心高必然誤君期 ➔ 擺脫拖延與執行功能障礙，邁向自信與成功）", "🎯 （不然且回依舊路 ➔ 善用成人 ADHD 的超專注與創造力特質，大展身手）", "⛵ （雲開月出自分明 ➔ 順應神經多樣性天性前行，終將獲得圓滿成果）"], "core_title": "自閉光譜 (ASD) 與成人心智理論：社交情境讀取與劇本", "core_desc": "愛因斯坦曾說：「每個人都是天才，但如果你用爬樹的能力來評估一條魚，它一生都會相信自己是個傻瓜。」依據多元智力理論，家長應尊重孩子的基因與智力組合，給予屬於他的大海，而非硬逼他去爬樹。（本篇延伸引用自 314 實證知識庫，提供最堅實的神經醫學與心理調適依據）。", "articles": [{"title": "尊重多元智力特質，給予發光舞台", "year": "2022年"}]}, {"id": 53, "header": "第五十三籤【癸丑】", "category": "🤝 同儕與社交人際", "orig": ["看君來意觀雙眉", "七分猜測三分依", "勸君作事可宜先", "和合清吉萬事成"], "trans": ["🌅 （看君來意觀雙眉 ➔ 點亮大腦專注高光時刻，讓職涯與生活的困頓逐漸散去）", "⚡ （七分猜測三分依 ➔ 擺脫拖延與執行功能障礙，邁向自信與成功）", "🎯 （勸君作事可宜先 ➔ 善用成人 ADHD 的超專注與創造力特質，大展身手）", "⛵ （和合清吉萬事成 ➔ 順應神經多樣性天性前行，終將獲得圓滿成果）"], "core_title": "打破女性 ADHD 的關係排擠與社交孤立處方", "core_desc": "ASD 孩子往往難以自動「觀雙眉」讀取別人的意圖與非語言情緒（心智理論困難）。家長與老師不應怪罪孩子「沒眼色」，而要預先（作事宜先）提供明確的社交規則說明與情境劇本練習，協助孩子建立社交架構。（本篇延伸引用自 314 實證知識庫，提供最堅實的神經醫學與心理調適依據）。", "articles": [{"title": "自閉症光譜 ASD 的心智理論與人際情境讀取", "year": "2022年"}]}, {"id": 54, "header": "第五十四籤【癸卯】", "category": "🤝 同儕與社交人際", "orig": ["孤燈寂寂夜沉沉", "萬事清吉保平安", "戶內安心寬處坐", "雲開月出照天下"], "trans": ["🌅 （孤燈寂寂夜沉沉 ➔ 點亮大腦專注高光時刻，讓職涯與生活的困頓逐漸散去）", "⚡ （萬事清吉保平安 ➔ 擺脫拖延與執行功能障礙，邁向自信與成功）", "🎯 （戶內安心寬處坐 ➔ 善用成人 ADHD 的超專注與創造力特質，大展身手）", "⛵ （雲開月出照天下 ➔ 順應神經多樣性天性前行，終將獲得圓滿成果）"], "core_title": "減法生活：給大腦留白與喘息空間", "core_desc": "ADHD 女孩常面臨隱晦的「關係攻擊（Relational Aggression）」，如小團體排擠、蜚語。由於女孩社交圈封閉且重視忠誠，一旦孤燈寂寂被排擠，極難獨自化解。家長需扮演「名聲經紀人」，主動進行策略性 Playdate 配對，協助打破偏見。（本篇延伸引用自 314 實證知識庫，提供最堅實的神經醫學與心理調適依據）。", "articles": [{"title": "ADHD 女孩的關係攻擊與同儕排擠處方", "year": "2025年"}]}, {"id": 55, "header": "第五十五籤【癸巳】", "category": "🏡 生活管理與睡眠", "orig": ["富貴由命天註定", "心高必然誤君期", "不然且回依舊路", "雲開月出自分明"], "trans": ["🌅 （富貴由命天註定 ➔ 點亮大腦專注高光時刻，讓職涯與生活的困頓逐漸散去）", "⚡ （心高必然誤君期 ➔ 擺脫拖延與執行功能障礙，邁向自信與成功）", "🎯 （不然且回依舊路 ➔ 善用成人 ADHD 的超專注與創造力特質，大展身手）", "⛵ （雲開月出自分明 ➔ 順應神經多樣性天性前行，終將獲得圓滿成果）"], "core_title": "去污名化：勇敢跨出成人醫療評估與專業求助的一步", "core_desc": "現代孩子常被填滿各種行程與期待（心高誤君期）。然而大腦需要「留白時間」來進行資訊消化與情感整合。實行減法教養，刪除不必要的過度要求，讓孩子大腦獲得喘息，學習效能反而顯著提升。（本篇延伸引用自 314 實證知識庫，提供最堅實的神經醫學與心理調適依據）。", "articles": [{"title": "減法教養：給大腦留白與喘息空間", "year": "2024年"}]}, {"id": 56, "header": "第五十六籤【癸未】", "category": "🩺 成人就醫與藥物", "orig": ["事到頭來總要理", "風雲致雨落洋洋", "命內此事難和合", "更逢一足出外鄉"], "trans": ["🌅 （事到頭來總要理 ➔ 點亮大腦專注高光時刻，讓職涯與生活的困頓逐漸散去）", "⚡ （風雲致雨落洋洋 ➔ 擺脫拖延與執行功能障礙，邁向自信與成功）", "🎯 （命內此事難和合 ➔ 善用成人 ADHD 的超專注與創造力特質，大展身手）", "⛵ （更逢一足出外鄉 ➔ 順應神經多樣性天性前行，終將獲得圓滿成果）"], "core_title": "衝突後的關係修復：真誠溝通與擁抱勝過長篇大論", "core_desc": "許多家長因害怕被貼標籤而拖延就醫（事到頭來總要理）。但 ADHD 或情緒障礙是生理性發展議題，越早尋求專業醫療評估與介入，越能避免後續的學業失敗與對立反抗。去污名化、正確看待醫療，是保護孩子的關鍵。（本篇延伸引用自 314 實證知識庫，提供最堅實的神經醫學與心理調適依據）。", "articles": [{"title": "ADHD 診斷與就醫去的污名化：正確看待醫療輔助", "year": "2021年"}]}, {"id": 57, "header": "第五十七籤【癸亥】", "category": "❤️ 伴侶與親密關係", "orig": ["事非經過不知難", "幸有貴人相扶助", "和合清吉萬事成", "郎君即便見太平"], "trans": ["🌅 （事非經過不知難 ➔ 點亮大腦專注高光時刻，讓職涯與生活的困頓逐漸散去）", "⚡ （幸有貴人相扶助 ➔ 擺脫拖延與執行功能障礙，邁向自信與成功）", "🎯 （和合清吉萬事成 ➔ 善用成人 ADHD 的超專注與創造力特質，大展身手）", "⛵ （郎君即便見太平 ➔ 順應神經多樣性天性前行，終將獲得圓滿成果）"], "core_title": "跨越成長風暴：引導成人獨立自主與壓力調適", "core_desc": "教養這條路「事非經過不知難」。衝突不可避免，但重點在於「修復」。當暴風雨過後，不要急著抓著孩子檢討講道理。有時候給孩子一個大大的擁抱，傳遞無條件的愛，更能瞬間撫平創傷、重建連結。（本篇延伸引用自 314 實證知識庫，提供最堅實的神經醫學與心理調適依據）。", "articles": [{"title": "衝突後的修復：給彼此一個擁抱勝過長篇大論", "year": "2020年"}]}, {"id": 58, "header": "第五十八籤【辛未/庚申】", "category": "💼 職場與工作執行", "orig": ["舟行風浪漸漸平", "于今得進可安寧", "必有貴人相扶助", "凶事脫出見太平"], "trans": ["🌅 （舟行風浪漸漸平 ➔ 點亮大腦專注高光時刻，讓職涯與生活的困頓逐漸散去）", "⚡ （于今得進可安寧 ➔ 擺脫拖延與執行功能障礙，邁向自信與成功）", "🎯 （必有貴人相扶助 ➔ 善用成人 ADHD 的超專注與創造力特質，大展身手）", "⛵ （凶事脫出見太平 ➔ 順應神經多樣性天性前行，終將獲得圓滿成果）"], "core_title": "共病鑑別：區分 ADHD 伴隨焦慮憂鬱與原發性情緒障礙", "core_desc": "青春期的 ADHD 孩子面臨荷爾蒙改變、性緊張、獨立渴望與前額葉尚未完全成熟的拉扯。風浪漸平之際，家長應逐步釋放控制權，從「指揮官」轉型為「顧問/導師」，陪伴孩子建立自主管理。（本篇延伸引用自 314 實證知識庫，提供最堅實的神經醫學與心理調適依據）。", "articles": [{"title": "青春期 ADHD 的性緊張、情緒風暴與獨立自主", "year": "2023年"}]}, {"id": 59, "header": "第五十九籤【壬戌/癸亥】", "category": "🩺 成人就醫與藥物", "orig": ["細雨霏霏落洋洋", "天災時氣必有傷", "命內此事難和合", "更逢一足出外鄉"], "trans": ["🌅 （細雨霏霏落洋洋 ➔ 點亮大腦專注高光時刻，讓職涯與生活的困頓逐漸散去）", "⚡ （天災時氣必有傷 ➔ 擺脫拖延與執行功能障礙，邁向自信與成功）", "🎯 （命內此事難和合 ➔ 善用成人 ADHD 的超專注與創造力特質，大展身手）", "⛵ （更逢一足出外鄉 ➔ 順應神經多樣性天性前行，終將獲得圓滿成果）"], "core_title": "大圓滿：建立愛與界線並存的幸福防護網", "core_desc": "長期的 ADHD 挫折容易共病焦慮與憂鬱症（細雨霏霏）。家長需注意孩子是因「學習功能受損引發的次發性低潮」，還是「原發性情緒障礙」。及早尋求醫師專業鑑別，才能給予正確的治療處方。（本篇延伸引用自 314 實證知識庫，提供最堅實的神經醫學與心理調適依據）。", "articles": [{"title": "ADHD 共病憂鬱與焦慮的鑑別與治療", "year": "2023年"}]}, {"id": 60, "header": "第六十籤【癸亥】", "category": "🧘 自我接納與冒牌者", "orig": ["月出光輝本清吉", "不須進退問前程", "婚姻皆由天註定", "和合清吉萬事成"], "trans": ["🌅 （月出光輝本清吉 ➔ 點亮大腦專注高光時刻，讓職涯與生活的困頓逐漸散去）", "⚡ （不須進退問前程 ➔ 擺脫拖延與執行功能障礙，邁向自信與成功）", "🎯 （婚姻皆由天註定 ➔ 善用成人 ADHD 的超專注與創造力特質，大展身手）", "⛵ （和合清吉萬事成 ➔ 順應神經多樣性天性前行，終將獲得圓滿成果）"], "core_title": "從無助到韌性：建立科學陪伴與自我愛護的精神家園", "core_desc": "六十甲子籤詩至此圓滿。這套衛教手冊的最終目的，是希望陪伴每一位家長：理解大腦發育（月出光輝）、建立溫和堅定的界線（和合清吉），並運用 314 知識庫的醫學實證，陪孩子平安成長。（本篇延伸引用自 314 實證知識庫，提供最堅實的神經醫學與心理調適依據）。", "articles": [{"title": "從無助到韌性：建立愛與界線並存的家庭防護網", "year": "2026年"}]}];
-
+    const POEMS_DATA = [{"id": 1, "header": "第一籤【甲子】", "category": "💼 職場與工作執行", "orig": ["日出便見風雲散", "光明清淨照世間", "一向前途通大道", "萬事清吉保平安"], "trans": ["🥀 您眼前看到的，可能是職場混亂、工作記憶超載與執行功能障礙。這層焦慮就像烏雲遮日，讓身為成年人的您倍感疲憊與自責。", "✨ 成人 ADHD 的大腦多巴胺與血清素迴路運作模式與常人不同。這是大腦的神經多樣性展現，絕非性格缺陷；建立適合自己的外部支持系統，優勢光芒自然展現。", "🌙 若沉溺於自我批判或冒牌者症候群，只會陷入內耗；反之，若善用數位簡化、工作記憶卸載等輔具，職涯與生活道路會越走越順暢。", "🛑 這是重新整理生活步調的契機。停止與他人盲目比較，用適合自己的節奏前行，大腦自然能在安全與節律中恢復高效與平靜。"], "core_title": "成人 ADHD 的工作記憶卸載：PACK 實體與數位簡化術", "quote_title": "大腦執行功能與工作記憶（Working Memory）", "quote_text": "成人 ADHD 的工作記憶空間較窄，容易造成資訊超載、遺忘與專注力跳躍。透過實體 Purge 清空與數位卸載，能有效降低大腦認知負擔。", "core_desc": "當面對職場桌面混亂、檔案找不到或專案無從下手時，代表工作記憶已過載。您不必自責怠惰，扮演自己的「外接系統」，用 PACK 清空法與微任務化陪伴，讓大腦重新聚焦。", "micro_actions": [{"title": "PACK 桌面清空術", "desc": "花 3 分鐘執行「Purge 清空」，把實體辦公桌或電腦桌面上無關的檔案與雜物清除，體驗視覺清爽帶來的控制感。"}, {"title": "5 分鐘微任務啟動卡", "desc": "面對不想開始的專案，設定計時器並告訴自己：「我只專心做 5 分鐘，時間到就可以暫停。」極低門檻降低啟動阻力，引爆多巴胺。"}], "articles": [{"title": "ADHD 小朋友的書包、抽屜是大黑洞!!!", "year": "2019年"}, {"title": "ADHD維持投入的秘訣", "year": "2019年"}]}, {"id": 2, "header": "第二籤【甲戌】", "category": "🧘 自我接納與冒牌者", "orig": ["於今此景正當時", "看看欲吐百花魁", "若能遇得春色到", "一洒清吉脫塵埃"], "trans": ["❄️ 您此刻可能正經歷職場挫折、專案卡關或對自我能力產生劇烈懷疑，深感寒冬般的無力。", "🌹 這其實是大腦經歷挫折後蓄積經驗、準備突破的關鍵時刻，低谷底下正孕育著潛力與轉機。", "🌿 若持續進行毀滅性的自我批判只會陷入習得無助；若能為自己注入「微小可控性」，就能像春風般啟動神經韌性。", "☀️ 擺脫冒牌者症候群的契機已到。在微小事務上重新獲取掌控感，大腦內側前額葉（mPFC）自會啟動韌性迴路。"], "core_title": "告別冒牌者症候群：注入可控性，激發成人神經韌性", "quote_title": "內側前額葉（mPFC）與神經韌性", "quote_text": "當成人感到職涯或生活一切不可控時，大腦縫際背核（DRN）會釋放無助訊號。只有讓自己重新感受到『這件事是我可以控制的』，mPFC 才會啟動煞車機制，打破習得無助與冒牌者焦慮。", "core_desc": "面對「我是不是不夠好」或「隨時會被揭穿」的冒牌者焦慮，背後是失去掌控感的神經反應。請放下對完美的執著，直接從小事中累積「我能決定」的掌控感。", "micro_actions": [{"title": "1 分鐘可控選擇卡", "desc": "今晚在微小事情上為自己做選擇（如：「今晚我選擇先處理這封信還是先休息 10 分鐘」），透過微小選擇激活 mPFC。"}, {"title": "微成就紀錄清單", "desc": "睡前寫下一件「今天我有完成的小事」，並給予自己一個肯定的肯定句，幫助大腦積累控制感與自尊。"}], "articles": [{"title": "「被退學也沒差」：從無助到韌性的希望", "year": "2026年"}]}, {"id": 3, "header": "第三籤【甲申】", "category": "❤️ 伴侶與親密關係", "orig": ["勸君把定心莫虛", "天註衣祿自有餘", "和合重重常吉慶", "時來終遇得明珠"], "trans": ["🥀 您常在伴侶關係中因害怕衝突或害怕被討厭，而在界線與溝通中搖擺不定、委曲求全。", "✨ 您與伴侶本身都具備建立成熟關係的資源與價值，不必因一時的神經多樣性差異而過度恐慌。", "🌙 若為維持表面和平而無底線忍讓，會引發「過度通融與情感失衡」，導致伴侶轉變為管教角色；唯有平等溝通才能重獲親密。", "🛑 堅守健康界線是關鍵。停止情感過度通融，建立「愛的無條件接納 + 行為的堅定界線」，關係自然結出碩果。"], "core_title": "成人伴侶關係：告別不對等管教，建立平等溝通界線", "quote_title": "親密關係中的過度通融（Accommodation）與界線", "quote_text": "在成人 ADHD 伴侶關係中，過度通融或一方扮演『父母管教角色』會破壞親密感。健康的夥伴關係建立在『情感無條件同理，但行為與責任堅定平分』之上。", "core_desc": "伴侶之間常陷於「一個提醒管教、另一個愧疚逃避」的惡性循環。擺脫愧疚感，釐清個人責任與界線，以成熟合作夥伴的立場對話，才能重建親密連結。", "micro_actions": [{"title": "責任與特權劃分法", "desc": "與伴侶一起條列家務與專案分工，將各自的責任清晰化，避免一方過度承擔或過度管教。"}, {"title": "非防禦性對話句", "desc": "當伴侶表達不滿時，使用：「我聽到你的焦慮了，我們一起看看怎麼解決這件事」，代替習慣性的辯解與逃避。"}], "articles": [{"title": "維持和平的代價：我越忍讓，孩子越失控？", "year": "2026年"}]}, {"id": 4, "header": "第四籤【甲午】", "category": "⚡ 情緒調控與 RSD", "orig": ["風恬浪靜可行舟", "恰是中秋月一輪", "凡事不須多憂慮", "福祿自有慶家門"], "trans": ["🥀 您常被突如其來的拒絕敏感（RSD）或職場批評引爆情緒，沉浸在隨時會崩潰的緊張與防衛中。", "✨ 如同中秋明月般，大腦前額葉皮質需要一個平靜、溫暖且具備生理安全感的大氣壓，才能穩定前行。", "🌙 若大腦頻繁陷入災難化聯想，杏仁核會過度活化，將微小的意見反饋放大為致命的人格否定。", "🛑 先讓自己成為「情緒絕緣體」。覺察心跳與生理緊繃，先停下來呼吸，大腦的神經調節迴路自然能平復。"], "core_title": "拒絕敏感性焦慮（RSD）：做自己的情緒絕緣體", "quote_title": "杏仁核過度活化與拒絕敏感性焦慮（RSD）", "quote_text": "成人 ADHD 的神經系統高度敏感，微小的批評易被大腦判讀為社會性生存威脅。建立『暫停與身體覺察』，能幫助大腦將主導權交還給前額葉。", "core_desc": "當感覺到刺痛與憤怒瞬間湧上時，這是 RSD 在警報。學會不立即回應，給自己 3 次深呼吸的時間與空間隔離，情緒風浪自會平息。", "micro_actions": [{"title": "3 深呼吸緊急煞車", "desc": "感到被批判而心跳加速時，先關閉嘴巴、進行 3 次深長的吐氣，並在心中默數 1 到 5 進行離場。"}, {"title": "打造個人微充電角", "desc": "在辦公桌或家中設定一個「靜音角落」，感到過載時去那裡戴上抗噪耳機靜置 5 分鐘。"}], "articles": [{"title": "【孩子怒了😡，爸媽也火了😤—談兒童情緒控制】", "year": "2020年"}]}, {"id": 5, "header": "第五籤【甲辰】", "category": "💼 職場與工作執行", "orig": ["只恐前途命有變", "勸君作急可宜先", "且守長江無大事", "命逢太白守身邊"], "trans": ["🥀 您常因時盲症（Time Blindness）或衝動答應過多工作，導致死線前夕慌亂崩潰、擔心職涯化為烏有。", "⏳ 這提醒職場執行切忌臨時急就章；面對複雜專案，需要預先規劃與視覺化提示。", "🌙 盲目試用各種花哨的方法或急求速效只會打亂節奏；穩穩守住每天基本的作息結構與時間框架才是根本。", "🛑 善用外在輔具與貴人。主動建立個人職場卡位戰略與數位行事曆，讓系統與夥伴成為你的外接大腦。"], "core_title": "職場時間盲區處方：建立外部結構，善用職場貴人", "quote_title": "時間感官障礙（Time Blindness）與外部結構", "quote_text": "成人 ADHD 難以精確估算時間流逝。將時間實體化（如沙漏、倒數計時器）並主動與職場夥伴溝通進度，能有效避免死線災難。", "core_desc": "時間對 ADHD 而言只有「現在」與「非現在」。不要依賴大腦憑空記憶時間，把日程與進度完全外接到行事曆與可視化看板上。", "micro_actions": [{"title": "正念 STOP 暫停卡", "desc": "衝動接下新任務前，執行「STOP」：S-暫停、T-呼吸、O-評估手上工作量、P-給出合理的完成期限。"}, {"title": "聚光燈合作溝通", "desc": "主動向信任的同事或主管說明自己的工作習慣（如：「我習慣每小節交付一次成果」），建立雙贏合作。"}], "articles": [{"title": "ADHD的自我控制能力", "year": "2019年"}, {"title": "為何孩子乖乖吃藥、上了社交課，人緣還是沒變好？打破 ADHD 社交困境的迷思", "year": "2025年"}]}, {"id": 6, "header": "第六籤【甲寅】", "category": "🏡 生活管理與睡眠", "orig": ["風雲致雨落洋洋", "天災時氣必有傷", "命內此事難和合", "更逢一足出外鄉"], "trans": ["🥀 您是否經常在深夜沉迷於手機刷訊，經歷報復性熬夜，隔天清晨極度痛苦與自責？", "💔 長期睡眠不足會損害大腦膠狀淋巴系統的排毒功能，顯著降低次日的前額葉專注力與情緒控制。", "🌙 切忌在深夜強迫自己用念力立刻入睡，強烈的失眠焦慮只會活化交感神經、讓大腦更加清醒。", "🛑 重新設定夜晚儀式。給大腦一個「離線緩衝區」，透過晨光照射與睡眠衛生逐漸校正晝夜節律。"], "core_title": "睡眠相位後移 (DSPS) 與深夜報復性熬夜處方", "quote_title": "晝夜節律與大腦膠狀淋巴系統（Glymphatic System）", "quote_text": "成人 ADHD 普遍存在褪黑激素延後分泌的生理傾向。夜晚報復性熬夜是大腦補償日間控制感失控的現象，改善需要透過光照與睡眠衛生物理校正。", "core_desc": "夜晚熬夜反映了大腦對「屬於自己的掌控時間」的強烈渴望。建立睡前數位降溫儀式，讓大腦在深層睡眠中修復與排毒。", "micro_actions": [{"title": "睡前 30 分鐘數位降溫", "desc": "睡前 30 分鐘將手機放到充電座並遠離床頭，換成聽輕音樂或閱讀實體書。"}, {"title": "晨光 10 分鐘照射", "desc": "早晨起床後，站在窗邊或陽台接受 10 分鐘自然陽光照射，重新設定大腦生物鐘。"}], "articles": [{"title": "孩子在學校長期遭受欺負的處理策略", "year": "2024年"}]}, {"id": 7, "header": "第七籤【辛亥】", "category": "🩺 成人就醫與藥物", "orig": ["雲開月出正分明", "不須進退問前程", "婚姻皆由天註定", "和合清吉萬事成"], "trans": ["🥀 過去多年被誤解為「懶散、粗心、沒毅力」的迷霧終於散去，了解神經學本質後方向逐漸清晰。", "✨ 不必再迷惘猶豫或陷入自責陷阱，尋求專業兒青/精神科醫療評估是邁向改變的關鍵第一步。", "🌙 坦然接受大腦多巴胺與正腎上腺素運作機制的先天差異，理解藥物是幫助大腦調整平衡的輔具。", "🛑 配合適當的醫療藥物與生活調整，神經訊號獲強化，生活與職涯的掌控力自能順利建立。"], "core_title": "成人就醫與藥物評估：重新找回大腦多巴胺與血清素平衡", "quote_title": "多巴胺與正腎上腺素再吸收抑制", "quote_text": "臨床實證顯示，成人 ADHD 接受適當醫療評估與藥物輔助，能有效提高大腦前額葉信噪比，改善執行功能並降低次發性焦慮。", "core_desc": "尋求精神科或心理諮商是為自己心智健康負責任的智者選擇。藥物就像是大腦的眼鏡，幫你把模糊的世界看清楚。", "micro_actions": [{"title": "就醫症狀觀察日誌", "desc": "紀錄自己一週內最困擾的專注、拖延或情緒時刻，作為與醫師諮詢時的客觀依據。"}, {"title": "去標籤正向對話", "desc": "在心中告訴自己：「尋求醫療評估是智者的勇敢選擇，我正在為自己的心智健康做最好的投資。」"}], "articles": [{"title": "MPH( 利他能) 藥物對大腦的影響", "year": "2019年"}, {"title": "治療ADHD藥物的作用機轉", "year": "2019年"}]}, {"id": 8, "header": "第八籤【辛丑】", "category": "🧘 自我接納與冒牌者", "orig": ["禾稻看看結成完", "此事必定兩相全", "回到家中寬心坐", "妻兒鼓舞樂團圓"], "trans": ["🥀 經過多年的摸索與自我調適，您獨特的神經多元優勢與創造力終於開始展現成果。", "✨ 找到符合自己大腦特質的賽道，職場表現與個人內心平安是可以兩全其美的，不必犧牲健康。", "🌙 請放寬心情，停止拿自己的短處去硬碰別人的長處，或是強迫自己符合常態分配的單一標準。", "🛑 學會看見並接納自己的獨特天賦，分享成就感的喜悅，讓內心與人際獲得真正的滋養與團圓。"], "core_title": "發掘成人 ADHD 超能力：選對優勢賽道，停止弱項內耗", "quote_title": "優勢導向（Strengths-Based）與神經多樣性", "quote_text": "每個人都有獨特的大腦神經架構。若一味在弱項上死磕，只會耗盡自信。發現並放大 ADHD 的發散思考與超專注，才能締造卓越。", "core_desc": "不要用爬樹的能力來評估一條魚。停止拿社會單一標準苛責自己，找到能讓你眼睛發光的領域，將特質轉化為強大優勢。", "micro_actions": [{"title": "優勢閃光點盤點", "desc": "列出 3 個自己最擅長或最具熱情的領域（如：創意企劃、危機處理、共情能力），並思考如何在工作中使用它。"}, {"title": "停止弱項內耗決心", "desc": "告訴自己：「我不必在所有事情上都拿滿分，把核心優勢做卓越就是成功。」"}], "articles": [{"title": "對事情不感興趣怎麼辦？", "year": "2022年"}]}, {"id": 9, "header": "第九籤【壬申】", "category": "🤝 同儕與社交人際", "orig": ["龍虎相隨在深山", "君爾何須背後看", "不知此去相愛愉", "他日與我卻無干"], "trans": ["🥀 成人職場與社交環境中，常充斥著複雜的人際張力、競爭與不可預測的社交考驗。", "🔍 您不必過度解讀他人的眼色或陷入被排擠的焦慮，而是要深入關注社交互動的真實質地。", "🌙 區分職場上的「表面交頭接耳」與「能給予真誠支持的夥伴」，避免將精神耗費在無效社交上。", "🛑 建立清晰的社交邊界與安心避風港。主動經營優質、真誠的人際連結，拒絕社交過載與討好。"], "core_title": "成人職場人際辨識：建立安心社交圈與清爽界線", "quote_title": "社交認知負荷與優質連結", "quote_text": "強迫自己融入不適合的社交圈會帶來嚴重的神經耗竭。成人需要的是少數能給予心理安全感與真誠支持的深度夥伴。", "core_desc": "社交不是數量競賽。學會對消耗性的人際關係劃清界線，把寶貴的情感與精力留給能理解並支持你的真誠朋友。", "micro_actions": [{"title": "社交質地審視問句", "desc": "參加聚會後問自己：「這場互動讓我是感到充實放鬆，還是精疲力竭？」作為未來活動參與的過濾依據。"}, {"title": "主動聯絡核心夥伴", "desc": "今晚傳訊息給一位真正懂你、支持你的朋友，進行一次簡短而真誠的問候與交流。"}], "articles": [{"title": "孩子的朋友是「分配」 來的嗎?", "year": "2023年"}]}, {"id": 10, "header": "第十籤【癸酉】", "category": "💼 職場與工作執行", "orig": ["花開結子一半枯", "可惜今年汝虛度", "漸漸日落西山去", "勸君不用向前途"], "trans": ["🥀 您看到自己投入大量時間但產出效率低下，深感職涯虛度與強烈的挫折焦慮。", "⏳ 這是大腦認知資源已嚴重過載後觸發的當機防衛機制。", "🌙 當工作記憶超出極限時，強迫自己熬夜硬撐只會造成品質滑落與強烈的逃避厭惡感。", "🛑 暫停無效的強迫加班。學會大腦「減法生活」與分段放空的藝術，讓大腦重新輕盈呼吸。"], "core_title": "認知減法與大腦喘息：大腦不是設計來持續思考的", "quote_title": "認知負荷理論與突觸修剪（Synaptic Pruning）", "quote_text": "當大腦資訊過載時，思考效率會呈指數下降。大腦需要主動的『離線空白』與分段減負，才能保持高質量的神經運作。", "core_desc": "拼命硬撐只會造成對大腦的過度榨取與認知枯竭。學會在專案中主動安排短暫空白與休息，大腦才能保持敏捷與創造力。", "micro_actions": [{"title": "25 分鐘番茄鐘減負", "desc": "工作時執行專注 25 分鐘、強制休息 5 分鐘離開椅子的節奏，不讓大腦進入過熱當機狀態。"}, {"title": "大腦離線空白 10 分鐘", "desc": "下班後安排 10 分鐘不看手機、不聽 Podcast 的純粹散步或發呆，給大腦進行資訊排毒。"}], "articles": [{"title": "大腦不是設計來思考，而是來避免思考的", "year": "2024年"}, {"title": "學會放手，大腦才能輕盈呼吸：談談遺忘的藝術", "year": "2024年"}]}, {"id": 11, "header": "第十一籤【乙卯】", "category": "💼 職場與工作執行", "orig": ["靈雞漸漸見分明", "凡事且看子丑寅", "雲開月出照天下", "郎君即便見太平"], "trans": ["🐓 您看著自己在職場中習慣性拖延、專案堆積如山心生焦慮；但如靈雞報曉般，打破習慣迴路與改變的契機已逐漸清晰。", "⏳ 拖延是大腦避開焦慮的生理保護機制；執行功能與習慣調節的改善需要時間與節律累積，請順應大腦的神經塑性規律。", "🌕 借鏡「戒酒 12 步驟」的核心智慧，主動承認困難並移去外在干擾環境，原本的創造力與專注才華自能如月光顯照。", "🛑 擺脫毀滅性的自責與焦慮。為自己建立乾淨、可預期的工作流程，職涯與生活自然能重獲平靜與掌控感。"], "core_title": "克服職場拖延症：戒酒12步驟在專案執行的應用", "quote_title": "拖延機制與習慣迴路（Habit Loop）", "quote_text": "職場拖延是避開短期焦慮的即時機制。破除拖延需要像戒酒 12 步驟：第一步承認『我現在卡住了』、第二步許下改變希望、第七步謙卑求助並移去環境干擾。", "core_desc": "拖延時責備自己意志力薄弱只會加深焦慮。坦然面對當前的卡關，清理工作環境並降低啟動門檻，是大腦重獲執行力的關鍵。", "micro_actions": [{"title": "誠實承認難關卡", "desc": "在紙上寫下：「現在我覺得這個專案很複雜/很討厭」，坦然面對內心焦慮而非用刷手機逃避。"}, {"title": "環境移去干擾術", "desc": "開始工作前將手機關靜音放到視線之外，瀏覽器關閉所有無關分頁，減少大腦分心刺激。"}], "articles": [{"title": "運用戒酒12步驟 改善 ADHD拖延問題", "year": "2019年"}]}, {"id": 12, "header": "第十二籤【乙巳】", "category": "⚡ 情緒調控與 RSD", "orig": ["長江風浪漸漸靜", "于今得進可安寧", "必有貴人相扶助", "凶事脫出見太平"], "trans": ["🌊 您與職場同事或伴侶之間累積的情緒風浪，正逐漸獲得撫平與安頓，人際張力與對立即將平息。", "🧘 當下正是啟動正向溝通、實踐情緒暫停與正念呼吸（STOP 技巧）的最佳時機。", "🤝 善用身邊的專業心理師、精神科醫師或值得信任的職場導師，作為堅強的貴人後盾。", "🛑 先讓自己成為「情緒絕緣體」。覺察到心跳加速時暫時離場降溫，衝突與焦慮凶局自然順利解套。"], "core_title": "職場情緒緊急煞車：覺察心跳與大聲喘息隔離法", "quote_title": "心情溫度計與交感神經降溫", "quote_text": "當職場或家庭情緒爆炸時，大人必須先做好自我情緒管理。善用心情溫度計（0-10分）覺察強度，必要時暫時離場創造冷靜空間。", "core_desc": "面對人際衝突時，硬碰硬只會引發雙輸。覺察自己的心跳與情緒強度，溫和聲明離場冷靜 5 分鐘，給大腦前額葉重新掌握主導權的時間。", "micro_actions": [{"title": "心情溫度計自我覺察", "desc": "當感到火氣上湧時，在心中評估：「我現在的情緒溫度是幾度（1-10分）？」幫助大腦標籤情緒。"}, {"title": "溫和離場降溫句", "desc": "當感覺快被激怒時，對對方說：「我需要冷靜 3 分鐘再來討論這件事」，隨後離開現場進行深呼吸。"}], "articles": [{"title": "【孩子怒了😡，爸媽也火了😤—談兒童情緒控制】", "year": "2020年"}]}, {"id": 13, "header": "第十三籤【乙未】", "category": "⚡ 情緒調控與 RSD", "orig": ["命中正逢羅孛關", "用盡心機總未休", "作福問神難得過", "恰是行舟上高灘"], "trans": ["⚡ 您常感到情緒突然過載、煩躁不安或陷入低潮，如同遇到困頓關卡般讓人疲憊與焦慮。", "🌀 光是用念力強迫自己冷靜，或是硬用理性道理壓制，只會讓內耗與焦慮更加強烈。", "⛩️ 僅憑自我壓抑或期望焦慮會自己消失，無法解決生理性的情緒傳導物質與感受調節困難。", "🛑 如同船隻卡在沙灘進退兩難。理解自己背後的「述情障礙（Alexithymia）」，為情緒精準命名才能解鎖卡關。"], "core_title": "成人述情障礙 (Alexithymia)：覺察內在感受與焦慮", "quote_title": "述情障礙（Alexithymia）與情緒命名（Name it to Tame it）", "quote_text": "許多成人 ADHD 存在述情障礙——無法精確區分身體緊繃、焦慮與受挫，進而轉化為煩躁或逃避。提供精準的情緒詞彙是解鎖內耗的關鍵。", "core_desc": "當感到內心混亂卻說不出原因時，是因為大腦無法辨識生理訊號。給予當下感受精準的命名（如：我感到受挫而非憤怒），焦慮感便會開始消退。", "micro_actions": [{"title": "情緒詞彙點選卡", "desc": "當感到莫名煩躁時，拿出筆寫下三個感受（如：焦慮、疲憊、被忽視），為當下狀態貼上精準標籤。"}, {"title": "肢體緊繃放鬆法", "desc": "聳肩 5 秒後完全放下，感受肩頸鬆開的生理變化，幫助大腦接收安定的體感訊號。"}], "articles": [{"title": "【情緒卡關怎麼辦？】從認知負荷談文化差異、語言侷限與貼圖的心理功能", "year": "2020年"}]}, {"id": 14, "header": "第十四籤【乙酉】", "category": "💼 職場與工作執行", "orig": ["財中漸漸見分明", "花開花謝結子成", "寬心且看月中桂", "郎君即便見太平"], "trans": ["🪙 您期盼的職場專案成果與個人工作效能，正隨著系統化執行一步步明確顯現。", "🌸 經歷試錯與持續微調，大腦的神經網路與工作習慣終能結出豐碩的果實。", "🌕 克服大腦「時間折價（Time Discounting）」特質，保持耐心並給予自己即時的外部正向回饋。", "🛑 運用每日工作報告卡（DRC/CICO）與即時獎勵，職涯表現與自信必能邁向平順穩定。"], "core_title": "每日工作報告卡 (DRC/CICO) 在成人職涯目標的實踐", "quote_title": "時間折價（Time Discounting）與即時回饋機制", "quote_text": "成人 ADHD 對遠期目標易產生時間折價，覺得遙不可及。透過每日工作檢查卡（DRC）化整為零，提供即時微小獎勵能強烈驅動多巴胺。", "core_desc": "長遠的職涯藍圖往往過於抽象。將大目標拆解成每天可達成的微小指標（如完成 1 頁簡報），每達成一項就給予即時肯定，動機自然生生不息。", "micro_actions": [{"title": "DRC 每日微目標清單", "desc": "每天上班列出 3 個極微小的核心任務（如：回覆 2 封重要郵件），完成一項即劃掉並給自己咖啡獎勵。"}, {"title": "5 秒即時自我肯定", "desc": "每當自己主動開啟困擾已久的任務時，在心中對自己說：「我立刻開始了，這展現了極佳的執行力！」"}], "articles": [{"title": "運用戒酒12步驟 改善 ADHD拖延問題", "year": "2021年"}]}, {"id": 15, "header": "第十五籤【乙亥】", "category": "💼 職場與工作執行", "orig": ["八十原來是太公", "看看晚景遇文王", "目下緊事休相問", "勸君且守待運通"], "trans": ["🎣 每個人的職涯發展與大腦神經成熟都有屬於自己的時序，不必因當前的暫時落後而灰心。", "👑 只要不放棄發掘與深耕自己的優勢強項，終會遇到欣賞你神經多元天賦的職場伯樂與突破時機。", "🛑 眼前的短期業績波動或一時的表現不如意不必過度焦慮拷問，避免陷入自我否定。", "🌟 穩健培養核心優勢能力與內在自信，大腦經驗累積到位時自然能在適合的賽道上發光發熱。"], "core_title": "大器晚成與耐心等待：成人 ADHD 的刻意練習與蓄力", "quote_title": "職涯發展時序與刻意練習（Deliberate Practice）", "quote_text": "神經多樣性者的成熟曲線常呈現大器晚成特徵。停止追問短期排名，聚焦於任務拆解與優勢強項的刻意練習，耐心等待時機成熟。", "core_desc": "職涯是一場馬拉松而非百米衝刺。保護好自己的信心與好奇心，陪自己在專長領域持續累積，當大腦神經網絡發育與經驗到位，成果自然驚艷。", "micro_actions": [{"title": "暫停自我檢討拷問", "desc": "今晚不檢討今天的失誤，而是寫下一件自己今天表現出色的細節。"}, {"title": "任務 3 拆解法", "desc": "把繁重的專案拆成 3 個迷你階段，今晚專心完成第一個迷你階段即可。"}], "articles": [{"title": "ADHD維持投入的秘訣", "year": "2019年"}]}, {"id": 16, "header": "第十六籤【丙子】", "category": "🩺 成人就醫與藥物", "orig": ["不須作福不須求", "用盡心機總未休", "陽世不知陰世事", "官法如爐不自由"], "trans": ["⛩️ 不必盲目嘗試各種未經證實偏方或苛求自己，順應大腦神經傳導物質的生理規律才是正道。", "🤯 若大腦多巴胺與血清素失衡，光靠強烈的意志力與死嗑硬撐，往往只是徒勞無功且倍感煎熬。", "🌙 許多人忽略了成人精神科醫療評估與適當藥物對修復大腦前額葉信噪比的神經科學價值。", "🛑 補足「睡眠與藥物債務」，穩定大腦警醒系統，專注力與情緒自我調節自然能重獲自由。"], "core_title": "睡眠衛生與大腦膠狀淋巴系統：修復夜間腦力疲勞", "quote_title": "警醒系統（Arousal System）與神經醫療支持", "quote_text": "許多年輕成人的分心、易怒與執行力低下源於大腦神經傳導物質失衡及睡眠債務。專業醫療評估能為大腦重新注入穩定的運作動能。", "core_desc": "承認大腦生理上的需要並非懦弱。接受適當的精神醫療諮詢與作息調整，能讓過載的大腦重新獲得高效運作的神經基礎。", "micro_actions": [{"title": "睡前藍光遮蔽", "desc": "睡前 45 分鐘關閉電腦與手機螢幕，換成黃光暖色燈光，促進褪黑激素正常分泌。"}, {"title": "提早 20 分鐘準備入睡", "desc": "今晚提早 20 分鐘上床躺平，補足長期積欠的睡眠債務，穩定大腦警醒系統。"}], "articles": [{"title": "揭開孩子入睡之謎：生理時鐘、警醒系統、睡眠債務你知多少？", "year": "2021年"}]}, {"id": 17, "header": "第十七籤【丙寅】", "category": "🧘 自我接納與冒牌者", "orig": ["舊恨重重未改為", "家中禍患不臨身", "須當謹防宜作福", "龍蛇交會得和合"], "trans": ["💔 過去求學或職場上經歷的多次失敗與被標籤化經驗，不必一直耿耿於懷或當成一生的負面定型。", "🏠 建立自己內在的安全堡壘，只要學會無條件接納自己，外在的批判與懷疑就無法動搖你。", "🛡️ 謹慎保護自己的自尊心，多進行非批判式的自我對話與優勢肯定。", "🛑 區分過往創傷產生的防衛心與當下的真實挑戰。在轉折期建立內在安全依附，終能走向身心和合。"], "core_title": "療癒過往學習創傷：重建內在安全感與心理防禦", "quote_title": "創傷記憶與自我安全依附", "quote_text": "成人 ADHD 長期累積的被誤解經歷易在大腦留下創傷印記。區分過往創傷引發的過度防衛與當前現實，給予自己非批判式接納才能促進心理修復。", "core_desc": "您不需要再為過去的失敗道歉。建立對內在自己的溫柔接納，明白過去的挫折只是神經多樣性尚未獲得對應環境支持的結果，安心邁向新篇章。", "micro_actions": [{"title": "自我歸零擁抱句", "desc": "今晚對鏡子裡的自己說：「過去的失敗不代表我的全部，我接納並愛護現在努力的自己。」"}, {"title": "非批判性觀察", "desc": "當對某件事感到強烈防禦心時，先停下來問自己：「這是我當下的危險，還是過去創傷的影子？」"}], "articles": [{"title": "ADHD與青少年自我傷害：理解、預防與協助", "year": "2024年"}]}, {"id": 18, "header": "第十八籤【丙辰】", "category": "🤝 同儕與社交人際", "orig": ["君問中間此言因", "看看祿馬拱前程", "若得貴人多得利", "和合自有兩分明"], "trans": ["❓ 深入探究自己在職場社交中的互動品質，會發現自己內在對真誠連結的深切渴望。", "🐎 善用成人 ADHD 熱情、共情力強與創造力高的特質，將吸引身邊正面貴人夥伴相助。", "🤝 獲得導師、理解你的同事與心理專業的外部支持，職涯與人際互動將事半功倍。", "🛑 運用「4:1 讚美修正法則」與正向溝通，為自己在職場建立溫暖、專業且具建設性的良好品牌。"], "core_title": "職場正向回饋：4:1 讚美法則與同儕肯定機制", "quote_title": "正向行為支持與職場品牌經營", "quote_text": "在職場人際中保持『4 個正向肯定：1 個建設性意見』的黃金比例，能為自己打造充滿心理安全感與支持性的團隊氛圍。", "core_desc": "善意與讚美是職場最好的催化劑。多看身邊夥伴的優點並表達感謝，也能為自己吸引更多正向能量與貴人合作機會。", "micro_actions": [{"title": "聚光燈正向品牌", "desc": "在團隊會議中主動肯定一位同事的貢獻，塑造溫暖且高心理安全感的職場氣氛。"}], "articles": [{"title": "打破 ADHD 社交困境的迷思", "year": "2025年"}]}, {"id": 19, "header": "第十九籤【丙午】", "category": "💼 職場與工作執行", "orig": ["富貴由命天註定", "心高必然誤君期", "不然且回依舊路", "雲開月出自分明"], "trans": ["⚖️ 理解並接納每個人大腦工作記憶與注意力特質的客觀界線，切忌好大喜功或好高騖遠。", "⚠️ 若將專案目標設定得過於繁重不切實際，反而會引發嚴重的執行功能癱瘓與逃避拖延。", "踏 回歸踏實的拆解基本功，執行「工作分析法（Task Analysis）」，將大專案化整為零。", "🛑 設定合理、低門檻且可達成的階段性目標，讓大腦不斷體驗「我做得到」，職涯光明自然顯現。"], "core_title": "複雜任務分解：工作分析法在職場專案的應用", "quote_title": "工作分析（Task Analysis）與勝任感", "quote_text": "過於龐大模糊的目標會引發大腦前額葉的超載癱瘓。透過工作分析將大專案拆解為具體可執行的微小單元，才能維持持續進展。", "core_desc": "不要試圖一次吃下一整頭大象。將令人恐懼的大專案拆成 10 分鐘就能完成的小動作，動機與掌控感自會逐漸浮現。", "micro_actions": [{"title": "目標門檻砍半法", "desc": "把大專案（如撰寫整份報告）拆解並只鎖定第一小步（如「寫出報告的 3 個小標題」）。"}, {"title": "多步驟切換節奏", "desc": "毎完成一個微小步驟，給自己 1 分鐘站起來伸展，保持大腦專注的敏捷度。"}], "articles": [{"title": "ADHD維持投入的秘訣", "year": "2019年"}]}, {"id": 20, "header": "第二十籤【丙申】", "category": "🩺 成人就醫與藥物", "orig": ["前人積德後人收", "積善之家必有餘", "娶妻生子身安樂", "命逢太白多吉慶"], "trans": ["🌳 早期建立良好的身心健康認知與習慣培養，將成為自己未來職涯與生活的長久福報。", "🏡 建立充滿理解、支持與正向連結的個人生活系統，能為自己提供堅固的心理保護力量。", "👨‍👩‍👧 良好的專業醫療介入與自我照顧，能讓自己在職場與家庭中過得圓滿安樂。", "🛑 主動建立結合精神科醫療、心理諮商與支持團體的多元防護網，人生必能多獲吉慶與平安。"], "core_title": "早一步尋求醫療評估：防範職場次發性焦慮與低潮", "quote_title": "早期醫療評估與次發性障礙預防", "quote_text": "主動尋求精神科專業評估與環境調整，能有效阻止長期執行功能挫折轉化為次發性焦慮或憂鬱症。建立多元防護網是最大的自我保護。", "core_desc": "預防勝於治療。及早了解自己的神經多樣性體質，並串聯實證醫療與諮商資源，能為職場與人生奠定最堅實的健康基石。", "micro_actions": [{"title": "三階段自我觀察表", "desc": "列出自己在職場、生活與情緒中最需要協助的三個情境，作為諮詢專業醫療時的資料。"}, {"title": "串聯支持防護網", "desc": "尋找一位信任的醫師或心理師，建立定期的心智健康諮詢與追蹤習慣。"}], "articles": [{"title": "【明天之後】當知道自己的孩子有ADHD的體質後，接下來如何因應?", "year": "2021年"}]}, {"id": 21, "header": "第二十一籤【丁亥】", "category": "💼 職場與工作執行", "orig": ["十方佛羽讚君卿", "歡喜冤家自相爭", "看君早晚見太平", "榮華富貴得安寧"], "trans": ["🌟 您在職場上獨特的創造力、發散思考與高熱情，值得獲得團隊與主管的看見與讚美。", "🤝 在團隊協作中雖然難免因溝通節奏不同而有意見磨合與對立，但這也是深化專業合作的契機。", "☀️ 運用「聚光燈策略」，主動向主管與夥伴行銷自己的專長與高光項目，用正向品牌取代舊有的「粗心/分心」偏見。", "🛑 建立職涯自信的成人能在適合的賽道中發揮驚人潛能，職涯與心靈自然能獲得真正的安寧與豐收。"], "core_title": "聚光燈策略：建立成人 ADHD 的正向職業名聲與品牌", "quote_title": "職場品牌與名聲經紀（Spotlight Strategy）", "quote_text": "成人 ADHD 常在職場中被貼上『做事衝動、不注重細節』的標籤。善用『聚光燈策略』主動展現自己的優勢專案與創意，能用正向成果翻轉刻板印象。", "core_desc": "職涯名聲需要主動經營。將專力放在你能締造驚人成果的領域，並適時向團隊展示高光項目，讓身邊夥伴看見你的獨特價值。", "micro_actions": [{"title": "聚光燈成果展示", "desc": "在會議或專案總結中，主動分享一個自己解決的複雜問題或創新構想，建立專業自信。"}, {"title": "雙向好印象紀錄", "desc": "睡前記錄今天在工作中獲得的一句正面肯定，幫助大腦積累內在自尊與掌控感。"}], "articles": [{"title": "為何孩子乖乖吃藥、上了社交課，人緣還是沒變好？打破 ADHD 社交困境的迷思", "year": "2025年"}]}, {"id": 22, "header": "第二十二籤【丁丑】", "category": "🩺 成人就醫與藥物", "orig": ["太公家業八十成", "月出光輝照大庭", "心下莫慌宜作福", "未來順利得安寧"], "trans": ["⏳ 每個人的神經發展與心智成熟都有專屬的時序，成年後才獲得診斷與理解絕不算晚。", "🌕 長期積累的專業能力與人生經驗，終會在獲得正確神經調適後大放異彩，照亮屬於你的舞台。", "🧘 切莫因過去多年的盲目掙扎而焦慮恐慌，留意女性或非典型 ADHD 的隱性遮蔽（Masking）與身心耗竭。", "🛑 勇敢接受專業醫療評估與生活調整，未來的職涯與生活自然平順安寧。"], "core_title": "成人女性 ADHD 的隱性遮蔽 (Masking) 與診斷過遲議題", "quote_title": "隱性遮蔽（Masking）與成年前期診斷", "quote_text": "許多成人（特別是女性 ADHD）長期習慣過度努力來掩飾症狀，常被誤診為原發性焦慮或憂鬱。及時的專業評估能揭開遮蔽，為大腦提供精準支持。", "core_desc": "停止無休止的過度掩飾與內耗。承認自己需要外部輔助並非失敗，尋求專業醫療評估是邁向自我接納與重獲新生的大門。", "micro_actions": [{"title": "隱性耗竭覺察", "desc": "評估自己是否常因「強迫自己表現完美」而在下班後極度身心枯竭，寫下 3 個可以放寬要求的細節。"}, {"title": "尋求專業諮詢", "desc": "預約一次針對成人 ADHD 的心智健康或精神科評估，為自己開啟客觀的神經科學對話。"}], "articles": [{"title": "超過一半的美國成年人在成年後才被診斷出患有ADHD", "year": "2023年"}]}, {"id": 23, "header": "第二十三籤【丁卯】", "category": "⚡ 情緒調控與 RSD", "orig": ["欲去長江水浪急", "行舟陸上未安全", "寬心且在沙灘坐", "聽得雷聲笑歡顏"], "trans": ["🌊 當面對職場高壓、人際過載或極度焦慮時，情緒風浪正急，讓人倍感窒息與恐慌。", "⚠️ 此時若強迫自己在情緒暴風圈中硬推硬撐，往往會引發嚴重的身心崩潰與社交退縮。", "☕ 允許自己在安全的「心理沙灘」上暫停離場，給予自己無條件接納的喘息避風港。", "🛑 等大腦杏仁核降溫、身心安全感重建後，再重新面對挑戰，自能重拾平靜與笑容。"], "core_title": "拒絕社交退縮與職場焦慮：建立安心喘息避風港", "quote_title": "職場焦慮與杏仁核降溫機制", "quote_text": "當高壓環境引發神經過載與社交恐慌時，強撐只會加速倦怠（Burnout）。在安全空間進行『暫停與離場』，能幫助杏仁核降溫並恢復理智。", "core_desc": "當感覺風浪太急時，允許自己暫時退後一步。給大腦一個不被批判的空間進行充電與降溫，才是永續工作的智慧。", "micro_actions": [{"title": "沙灘式 10 分鐘離場", "desc": "當感到職場焦慮極度高漲時，允許自己去洗手洗臉或室外散步 10 分鐘，不處理公事。"}, {"title": "微步階梯嘗試", "desc": "與自己約定一個最微小的復工步驟（如：「我現在只回覆這一封信，隨後休息」），降低焦慮抗拒。"}], "articles": [{"title": "開學在即：如何幫助有ADHD和拒學症的小朋友重返校園", "year": "2023年"}]}, {"id": 24, "header": "第二十四籤【丁巳】", "category": "💼 職場與工作執行", "orig": ["月出光輝本清吉", "浮雲總是蔽陰色", "戶內安心寬處坐", "雲開月出照天下"], "trans": ["🌕 成人 ADHD 的大腦天生充滿強烈的好奇心與超專注（Hyperfocus）探索本能，本質具備豐沛的創造力。", "☁️ 職場不當的環境壓力與過度單一的考核標準，就像浮雲般遮蔽了你的內在熱情與工作動機。", "🏡 移除傷害動機的心理毒素，為自己打造一個專注、減雜訊且安全的工作場域。", "🛑 停止無效的念力自我威脅。當環境壓力與恐懼被移除，你內在的超專注光芒自會重新綻放。"], "core_title": "保護好奇心與熱情：成人 ADHD 的超專注 (Hyperfocus) 引擎", "quote_title": "內在動機與超專注（Hyperfocus）", "quote_text": "ADHD 從不缺乏專注力，而是難以自由調控。當面對感興趣的事物時，超專注引擎會全面啟動。關鍵在於移除環境干擾並保護好奇熱情。", "core_desc": "大腦需要適合的燃料與環境來啟動高效運轉。保護好你的熱情與好奇心，移除無關的干擾雜訊，讓超專注成為你的職場利器。", "micro_actions": [{"title": "停止念力自我威脅", "desc": "今天下定決心停止在心中對自己說「再做不好就完了」這類威脅性恐嚇句。"}, {"title": "超專注熱情防護罩", "desc": "每天保留 30 分鐘給自己極度感興趣的專案或領域，不加入任何功利性考核壓力。"}], "articles": [{"title": "為什麼孩子不愛上學？從大腦學習機制找到答案", "year": "2022年"}]}, {"id": 25, "header": "第二十五籤【丁未】", "category": "🧘 自我接納與冒牌者", "orig": ["總是前途莫心勞", "求神問卜枉徒勞", "官法如爐不自由", "施主寬心坐高樓"], "trans": ["🧘 不必為過去的遺撼或未知的將來過度焦慮內耗、陷入毀滅性的精神折磨。", "⛩️ 單靠自我壓抑或是盲目報名各種不切實際的成功學課程，無法解決大腦資訊超載與認知過載。", "⚖️ 大腦工作記憶空間有限，當資訊與雜訊超載時，前額葉本能會選擇避開思考與當機。", "🛑 練習「主動遺忘」的心理藝術。學會過濾無用資訊與情緒雜訊，讓大腦重獲清淨與自由。"], "core_title": "大腦突觸修剪與學習可塑性：建立可持續的習慣", "quote_title": "前額葉調控與主動遺忘（Active Forgetting）", "quote_text": "大腦記憶體超載會引發精神當機。主動遺忘能清理過期的自我懷疑與無用資訊，使神經網絡重新聚焦於重要目標。", "core_desc": "大腦需要定期清理記憶體才能保持高效。學會放開不重要的細節與他人的眼光，讓大腦空間留給真正值得投入的事物。", "micro_actions": [{"title": "心理垃圾桶清空儀式", "desc": "寫下今天困擾你的 3 個焦慮念頭，隨後親手將紙張撕碎丟入垃圾桶。"}, {"title": "待辦清單砍半", "desc": "把今天的待辦事項砍掉一半，只保留 2 個最核心的任務，給大腦工作記憶減負。"}], "articles": [{"title": "【情緒卡關怎麼辦？】從認知負荷談文化差異、語言侷限與貼圖的心理功能", "year": "2024年"}]}, {"id": 26, "header": "第二十六籤【丁酉】", "category": "💼 職場與工作執行", "orig": ["選出預頭任君行", "高歌鼓舞樂昇平", "事和意順多吉慶", "前途光明自從容"], "trans": ["🎯 為自己選定最符合神經多元優勢的職涯賽道與工作型態。", "🎉 當你在擅長且感興趣的領域獲得成就時，工作將轉化為帶來流暢感（Flow）的快樂探索。", "🤝 個人優勢與職場角色契合時，職場人際與專案執行自然順利和樂。", "🛑 當優勢被看見與發揮，行動力就會自動前進。有了自信與能力加持，面對職涯自能從容不迫。"], "core_title": "適性職涯選擇：尋找符合神經多元優勢的職場賽道", "quote_title": "神經多樣性與職涯適配（Person-Environment Fit）", "quote_text": "當工作環境與個人的神經特質相匹配時，ADHD 的發散思考與高適應力會轉化為強大競爭力。選對賽道勝過盲目補弱。", "core_desc": "選對適合自己大腦運作模式的職場環境比硬撐更重要。找到能讓你發揮創意、靈活性與高能量的領域，職涯將一片光明。", "micro_actions": [{"title": "職涯賽道適配盤點", "desc": "列出自己工作中最有流暢感（Flow）的 2 個瞬間，思考如何增加這類工作的比例。"}, {"title": "優勢勝任感肯定", "desc": "每當在擅長領域完成一項工作，給予自己即時的肯定的稱讚。"}], "articles": [{"title": "不喜歡被讚美的孩子", "year": "2022年"}]}, {"id": 27, "header": "第二十七籤【戊子】", "category": "💼 職場與工作執行", "orig": ["君爾寬心且自由", "物色相宜自適求", "順水推舟無不利", "前途清吉保無憂"], "trans": ["🕊️ 放寬內心，給予自己適度的工作節律彈性與自我管理的自由空間。", "🧩 尋找最適合自己大腦運作特質的數位工具、外接看板與生活輔具。", "⛵ 順應自己大腦處理資訊的天然步調，不要硬碰硬、逆水行舟盲目強求。", "🛑 善用視覺化線索與外部時間輔具，職涯與生活管理自然就像順水推舟般輕鬆順暢。"], "core_title": "視覺化工具在生活與工作的應用：減輕腦力負擔", "quote_title": "外部記憶輔具與視覺化流程", "quote_text": "面對 ADHD 的工作記憶限制，逆水行舟不如順水推舟。善用視覺化行事曆、數位看板與提示輔具，能大幅減輕大腦認知負擔。", "core_desc": "不要逼大腦硬記所有細節。把行程與待辦事項實體化、圖像化，用最適合自己的外部系統替大腦分擔重量。", "micro_actions": [{"title": "視覺化數位看板", "desc": "使用 Trello 或 Notion 等看板工具，將專案狀態分為「待處理、進行中、已完成」，一眼掌握進度。"}, {"title": "顏色醒目标籤法", "desc": "用不同顏色標籤區分郵件或文件緊急度，減少在資訊堆中尋找的腦力消耗。"}], "articles": [{"title": "做好注意力規劃，避免碎片化學習", "year": "2024年"}]}, {"id": 28, "header": "第二十八籤【戊寅】", "category": "🧘 自我接納與冒牌者", "orig": ["於今此景正當時", "看看欲吐百花魁", "若能遇得春色到", "一洒清吉脫塵埃"], "trans": ["🌿 現在正是重新調整生活步調、建立溫暖自我接納的最佳時機。", "🌸 只要方向正確且不再盲目自我批判，你內在的潛能與自信即將萌芽綻放。", "☀️ 打造如春風般溫暖、充滿包容且有清晰界線的自我心理環境。", "🛑 移除單靠叫自己努力的「念力作法」。實質環境與心理結構調整到位，過往的自責陰霾自能洗滌乾淨。"], "core_title": "移除念力工作迷思：建立具體、可量化的行動路徑", "quote_title": "環境支持與念力工作迷思", "quote_text": "放棄單純靠念力叫自己『加油、再專心一點』的迷思。真正的改變來自於具體行動路徑的拆解與外在環境的物理調整。", "core_desc": "靠意志力硬撐往往是最不可靠的策略。將注意力轉向優化工作環境與建立微小習慣，改變自然水到渠成。", "micro_actions": [{"title": "工作環境雜訊大掃除", "desc": "把辦公桌上非當前專案的雜物清空，減少眼前的視線分心因子。"}, {"title": "具體行動替代句", "desc": "把「我要更專心」這類念力口號，替換為具體的「我現在要在 15 分鐘內寫完這一段」。"}], "articles": [{"title": "【明天之後】當知道自己的孩子有ADHD的體質後，接下來如何因應?", "year": "2022年"}]}, {"id": 29, "header": "第二十九籤【戊辰】", "category": "🧘 自我接納與冒牌者", "orig": ["枯木可惜逢春時", "如今好運漸漸來", "莫聽人言多短長", "時來運轉自和同"], "trans": ["🌳 即便過去曾陷入身心枯竭或職涯卡關的「枯木狀態」，逢春時依然能重獲生機與活力。", "🌈 隨著正確的神經科學認知、專業醫療與自我調適介入，生活正步入正軌。", "👂 堅決阻絕外界或社交媒體上缺乏理解的負面標籤與批判雜音。", "🛑 堅信科學調適與神經可塑性。透過微小可控的挑戰建立「神經韌性」，枯木逢春終有時。"], "core_title": "防禦外在負面標籤：建立堅固的成人內在自我認同", "quote_title": "神經韌性（Neuro-Resilience）與標籤防禦", "quote_text": "ADHD 是生理性的神經運作特徵。建立科學的神經學認知，堅決防禦外在缺乏理解的負面標籤，能在壓力中建立堅韌的自我認同。", "core_desc": "外界不懂你的神經多樣性，不代表你有錯。建立對自己大腦運作的科學理解，保護好內在自尊，時間會證明你的價值。", "micro_actions": [{"title": "負面標籤盾牌", "desc": "當聽到缺乏理解的批評時，在心中告訴自己：「這是他的無知，我的大腦有獨特的優秀運作方式。」"}, {"title": "可控微挑戰抗壓", "desc": "設定一個微小且可控的微挑戰（如獨立完成一項拖延已久的小事），建立內在掌控感。"}], "articles": [{"title": "「被退學也沒差」：從無助到韌性的希望", "year": "2026年"}]}, {"id": 30, "header": "第三十籤【戊午】", "category": "💭 走神恍神與專注", "orig": ["漸漸脫出見太平", "推陳出新再立名", "看看欲吐百花魁", "好運必定到家門"], "trans": ["🕊️ 透過適當的神經調適、規律運動與心智訓練，走神與分心的困擾正漸漸脫離。", "🌟 理解大腦預設模式網路（DMN）與注意力任務網路（TPN）的神經科學典範轉移。", "🌺 當警醒（Arousal）與大腦多巴胺獎勵路徑獲得平衡，專注力與驚人創造力隨之綻放。", "🛑 建立對大腦 DMN 網路的正確認知，全家與個人終能迎接專注與安寧的新篇章。"], "core_title": "大腦覺醒與獎勵系統：活化成人多巴胺路徑促進執行力", "quote_title": "預設模式網路（DMN）與多巴胺獎勵路徑", "quote_text": "《Cell》最新研究指出，大腦 DMN 網路過度活躍易引發走神與反芻焦慮。透過即時微小獎勵與多巴胺活化，能幫助注意力順暢切換至任務執行網路。", "core_desc": "恍神與走神是大腦 DMN 網路在發揮作用。理解這個機轉，用微小的即時獎勵引導大腦切換到工作狀態，享受專注的流暢感。", "micro_actions": [{"title": "DMN 覺息微伸展", "desc": "發現自己走神發呆時，溫和地對自己笑笑，隨後做一次深呼吸把注意力帶回當下動作。"}, {"title": "即時多巴胺獎勵", "desc": "每當完成 20 分鐘專注工作，立刻給自己一個喜愛的微獎勵（如享用一口好茶或聽一首喜愛的歌）。"}], "articles": [{"title": "享樂導向的大腦", "year": "2025年"}]}, {"id": 31, "header": "第三十一籤【己丑】", "category": "⚡ 情緒調控與 RSD", "orig": ["巽足清香得太平", "花開花謝結子成", "寬心且看月中桂", "郎君即便見太平"], "trans": ["🕯️ 透過正念呼吸與體感覺察，讓職場與生活中的情緒焦慮獲得平息，心靈自然重獲平靜。", "🌸 接納自己的情緒起伏就像四季花開花謝般自然，給予自己時間與包容，終能結出情緒成熟的果實。", "🌕 請放寬心給予自己溫柔平靜的陪伴，不必為一時的情緒波折與專案混亂過度自責內耗。", "🛑 練習正念「STOP 技巧」（Stop 暫停、Take a breath 深呼吸、Observe 觀察感受、Proceed 選擇方法），讓杏仁核冷卻、前額葉重新掌握主導權。"], "core_title": "正念呼吸 STOP 技巧：成人焦慮與衝動控制處方", "quote_title": "杏仁核降溫與情緒自動化調節", "quote_text": "當職場高壓引發衝動或急躁時，正念 STOP 技巧：S（暫停）、T（深呼吸）、O（觀察感受）、P（選擇方法）能迅速幫助大腦杏仁核降溫，讓前額葉皮質接管理智。", "core_desc": "情緒起伏是生理反應而非性格缺點。練習在反應前創造一個微小的暫停空間，帶領自己深呼吸，大腦就能重新找回掌控權。", "micro_actions": [{"title": "STOP 正念四步卡", "desc": "感到情緒激動時執行四步：S-喊停、T-深呼吸、O-觀察體感、P-選擇冷靜做法。"}, {"title": "花開花謝寬心句", "desc": "面對情緒波動時，在心中告訴自己：「情緒如同花開花謝，我只需平靜觀察並給予自己空間。」"}], "articles": [{"title": "6.找到屬於孩子的「冷靜魔法」—替代行動的祕訣", "year": "2020年"}]}, {"id": 32, "header": "第三十二籤【己卯】", "category": "⚡ 情緒調控與 RSD", "orig": ["龍虎相交在勝敗", "貞勝貞負自相爭", "看君早晚見太平", "榮華富貴得安寧"], "trans": ["🐅 在職場競爭或伴侶關係中若陷入強硬的權力爭鬥與對立，只會造成雙敗局勢與深刻的內耗。", "⚔️ 若非要爭個輸贏高下，只會激化防衛機制與對立情緒，讓合作溝通徹底陷入死結。", "🛑 封鎖「這不是...而是...」等生硬駁斥與糾正型句式，避免引發無謂的社交與職場對立。", "❤️ 用同理接納替代無謂的爭辯（先接納情緒感受，再堅持溝通界線），才能贏得真正的和諧與尊重。"], "core_title": "化解職場對立與防衛：合作式問題解決 (CPS) 雙贏策略", "quote_title": "對立防衛與非防禦性對話", "quote_text": "生硬的駁斥（如：這不是...而是...）會活化大腦威脅路徑。封鎖駁斥型句式，改採『先同理對方感受、再說明客觀需求』的雙贏架構。", "core_desc": "爭贏了口舌，卻輸掉了團隊信任。面對意見分歧時，先接住對方的感受與立場，再共同探討解決方案，才能打破對立死結。", "micro_actions": [{"title": "封鎖駁斥句型", "desc": "今天對話中絕對不上火糾正對方，暫停使用「這不是...而是...」等否定句型。"}, {"title": "同理先於立場", "desc": "當溝通出現分歧時，先說：「我明白你對這個進度的擔憂（接納），我們來看看如何調整（合作）。」"}], "articles": [{"title": "1.為什麼孩子會突然失控？—揭開暴力行為背後的真相", "year": "2026年"}]}, {"id": 33, "header": "第三十三籤【己巳】", "category": "💼 職場與工作執行", "orig": ["欲求勝敗兩相全", "用盡心機總未休", "風雲致雨落洋洋", "命逢太白守身邊"], "trans": ["🤝 尋求專案完成品質與個人心智健康之間的雙贏解法，不必陷入極端的犧牲與內耗。", "🤯 單靠傳統死嗑硬撐或無限加班，無法解決大腦執行功能與工作記憶過載的神經瓶頸。", "🌧️ 當專案壓力達到頂峰時，先退一步提供情感接納，保護自己不被倦怠感（Burnout）擊垮。", "🛑 採用「合作式問題解決（CPS）」，透過「理解困境-表達需求-共同腦力激盪」達成職場雙贏。"], "core_title": "合作式問題解決 (CPS) 在職場應用：從對立走向雙贏", "quote_title": "合作式問題解決（Collaborative Problem Solving）", "quote_text": "強加死線或盲目硬撐只會引發大腦癱瘓。CPS 強調：先釐清核心瓶頸、明確表達需求，最後與團隊共同腦力激盪出可行方案。", "core_desc": "不要孤軍奮戰。將主管或夥伴當成共同解決問題的戰友，透過透明的溝通與問題拆解，尋找兼顧品質與效率的解答。", "micro_actions": [{"title": "瓶頸拆解三問", "desc": "當專案卡關時問自己：「這個任務中最卡關、最耗能量的具体部分是什麼？」"}, {"title": "雙贏腦力激盪", "desc": "與團隊討論：「我們一起想兩個調整方案，既能維護交付品質又能符合時程，你覺得呢？」"}], "articles": [{"title": "「你」與「我們」的溝通轉換：應對青春前期ADHD孩子的挑戰", "year": "2023年"}]}, {"id": 34, "header": "第三十四籤【己未】", "category": "💼 職場與工作執行", "orig": ["漸漸脫出見太平", "推陳出新再立名", "看看欲吐百花魁", "好運必定到家門"], "trans": ["🕊️ 透過規律的有氧運動與作息調整，專注力低落與精神疲憊困擾正漸次化解。", "🏃 引入「運動作為成人精神健康第三支柱」的新觀念，為大腦注入強勁的新生能量。", "🌺 大腦多巴胺與正腎上腺素獲得運動充分刺激後，前額葉執行功能與記憶力大幅提升。", "🛑 身心健康獲得整體改善，職場表現與個人生活充實且充滿活力喜悅。"], "core_title": "運動作為成人精神健康的第三支柱：促進神經滋養因子", "quote_title": "有氧運動與 BDNF 神經滋養因子", "quote_text": "中高強度有氧運動能刺激大腦分泌 BDNF 與多巴胺，活化前額葉皮質，是改善成人 ADHD 專注力與執行功能的天然大腦保養品。", "core_desc": "運動是大腦最優質的天然啟動劑。動起來不僅能釋放日常壓力，更能直接提高前額葉的專注力與認知靈活性。", "micro_actions": [{"title": "每日 20 分鐘快走/運動", "desc": "利用下班或午休時間進行 20 分鐘快走、騎單車或健身，讓心跳適度加速。"}, {"title": "運動後專注感知", "desc": "運動後喝水休息 5 分鐘，體會大腦思緒變清晰、專注力恢復的清爽狀態。"}], "articles": [{"title": "享樂導向的大腦", "year": "2025年"}]}, {"id": 35, "header": "第三十五籤【己酉】", "category": "💼 職場與工作執行", "orig": ["音書許字未曾真", "前途進退總無因", "戶內安心寬處坐", "雲開月出自分明"], "trans": ["🗣️ 光是用憑空口頭記憶與隨手塗鴉，對大腦工作記憶而言極易遺忘與失真。", "❓ 交代的工作聽完就忘、無法按順序執行，是因為大腦「語音迴路」容量有限。", "🖼️ 改用視覺化數位看板、心智圖與清晰表格，讓待辦任務與流程清清楚楚陳列。", "🛑 運用「視空繪圖板（Visuospatial Sketchpad）」進行補償，將任務從大腦移至外部，目標立刻一目了然。"], "core_title": "工作記憶的雙軌機制：語音迴路與視空繪圖板策略", "quote_title": "工作記憶雙軌與視空繪圖板補償", "quote_text": "成人 ADHD 常有語音迴路記憶維護困難。善用視空繪圖板進行圖像化補償，將行程與任務實體化/視覺化，能大幅減少漏失。", "core_desc": "減少憑空記憶的腦力負擔。把待辦事項畫成圖表或列在可視化看板上，讓視覺帶動行動，執行不再混亂。", "micro_actions": [{"title": "視覺化工作清單", "desc": "把今天的核心任務寫在螢幕旁醒目的便利貼或數位桌面上，隨時可見。"}, {"title": "口頭記憶降至 0", "desc": "聽到重要事項時立刻打開手機或筆記本記下，不依賴「我等一下會記住」的錯覺。"}], "articles": [{"title": "ADHD 小朋友的書包、抽屜是大黑洞!!!", "year": "2019年"}]}, {"id": 36, "header": "第三十六籤【庚子】", "category": "❤️ 伴侶與親密關係", "orig": ["福如東海壽如山", "君爾何須背後看", "不知此去相愛愉", "他日與我卻無干"], "trans": ["🌊 建立穩固的心理安全感與成熟依附關係，是給予自己終身抗壓與幸福的基石。", "🛡️ 不必總是懷疑自己是否值得被愛，或是沉溺於過往關係失敗的焦慮中。", "❤️ 當你在真誠包容的環境下感受到安全，便能愉快且放心地建立健康的人際與親密連結。", "🛑 健全的安全依附能防止自己陷入焦慮討好或關係過敏，培養獨立圓滿的神經韌性。"], "core_title": "建立成人依附安全感：擺脫關係焦慮與過度敏感", "quote_title": "成人依附型態與關係安全感", "quote_text": "內在安全感是大腦親密連結的錨。擺脫關係焦慮與過度討好，建立『愛自己、堅守界線』的安全依附，才能擁有健康長久的夥伴關係。", "core_desc": "愛自己的第一步是給自己安全感。明白自己的價值不需要透過討好別人來證明，在關係中保持坦誠與獨立。", "micro_actions": [{"title": "每日 15 分鐘自我陪伴", "desc": "每天給自己 15 分鐘不被打擾的獨處時間，做自己喜歡的事，培養內在充實感。"}, {"title": "關係安全肯定句", "desc": "當感到人際焦慮時對自己說：「我是值得被愛與被尊重的，我可以在關係中保持真實。」"}], "articles": [{"title": "如何協助不願求助的小朋友-當孩子選擇沉默", "year": "2024年"}]}, {"id": 37, "header": "第三十七籤【庚寅】", "category": "💼 職場與工作執行", "orig": ["運逢得意身康泰", "麻衣換綠柳隨風", "一向前途通大道", "萬事清吉保平安"], "trans": ["💪 當自動化微習慣養成、大腦運作順暢時，職涯與生活自然康泰昌盛。", "🌿 告別過去拖延與混亂的舊麻衣，展現隨風搖曳的新氣象與執行活力。", "🛣️ 掌握習慣建立三要素（提示、常規、獎勵），職場效率與專案推進通暢無阻。", "🛑 簡化每日工作常規並在完成時給予即時正向回饋，良好習慣產生的自動化自律保護你一生。"], "core_title": "習慣的力量：自動化行為模式減少決策疲勞", "quote_title": "習慣迴路（Habit Loop）與決策疲勞", "quote_text": "習慣由『提示-常規-獎勵』構成。建立自動化常規能大幅減少前額葉的決策疲勞，讓寶貴的認知資源留給核心創新。", "core_desc": "自動化是高效秘訣。把每天重複的常規（如收納、排程）變成不需要思考的微習慣，大幅節約大腦精力。", "micro_actions": [{"title": "顯眼提示放置", "desc": "把明天工作最先要用的檔案或工具放在電腦桌面中央最顯眼處。"}, {"title": "完成即時微獎勵", "desc": "一開工完成第一項常規後，立刻給予自己一口喜愛的飲料作為獎勵。"}], "articles": [{"title": "解決ADHD小朋的時間管理問題", "year": "2019年"}]}, {"id": 38, "header": "第三十八籤【庚辰】", "category": "🤝 同儕與社交人際", "orig": ["名顯意揚幸運逢", "花開花謝結子成", "寬心且看月中桂", "郎君即便見太平"], "trans": ["🌟 當你在職場人際中的優點與善意被真誠看見時，和諧合作的幸運契機隨之而來。", "🌸 經過情感溝通與耐心傾聽，團隊與伴侶關係終能結出甘甜果實。", "🌕 運用「真誠同理」接住他人的「社會痛（Social Pain）」，放寬心共享溝通美果。", "🛑 分開「當前的意見分歧」與「對方的個人價值」，給予尊重與心理安全感，人際自見太平。"], "core_title": "同理心與傾聽：修復職場與家庭人際張力", "quote_title": "社會痛（Social Pain）與非暴力傾聽", "quote_text": "人際衝突中，同理心胜於給予指導。接住對方的社會痛與情緒需求，並將『問題爭議』與『個人價值』明確區分。", "core_desc": "傾聽是最好的化解劑。在表達自己立場前，先真誠傾聽並理解對方的感受，衝突張力自然消融。", "micro_actions": [{"title": "真誠傾聽回應", "desc": "當同事或夥伴倾訴困難時，先回應：「這聽起來真的很挑戰/不容易」，暫不下指導棋。"}, {"title": "區分問題與價值", "desc": "對話中明確強調：「我們現在討論的是這個流程，並不是否定你的能力與付出。」"}], "articles": [{"title": "你真的懂孩子的感受嗎？家長常見「不自覺同理錯誤」與改善方法", "year": "2025年"}]}, {"id": 39, "header": "第三十九籤【庚午】", "category": "🩺 成人就醫與藥物", "orig": ["意中若問神仙事", "用盡心機總未休", "陽世不知陰世事", "官法如爐不自由"], "trans": ["⛩️ 若想尋求奇蹟偏方或速成課程來一夕改變神經多樣性特質，切忌盲目聽信偽科學言論。", "🤯 聽信未經證實的偏方或網路上未經評估的斷言，往往耗費精神財力又無實質幫助。", "🔬 成人精神健康與腦科學有其嚴謹的神經生物學與臨床實證基礎。", "🛑 拒絕偽科學偏方與網路自評確診。察覺嚴重焦慮、情緒失控時，務必尋求實體精神科門診專業評估。"], "core_title": "建立實體醫療與心理諮商支持底線：拒絕無效內耗", "quote_title": "實證醫學與專業評估底線", "quote_text": "心智健康有嚴謹的神經科學基礎。拒絕偽科學偏方與網路自我診斷。出現持續情緒障礙時應至正規實體醫療機構諮詢。", "core_desc": "尊重科學與實證。將精神健康建立在嚴謹的精神醫學與專業諮商之上，為自己建立安全可靠的健康後盾。", "micro_actions": [{"title": "客觀症狀日誌", "desc": "把自己近期困擾的睡眠、專注或情緒波動記錄下來，作為客觀諮詢數據。"}, {"title": "正規醫療諮詢", "desc": "若情緒或專注困擾已顯著影響工作與生活，主動預約正規實體精神科或心理門診。"}], "articles": [{"title": "【明天之後】當知道自己的孩子有ADHD的體質後，接下來如何因應?", "year": "2026年"}]}, {"id": 40, "header": "第四十籤【庚申】", "category": "💼 職場與工作執行", "orig": ["平生富貴成吉慶", "麻衣換綠柳隨風", "一向前途通大道", "萬事清吉保平安"], "trans": ["🏆 培養良好的閱讀與背景知識積累習慣，能為你一生職涯與心智成長奠定堅實基礎。", "🌿 告別過去資訊吸收被動的舊狀態，展現主動學習與知識擴充的綠意活力。", "📚 透過廣泛閱讀拓展背景知識，大腦前額葉在處理職場新專案時大為減壓，職涯大道通暢。", "🛑 充足的背景知識能有效降低大腦認知負擔，讓工作與學習過程輕鬆平順。"], "core_title": "閱讀與背景知識積累：降低成人認知負荷與學習焦慮", "quote_title": "背景知識與認知負荷（Cognitive Load）", "quote_text": "工作與學習瓶頸往往源於背景知識不足。透過持續閱讀充實大腦知識庫，能讓前額葉在處理新資訊時有效減壓。", "core_desc": "背景知識是大腦最好的擴充記憶體。多閱讀與儲備領域知識，面對複雜的職場專案時就能游刃有餘。", "micro_actions": [{"title": "每日 15 分鐘主題閱讀", "desc": "每天安排 15 分鐘閱讀一本專業或感興趣的書籍，積累背景知識。"}, {"title": "圖解概念減壓法", "desc": "面對陌生的專案領域，先看圖表或懶人包建立全局背景，幫大腦前額葉減壓。"}], "articles": [{"title": "如何培養ADHD 小朋閱讀的興趣", "year": "2022年"}]}, {"id": 41, "header": "第四十一籤【庚戌】", "category": "照顧者與個人身心抗衰竭", "orig": ["今行到此實難過", "造化由來未經過", "程序的確須當守", "時來運轉得和合"], "trans": ["🌧️ 您在職場與生活管理雙重壓力下走到精疲力竭、感到特別難過與崩潰，充滿精神倦怠感（Burnout）。", "🌀 過去從未面對過如此複雜的神經多樣性議題或職場卡關，讓身為成人的您手足無措。", "🩺 遵循科學調適與專業諮商的復原步驟，一步一腳印進行，不急於求成。", "🛑 先照顧好自己的身心健康。給予自己時間與包容，渡過難過時刻終會迎來職涯與生活的和合。"], "core_title": "照顧者與個人身心抗衰竭處方：家長與成人自身的自我關照", "quote_title": "精神倦怠（Burnout）與自我關照（Self-Care）", "quote_text": "成人 ADHD 或照顧者常面臨嚴重的身心耗竭。請記住這不是你的能力問題。先做好自我關照與心理降溫，才能重建生活的主導權。", "core_desc": "你不是機器人，你也有疲憊與渴望休息的權利。擺脫「我不夠努力」的罪惡感，給自己充電的時間，才能持續穩健前行。", "micro_actions": [{"title": "每日 15 分鐘專屬充電", "desc": "今晚給自己 15 分鐘完全放空、聽音樂或泡澡的專屬自我關照時間。"}, {"title": "擺脫罪惡感自我對話", "desc": "在心中對自己說：「我也正在學習適應大腦，我已經做得很好，我允許自己休息。」"}], "articles": [{"title": "鞠躬盡瘁的家長，可能遠比鞠躬盡瘁的學生多", "year": "2020年"}]}, {"id": 42, "header": "第四十二籤【辛丑】", "category": "⚡ 情緒調控與 RSD", "orig": ["一毫反照因緣動", "萬事清吉保平安", "戶內安心寬處坐", "雲開月出照天下"], "trans": ["🔍 當學會自我反照與體感覺察（如心跳變快、肩頸緊繃），人際與情緒管理的良性因緣便開始轉動。", "🛡️ 覺察自己的情緒是否正被對方的批判或環境刺激所牽動，提醒自己「緊急煞車」，保護身心免受情緒衝動傷害。", "🏡 在生活中建立情緒緩衝空間，讓急躁的怒氣與焦慮透過深呼吸平靜下來。", "🛑 當情緒恢復穩定，前額葉皮質皮層的理智調節迴路獲得安撫，心靈也會如月光般重現清晴與平靜。"], "core_title": "情緒自我反照：覺察生理緊繃與緊急煞車機制", "quote_title": "內受覺（Interoception）與情緒緊急煞車", "quote_text": "當感到怒氣或焦慮上湧時，第一步是覺察身體的生理緊繃（心跳變快、胸悶），提醒自己緊急煞車，避免被情緒杏仁核劫持。", "core_desc": "覺察是改變的起點。在反應前先感知自己身體的緊繃狀態，下達「煞車」指令，能幫助大腦迅速恢復理智。", "micro_actions": [{"title": "體感覺察掃瞄", "desc": "當感到火氣上湧時，先感知自己的心跳加速與肩頸緊繃程度。"}, {"title": "5 秒緊急煞車", "desc": "閉上嘴巴深呼吸 5 秒，在心中對自己喊：「煞車！」後再決定下一步行動。"}], "articles": [{"title": "【孩子怒了😡，爸媽也火了😤—談兒童情緒控制】", "year": "2020年"}]}, {"id": 43, "header": "第四十三籤【辛卯】", "category": "⚡ 情緒調控與 RSD", "orig": ["欲去長江水浪急", "行舟陸上未安全", "寬心且在沙灘坐", "聽得雷聲笑歡顏"], "trans": ["🌊 面對職場或人際衝突中突如其來的暴怒或極端反彈，切莫急於硬碰硬或強行回擊。", "⚠️ 用言語指責或硬大道理強推，就像在陸地上行舟般充滿風險與危險衝突。", "☕ 寬心透視自己或對方暴怒背後的恐懼、受挫與無助，給予情緒喘息的沙灘空間。", "🛑 風浪與雷聲過後，不被表面的挑釁與武裝激怒，彼此將能重新建立真誠溝通的夥伴關係。"], "core_title": "透視心智防衛機轉：看見情緒暴怒背後的脆弱", "quote_title": "心智防衛機轉（Defense Mechanism）", "quote_text": "成人展現對立或說狠話，常是大腦面對強大社交挫折與恐懼時的自我防衛機轉。看清防衛機轉背後的脆弱，才能做出建設性回應。", "core_desc": "刺耳的挑釁往往只是保護脆弱自尊的武裝。看穿這層防衛，用平靜與包容替代反擊，才能化解衝突。", "micro_actions": [{"title": "透視防衛解讀", "desc": "當聽到嗆聲或極端言語時，心裡翻譯成：「他現在感到受挫與防衛」，不上火回擊。"}, {"title": "沙灘安全陪伴", "desc": "在情緒爆發時，安靜給予自己或對方 5 分鐘不評判的空間，等待風浪平息。"}], "articles": [{"title": "被點燃的情緒（臨床現場 × 情緒壓力）", "year": "2024年"}]}, {"id": 44, "header": "第四十四籤【辛巳】", "category": "💼 職場與工作執行", "orig": ["客到前途百事宜", "花開花謝結子成", "寬心且看月中桂", "郎君即便見太平"], "trans": ["🤝 尋求專業職能治療（OT）、心理諮商與時間管理導師相助，前途各項職場發展皆宜。", "🌺 經過結構化的生活管理與專案拆解訓練，工作執行與生活自理能力終於結出成果。", "🌕 放寬心配合專業策略規劃，把複雜的職場專案設計為多步驟且具遊戲趣味的活動。", "🛑 讓任務具備適度挑戰性與樂趣，生活功能與自理能力大增，展現自信與從容。"], "core_title": "職能治療觀點：多步驟職場任務分析與有趣化設計", "quote_title": "職能治療（OT）與遊戲化設計（Gamification）", "quote_text": "讓成人 ADHD 持續投入的關鍵是任務具備適度挑戰性與趣味。將枯燥行政工作轉化為多步驟、遊戲化的關卡，能激發大腦參與感。", "core_desc": "枯燥是 ADHD 的天敵。把繁瑣的工作拆解成有賞罰關卡的探索遊戲，用樂趣引導專注，執行力大幅躍升。", "micro_actions": [{"title": "專案遊戲化關卡化", "desc": "將整理報表拆成「搜尋資料 ➔ 填寫欄位 ➔ 美化圖表」三個微遊戲關卡。"}, {"title": "任務 15 分鐘競速", "desc": "給自己設定 15 分鐘計時挑戰，看自己能在時間內完成多少細節，提升參與感。"}], "articles": [{"title": "ADHD維持投入的秘訣", "year": "2019年"}]}, {"id": 45, "header": "第四十五籤【辛未】", "category": "💼 職場與工作執行", "orig": ["花開今已結成實", "君子請當報好音", "木火相生生不息", "福祿勝過舊家風"], "trans": ["🍎 過去嘗試的行為改變與時間管理技術，如今已結出正向工作習慣的豐碩果實。", "📣 及時給予自己讚美與好評價，向主管與團隊傳遞專案進展的好消息。", "🔥 正向循環生生不息，大腦多巴胺獎勵路徑獲得強有力固化與滋養。", "🛑 抓住自己做對的瞬間給予立即肯定（3秒內），超越過去傳統單純自責內耗的模式。"], "core_title": "大腦獎勵路徑：即時正向強化的生生不息", "quote_title": "多巴胺獎勵路徑與即時強化", "quote_text": "大腦行為改變極度依賴即時正向強化。當完成一項小任務時，立即給予自己具體讚美能活化多巴胺系統，固化好習慣。", "core_desc": "不要吝嗇對自己的讚美。每當完成一個小步驟，立刻給自己正向肯定，多巴胺正向迴路就會幫你保持熱情。", "micro_actions": [{"title": "3 秒即時肯定", "desc": "只要看到自己完成一項微小工作（如按時回覆郵件），3 秒內在心中對自己說：「做的好！」"}, {"title": "正向好音紀錄", "desc": "建立自己的好習慣成就卡，完成一次目標就劃下一個勾勾，累積可視化成就。"}], "articles": [{"title": "享樂導向的大腦", "year": "2025年"}]}, {"id": 46, "header": "第四十六籤【辛酉】", "category": "🧘 自我接納與冒牌者", "orig": ["功名得意在頂尖", "花開花謝結子成", "寬心且看月中桂", "郎君即便見太平"], "trans": ["🏆 不必強求自己在每個領域都要爭頂尖，更不要迷信「跟別人一樣好」的單一標準。", "🌸 接納自己職涯與能量的自然起伏，專注於自己獨特的成長結果與專長。", "🌕 放寬心擺脫與他人的比較心態，欣賞自己獨一無二的創意與優勢。", "🛑 移除跟大眾標準盲目追趕的迷思，專注發掘個人獨特強項，帶來真正的成就感與自信。"], "core_title": "移除『跟別人一樣好』的迷思：給自己真正的成就感", "quote_title": "適性發展與內在成就感", "quote_text": "強求自己『跟一般常人一樣好』只會帶來無限挫折。移除這種迷思，專注於發掘並放大自己獨特的熱情與優勢。", "core_desc": "放下社會單一標準的枷鎖。專注發展你的特長與創造力，做獨特的自己比盲目模仿他人更有價值。", "micro_actions": [{"title": "停止比較對話", "desc": "今天對自己說：「我不需要跟別人一樣好，我只需要專注發展我的優勢專長。」"}, {"title": "特長高光時間", "desc": "給自己 20 分鐘專注於自己最得意的個人專長或愛好，享受純粹的成就感。"}], "articles": [{"title": "對事情不感興趣怎麼辦？", "year": "2022年"}]}, {"id": 47, "header": "第四十七籤【壬子】", "category": "🧘 自我接納與冒牌者", "orig": ["君爾何須背後看", "木火相生生不息", "前途光明通大道", "萬事清吉保平安"], "trans": ["🔍 不必總是盯著自己過去的挫折紀錄、職場失誤或黑歷史不放。", "🌿 大腦具有強大的神經可塑性（Neuroplasticity），正向調適能帶來全新的神經連結與改變。", "🛣️ 向前看、撕下過往的舊標籤，給予適當的輔具與支持，職涯成長之路無比寬廣。", "🛑 用發展的眼光看待自己，透過正向環境刺激重塑大腦連結，自能在工作中平安發展。"], "core_title": "神經可塑性：撕下過去舊標籤，走向未來新可能性", "quote_title": "神經可塑性（Neuroplasticity）與發展觀點", "quote_text": "大腦神經具有終生可塑性。過去的衝動失控不代表未來的定局。不翻舊帳、不貼永久標籤，用發展眼光引導自己成長。", "core_desc": "過去不等於未來。大腦隨時都在根據新的經驗重新連結，撕下負面標籤，用全新的眼光擁抱自己的成長。", "micro_actions": [{"title": "禁止自責翻舊帳", "desc": "今天在思考工作時，絕對不提過往曾經發生的職場失誤。"}, {"title": "神經可塑性肯定", "desc": "對自己說：「我的大腦每天都在更新神經連結，今天我會有新的突破。」"}], "articles": [{"title": "ADHD額葉與基底核的大腦連結異常新發現", "year": "2024年"}]}, {"id": 48, "header": "第四十八籤【壬寅】", "category": "💭 走神恍神與專注", "orig": ["陽世不知陰世事", "官法如爐不自由", "用盡心機總未休", "求神問卜枉徒勞"], "trans": ["🧠 不了解自己大腦預設模式網路 (DMN) 活化時的走神、恍神與思緒漫遊狀態。", "⚙️ 大腦注意力網路切換有其生理限制，走神並非你主觀故意偷懶或怠惰。", "🤯 若用強烈自責或硬逼來應對走神，只會增加焦慮並打亂大腦專注切換。", "🛑 理解 DMN 神經學機制。改用溫和的生理提示（如伸展或深呼吸）喚回專注。"], "core_title": "理解大腦預設模式網路 (DMN)：走神與恍神的神經學解析", "quote_title": "DMN 神經網路與注意力切換", "quote_text": "工作發呆或恍神是大腦預設模式網路（DMN）過度活化。理解這層生理機制，改用溫和體感提示喚回專注。", "core_desc": "走神是大腦自然的神經運作狀態。覺察到自己走神時不必自責，做個深呼吸把注意力帶回當下即可。", "micro_actions": [{"title": "體感溫和喚回", "desc": "當發現自己寫工作報告發呆走神時，不怒罵自己，而是輕拍腿部喚回專注。"}, {"title": "DMN 切換微伸展", "desc": "走神時站起來動一動手指或做個擴胸伸展，幫大腦切換至任務執行網路。"}], "articles": [{"title": "ADHD  注意力不足過動 不是只有前額葉的問題，是全腦網路運作的問題。", "year": "2023年"}]}, {"id": 49, "header": "第四十九籤【壬辰】", "category": "💼 職場與工作執行", "orig": ["言語雖多不可從", "風雲致雨落洋洋", "命內此事難和合", "更逢一足出外鄉"], "trans": ["🗣️ 職場溝通或交辦事項若訊息過多、過長，大腦聽覺工作記憶立刻溢位無法吸收。", "🌧️ 複雜繁瑣的長篇大論只會引發焦慮過載，讓大腦選擇關閉接收管道。", "🚫 資訊混亂無法帶來高效執行，只會惡化專案合作的品質與對立。", "🛑 要求溝通簡化為「一次一件、精準明確、文字記錄」，目標才能精準執行。"], "core_title": "簡潔有效的指令與溝通：一次一件、精準明確", "quote_title": "聽覺工作記憶容量與溝通原則", "quote_text": "成人 ADHD 的聽覺工作記憶容量有限。團隊溝通應：精準明確、一次只給一個核心動作、善用文字與圖像輔助。", "core_desc": "簡潔是高效的王道。在職場溝通中要求精準簡短的指令與文字確認，避免資訊超載帶來的執行遺漏。", "micro_actions": [{"title": "溝通簡化少於 10 字", "desc": "向同事或下屬交代任務時，用最簡短明確的一句話表達核心要求。"}, {"title": "文字備忘確認", "desc": "聽完會議指令後，立刻用 Email 或訊息發送 3 個重點文字確認，避免記憶遺漏。"}], "articles": [{"title": "孩子講不聽怎麼辦？", "year": "2019年"}]}, {"id": 50, "header": "第五十籤【壬午】", "category": "💼 職場與工作執行", "orig": ["佛前發誓無異心", "且看前途得好音", "花開花謝結子成", "郎君即便見太平"], "trans": ["🤝 自己與工作夥伴/家庭成員之間應達成共識，保持生活與工作結構的一致性。", "📣 一致且可預期的生活與工作規則，能讓自己感到安全並傳來成果好消息。", "🌸 堅持原則與結構並溫和執行，個人自控力與工作習慣終將結成果實。", "🛑 建立生活與工作的一致性結構，免於混亂與分歧爭吵，讓身心恢復安寧。"], "core_title": "教養與生活一致性：建立可預期的家庭與工作結構", "quote_title": "生活一致性（Consistency）與可預期結構", "quote_text": "生活與工作規則不一致會帶來強烈的焦慮與行為混亂。建立明確且可預期的生活框架，是維持心理安定的基石。", "core_desc": "穩定的結構給大腦帶來安全感。為自己的工作與生活制定一致的優先順序與邊界，減少混亂帶來的內耗。", "micro_actions": [{"title": "核心底線對焦", "desc": "寫下自己工作與生活不可退讓的 2 個核心底線（如：晚上 11 點後不上班）。"}, {"title": "一致性態度堅持", "desc": "面對破壞原則的臨時打擾時，統一回應：「依照原定排程，我們明天再處理這件事。」"}], "articles": [{"title": "讓父親加入管教ADHD的策略", "year": "2020年"}]}, {"id": 51, "header": "第五十一籤【壬申】", "category": "💼 職場與工作執行", "orig": ["東西南北不堪行", "前途此事正茫茫", "銅盆潑水難收回", "勸君且守戶內坐"], "trans": ["🧭 您看著自己在傳統職涯賽道四處碰壁、感到迷惘找不到發展方向，滿心焦慮與自責。", "🌫️ 硬逼自己走不適合的天賦路徑或做極度耗損工作記憶的行政雜務，只會讓身心更加茫然與受挫。", "💧 過度強迫與無效內耗造成的心理崩潰與倦怠創傷，往往難以輕易收回。", "🛑 停下腳步進行適性生涯探索。發掘自己高創造力、發散思考與行動力等神經多元優勢賽道。"], "core_title": "適性生涯規劃：發掘優勢特質與適宜賽道", "quote_title": "適性發展與神經多元優勢", "quote_text": "當傳統單一職涯賽道不堪行時，硬逼強求只會帶來倦怠。協助自己進行適性職涯探索，尋找能發揮獨特強項的舞台。", "core_desc": "天生我材必有用。當此路不通時不必死嗑，找到能讓你充分發揮創意與高能量的領域，職涯自然順暢。", "micro_actions": [{"title": "非傳統優勢盤點", "desc": "寫下 3 個自己做得很好、很感興趣的個人優勢（如：危機處理、創意企劃、視覺設計）。"}, {"title": "適性探索思考句", "desc": "問自己：「如果拋開別人眼中的成功標準，我最想投入哪種工作模式？」"}], "articles": [{"title": "ADHD是偉大的夢想家，但卻不是很優秀的實現家", "year": "2019年"}]}, {"id": 52, "header": "第五十二籤【壬戌】", "category": "🧘 自我接納與冒牌者", "orig": ["功名事業本由天", "心高必然誤君期", "不然且回依舊路", "雲開月出自分明"], "trans": ["🧬 每個人的天賦智力組合與發展節奏各有其自然規律與生理神經基礎。", "⚠️ 若一味好高騖遠、強求自己「去爬樹」，反而會耽誤真實適性優勢的發展。", "🐟 尊重自己作為「會游泳的魚」的神經天性，回歸適性培育，給予發光舞台。", "🛑 在適合的領域深耕，接納獨特的多元智力組合，自然能展現璀璨的成就不凡。"], "core_title": "尊重多元智力特質：不要用爬樹能力評估一條魚", "quote_title": "多元智力（Multiple Intelligences）與自我接納", "quote_text": "用爬樹能力評估一條魚，它一生都會覺得自己是個傻瓜。接納自己的神經特質，給予屬於自己的大海而非逼自己爬樹。", "core_desc": "別讓單一的社會標準評價你的全部價值。找到屬於你的大海，你就能自由翱翔並展現驚人能力。", "micro_actions": [{"title": "移除爬樹期待", "desc": "今天在心中對自己說：「我不逼自己去爬樹，我給自己水。」"}, {"title": "大海舞台支持", "desc": "為自己安排一項能發揮天性智力的微活動（如買一本想讀的專業書籍或嘗試創意手作）。"}], "articles": [{"title": "對事情不感興趣怎麼辦？", "year": "2022年"}]}, {"id": 53, "header": "第五十三籤【癸丑】", "category": "🤝 同儕與社交人際", "orig": ["看君來意觀雙眉", "七分猜測三分依", "勸君作事可宜先", "和合清吉萬事成"], "trans": ["👁️ 在社交與職場互動中細心觀察他人的眼神與微表情，讀懂內心真實的合作需求。", "🧩 理解若伴隨自閉症光譜 (ASD) 特質時，在解讀社交隱喻與心智理論（Theory of Mind）上的困境。", "🤝 預先準備社交情境劇本與合作規則，提供明確且具體的溝通線索與文字說明。", "🛑 透過結構化社交劇本與明確的對話架構，終能建立合宜且具安全感的同儕與職場互動。"], "core_title": "自閉光譜 (ASD) 與成人心智理論：社交情境讀取與劇本", "quote_title": "心智理論（Theory of Mind）與社交預告", "quote_text": "伴隨 ASD 特質時，常難以自動讀取他人的社交潛台詞與非語言表情。預先準備社交情境劇本與明確溝通規則，能大幅降低社交焦慮。", "core_desc": "讀不懂隱晦的眉角不是你的錯。預先在心中準備好社交回應劇本與明確的溝通原則，能在人際中獲得滿滿的安全感。", "micro_actions": [{"title": "重要社交情境劇本準備", "desc": "參加重要會議前，預先寫下 2 個標準回應語句，減少現場臨場焦慮。"}, {"title": "明確文字溝通", "desc": "在複雜溝通中主動向對方說：「為了確保我完全理解，我用文字重述一遍我們的共識好嗎？」"}], "articles": [{"title": "為什麼孩子就是無法看著你說話呢？", "year": "2020年"}]}, {"id": 54, "header": "第五十四籤【癸卯】", "category": "🤝 同儕與社交人際", "orig": ["孤燈寂寂夜沉沉", "萬事清吉保平安", "戶內安心寬處坐", "雲開月出照天下"], "trans": ["🕯️ 當在職場或社交圈面臨排擠、關係邊緣化或冷暴力時，內心感到無比孤單沉重。", "🛡️ 建立個人內在的安心堡壘，保護自己不受社交孤立與冷暴力的創傷傷害。", "🏡 在家中與真誠的朋友圈建立無條件接納的氛圍，安心傾訴受到的委屈與難過。", "🛑 主動建立神經多樣性友善的社交支持圈，尋找懂你、支持你的夥伴，人際重現光明。"], "core_title": "打破女性 ADHD 的關係排擠與社交孤立處方", "quote_title": "關係攻擊（Relational Aggression）與社交支持圈", "quote_text": "成人（特別是女性）常面臨隱晦的人際排擠與關係攻擊。主動尋找神經多樣性友善的支持圈，能有效打破孤立。", "core_desc": "拒絕有毒的人際圈。找到真正懂你、尊重你神經多樣性的真誠夥伴，建立充滿心理安全感的社交圈。", "micro_actions": [{"title": "安心傾訴安全盾", "desc": "對受傷的自己說：「即便別人排擠我，我也永遠是最值得被尊重與被愛的自己。」"}, {"title": "優質同儕約會", "desc": "邀請一位性格溫和且真正理解你的朋友，進行一次 1 小時的輕鬆咖啡談心。"}], "articles": [{"title": "為何孩子乖乖吃藥、上了社交課，人緣還是沒變好？打破 ADHD 社交困境的迷思", "year": "2025年"}]}, {"id": 55, "header": "第五十五籤【癸巳】", "category": "🏡 生活管理與睡眠", "orig": ["富貴由命天註定", "心高必然誤君期", "不然且回依舊路", "雲開月出自分明"], "trans": ["🌸 坦然接納自己的大腦發育與精神能量限制，放下過度焦慮與好大喜功的強求。", "⚠️ 若盲目追逐完美或將每日行程排得過度擁擠，反而會惡化大腦的焦慮與拖延症狀。", "🧘 回歸「減法生活」，精簡過度擁擠的承諾，給予大腦足夠的喘息與空白時間。", "🛑 壓力與減法調整到位後，大腦完成資訊消化與突觸修剪，工作與自我修復效能自然顯現。"], "core_title": "減法生活：給大腦留白與喘息空間", "quote_title": "減法生活與大腦留白", "quote_text": "大腦需要空白時間來進行資訊消化、記憶重組與情緒整理。實行減法生活，精簡不必要的行程與承諾，工作效能反而提升。", "core_desc": "學會對不重要的邀請說不。給自己的日程表留出空白，讓大腦有時間進行夜間整理與白天修復。", "micro_actions": [{"title": "行程減法清理", "desc": "檢視本週日程，主動婉拒或取消一項非必要且讓自己極度疲憊的社交或活動。"}, {"title": "每日 30 分鐘留白時間", "desc": "確保自己每天有 30 分鐘可以自由發呆、看書或聽音樂的空白時間。"}], "articles": [{"title": "做好注意力規劃，避免碎片化學習", "year": "2024年"}]}, {"id": 56, "header": "第五十六籤【癸未】", "category": "🩺 成人就醫與藥物", "orig": ["事到頭來總要理", "風雲致雨落洋洋", "命內此事難和合", "更逢一足出外鄉"], "trans": ["🩺 面對自身的成人心智健康、專注力或情緒困難，終究需要勇敢面對與積極處理。", "🌧️ 雖然過程中可能經歷猶豫、社會污名化與內心糾結的風雨。", "🚫 若選擇逃避或假裝沒事，生理性的神經傳導物質不平衡無法自然和解，只會日益嚴重。", "🛑 勇敢跨出成人精神科/心理諮商評估的一步，克服標籤化恐懼，積極配合專業整合協助。"], "core_title": "去污名化：勇敢跨出成人醫療評估與專業求助的一步", "quote_title": "醫療去污名化與專業求助", "quote_text": "成人 ADHD 與情緒障礙是生理性神經運作特徵。克服污名化恐懼，尋求正規實體醫療與心理諮商評估，是為自己建立健全防護網。", "core_desc": "求助是智者的勇氣。主動尋求正規醫療與專業諮商，為自己的精神健康做出最好的決定。", "micro_actions": [{"title": "去污名心態對話", "desc": "在心裡告訴自己：「就醫諮詢就像近視配眼鏡，是給自己大腦最專業的愛護與支持。」"}, {"title": "紀錄具體困擾清單", "desc": "將自己近期在專注、時間管理與情緒上的具體困難條列記錄，準備門診諮詢。"}], "articles": [{"title": "【明天之後】當知道自己的孩子有ADHD的體質後，接下來如何因應?", "year": "2021年"}]}, {"id": 57, "header": "第五十七籤【癸亥】", "category": "❤️ 伴侶與親密關係", "orig": ["事非經過不知難", "幸有貴人相扶助", "和合清吉萬事成", "郎君即便見太平"], "trans": ["❤️ 親身經歷了神經多樣性在職場與親密關係中的適應挑戰，才能體會溝通之難。", "🤝 幸好有專業心理師、醫師與理解你的伴侶夥伴貴人一路相伴支持。", "🕊️ 衝突過後先進行情感連結與修復，不急於檢討講理，關係終能圓滿。", "🛑 一個真誠的擁抱與傾聽勝過長篇大論的爭辯，重建溫暖依附，共享平靜與愛的太平。"], "core_title": "衝突後的關係修復：真誠溝通與擁抱勝過長篇大論", "quote_title": "關係修復（Rupture and Repair）與情感連結", "quote_text": "衝突過後，急著分清輸贏只會加深心理防衛。先進行真誠的情感連結與抱抱修復，才能重建堅固的親密信任。", "core_desc": "吵架過後，最重要的是修復連結。用真誠的擁抱與傾聽代替無休止的辯解，讓愛與理解填滿溝通的裂痕。", "micro_actions": [{"title": "無言溫暖擁抱", "desc": "衝突降溫後，不講道理，給伴侶一個 10 秒鐘真誠的深深擁抱。"}, {"title": "真誠修復語句", "desc": "對伴侶說：「剛剛我們都很急，但我非常重視你與我們的關係，我們一起重新討論。」"}], "articles": [{"title": "【孩子怒了😡，爸媽也火了😤—談兒童情緒控制】", "year": "2020年"}]}, {"id": 58, "header": "第五十八籤【辛未】", "category": "🧘 自我接納與冒牌者", "orig": ["舟行風浪漸漸平", "于今得進可安寧", "必有貴人相扶助", "凶事脫出見太平"], "trans": ["⛵ 隨著大腦神經調適到位與自我認知建立，心智與生活的風浪趨於平緩。", "🧘 此時適合引導自己培養獨立自我管理，生活重新獲得平靜與安寧。", "🌟 善用同儕正向力量與職場貴人導師，陪伴自己跨越職涯挑戰與自我探索。", "🛑 心理角色從「被動受害者」轉型為「自己的人生導師」，引導自我管理，展現成熟。"], "core_title": "跨越成長風暴：引導成人獨立自主與壓力調適", "quote_title": "前額葉成熟與自我導師轉型", "quote_text": "隨神經認知調適到位，個人角色應從『受害者』轉為『自我導師』。給予自己適度自主權，學會為自己的選擇與健康負責。", "core_desc": "做自己生命的主人。學會為自己的情緒與行為負責，在自律與自我陪伴中展現真正的成熟。", "micro_actions": [{"title": "自我導師式對話", "desc": "當面臨困難時問自己：「如果我是自己的最佳導師，我現在會建議自己怎麼做？」"}, {"title": "獨立自主體驗", "desc": "為自己規劃並獨立完成一個能帶來掌控感與成就感的微型生活專案。"}], "articles": [{"title": "「你」與「我們」的溝通轉換：應對青春前期ADHD孩子的挑戰", "year": "2023年"}]}, {"id": 59, "header": "第五十九籤【壬戌】", "category": "🩺 成人就醫與藥物", "orig": ["細雨霏霏落洋洋", "天災時氣必有傷", "命內此事難和合", "更逢一足出外鄉"], "trans": ["🌧️ 當自己表現出持續的低落、缺乏動力、如細雨綿綿般的憂鬱與焦慮情緒時。", "💔 需細心留意自己的共病情緒訊號，區分是執行功能挫折還是合併了原發性情緒障礙。", "🩺 單靠意志力或強逼自己高興無法化解生理性的心境低潮，需要專業診察鑑別。", "🛑 尋求專業精神科與心理諮商進行整合評估，給予精準支持，陪伴自己走出陰霾。"], "core_title": "共病鑑別：區分 ADHD 伴隨焦慮憂鬱與原發性情緒障礙", "quote_title": "共病情緒（Comorbidity）與專業鑑別", "quote_text": "長期的執行功能挫折易共病焦慮與憂鬱。細心留意情緒低落訊號，透過專業醫療進行鑑別診斷，給予精準支持。", "core_desc": "長期的疲憊低落不是你想太多。帶自己尋求專業醫療評估，釐清情緒背後的神經原因，得到精準有效的療癒。", "micro_actions": [{"title": "情緒低潮日誌", "desc": "記錄自己持續低落、失眠或焦慮的天數與體感，提供門診醫師評估。"}, {"title": "溫和陪伴自我對話", "desc": "在低潮時對自己說：「我知道你現在很累、很辛苦，我陪著你，我們不強求自己。」"}], "articles": [{"title": "ADHD與焦慮：長大後的隱形挑戰與應對策略", "year": "2023年"}]}, {"id": 60, "header": "第六十籤【癸亥】", "category": "🧘 自我接納與冒牌者", "orig": ["月出光輝本清吉", "不須進退問前程", "婚姻皆由天註定", "和合清吉萬事成"], "trans": ["🌕 六十籤圓滿結尾：你內在的心靈與生命本質都是圓滿清吉、充滿光輝與無限可能的。", "🚶 只要掌握科學心智調適與愛的原則，不必再為未來的路焦慮迷惘。", "🧬 全面接納自己的神經多元特質，尊重基因與大腦發育的自然定律。", "🛑 愛與界線並存，結合實證醫療、環境支持與溫暖自我陪伴，建立完整的幸福防護網，萬事圓滿。"], "core_title": "大圓滿：建立愛與界線並存的幸福防護網", "quote_title": "終身幸福防護網", "quote_text": "六十甲子圓滿。結合實證醫學、環境調整與愛的陪伴，為自己建立『無條件接納自我情緒、堅定維護生活界線』的終身幸福防護網。", "core_desc": "恭喜你完成這段探索大腦與心智的旅程。請帶著愛、信任與科學的工具，堅定且自信地迎向屬於你的光輝未來！", "micro_actions": [{"title": "圓滿自我擁抱", "desc": "今晚深深擁抱自己，在心中誠摯地對自己說：「謝謝你一路走來的努力，你真的很棒！」"}, {"title": "個人幸福宣言", "desc": "寫下自己的幸福宣言：「我用愛接納自己的大腦，用科學規則保護自己，自信前行！」"}], "articles": [{"title": "「被退學也免差」：從無助到韌性的希望", "year": "2026年"}]}];
+    let currentCategory = '全部';
     let currentPoem = null;
-    let currentCategory = 'ALL';
+    let drawnPoemId = null;
 
     function init() {
-      renderCategoryGrid('ALL');
-      renderSearchGrid('');
+      filterPoems();
     }
 
-    function switchMode(mode, evt) {
-      document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
-      if (evt) evt.target.classList.add('active');
-
-      document.getElementById('view-category').style.display = mode === 'category' ? 'block' : 'none';
-      document.getElementById('view-draw').style.display = mode === 'draw' ? 'block' : 'none';
-      document.getElementById('view-search').style.display = mode === 'search' ? 'block' : 'none';
-    }
-
-    function filterCategory(cat, evt) {
+    function setCategory(cat) {
       currentCategory = cat;
-      document.querySelectorAll('.tag-btn').forEach(b => b.classList.remove('active'));
-      if (evt) evt.target.classList.add('active');
-      renderCategoryGrid(cat);
+      document.querySelectorAll('.tag-btn').forEach(btn => {
+        if (btn.innerText === cat) btn.classList.add('active');
+        else btn.classList.remove('active');
+      });
+      filterPoems();
     }
 
-    function renderCategoryGrid(cat) {
-      const grid = document.getElementById('category-grid');
-      const filtered = cat === 'ALL' ? POEMS_DATA : POEMS_DATA.filter(p => p.category === cat);
+    function filterPoems() {
+      const q = document.getElementById('search').value.trim().toLowerCase();
+      const grid = document.getElementById('poems-grid');
       
-      grid.innerHTML = filtered.map(p => `
-        <div class="poem-card" onclick="openModal(${p.id})">
-          <div>
-            <div class="card-header">
-              <span class="poem-title">${p.header}</span>
-              <span class="poem-tag">${p.category}</span>
-            </div>
-            <div class="poem-preview"><strong>${p.core_title}</strong></div>
-            <div style="font-size: 0.85rem; color: #666;">${p.orig[0] || ''}</div>
-          </div>
-          <div class="card-footer">點擊查看錦囊 →</div>
-        </div>
-      `).join('');
-    }
-
-    function searchPoems() {
-      const query = document.getElementById('search-input').value.trim().toLowerCase();
-      renderSearchGrid(query);
-    }
-
-    function renderSearchGrid(query) {
-      const grid = document.getElementById('search-grid');
-      if (!query) {
-        grid.innerHTML = POEMS_DATA.slice(0, 12).map(p => `
-          <div class="poem-card" onclick="openModal(${p.id})">
-            <div>
-              <div class="card-header">
-                <span class="poem-title">${p.header}</span>
-                <span class="poem-tag">${p.category}</span>
-              </div>
-              <div class="poem-preview"><strong>${p.core_title}</strong></div>
-            </div>
-            <div class="card-footer">點擊查看錦囊 →</div>
-          </div>
-        `).join('');
-        return;
-      }
-
-      const filtered = POEMS_DATA.filter(p => {
-        return p.id.toString() === query ||
-               p.header.toLowerCase().includes(query) ||
-               p.core_title.toLowerCase().includes(query) ||
-               p.core_desc.toLowerCase().includes(query) ||
-               p.orig.some(l => l.toLowerCase().includes(query)) ||
-               p.articles.some(a => a.title.toLowerCase().includes(query));
+      let filtered = POEMS_DATA.filter(p => {
+        const matchCat = currentCategory === '全部' || p.category === currentCategory;
+        const matchQ = !q || 
+          p.header.toLowerCase().includes(q) || 
+          p.core_title.toLowerCase().includes(q) || 
+          p.core_desc.toLowerCase().includes(q) ||
+          p.orig.some(o => o.toLowerCase().includes(q)) ||
+          p.trans.some(t => t.toLowerCase().includes(q));
+        return matchCat && matchQ;
       });
 
       if (filtered.length === 0) {
-        grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: #888; padding: 40px;">未找到符合條件的成人籤詩，請嘗試其他關鍵字</div>';
+        grid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; color: #888; padding: 40px;">未找到符合條件的籤詩錦囊，請嘗試其他關鍵字</div>';
         return;
       }
 
@@ -550,24 +774,134 @@
               <span class="poem-title">${p.header}</span>
               <span class="poem-tag">${p.category}</span>
             </div>
-            <div class="poem-preview"><strong>${p.core_title}</strong></div>
+            <div class="poem-preview">${p.core_title}</div>
           </div>
-          <div class="card-footer">點擊查看錦囊 →</div>
+          <div class="card-footer">點擊查看解籤錦囊 →</div>
         </div>
       `).join('');
     }
 
-    function drawPoem() {
-      const tube = document.getElementById('tube-icon');
-      tube.classList.add('shaking');
+    /* RITUAL FLOW FUNCTIONS */
+    function startRitual() {
+      drawnPoemId = Math.floor(Math.random() * POEMS_DATA.length) + 1;
       
+      // Fully reset ritual UI & button states for repeated draws
+      document.getElementById('r-step1').style.display = 'flex';
+      document.getElementById('r-step2').style.display = 'none';
+      document.getElementById('r-stick').classList.remove('pulled');
+      
+      const btnShake = document.getElementById('btn-shake');
+      btnShake.style.display = 'inline-block';
+      btnShake.innerText = '🎋 誠心搖籤筒';
+      btnShake.disabled = false;
+      
+      const btnPoe = document.getElementById('btn-poe');
+      btnPoe.style.display = 'inline-block';
+      btnPoe.innerText = '🔴🟡 擲筊請示 (求聖杯)';
+      btnPoe.disabled = false;
+      btnPoe.onclick = castPoe;
+      
+      document.getElementById('btn-open-result').style.display = 'none';
+      document.getElementById('r-poe-result').innerText = '';
+      
+      // Reset poe blocks
+      document.getElementById('poe1').className = 'poe-block';
+      document.getElementById('poe2').className = 'poe-block flat';
+
+      // Reset scroll position to top
+      const rOverlay = document.getElementById('ritual-overlay');
+      const rBody = rOverlay ? rOverlay.querySelector('.modal-body') : null;
+      if (rBody) rBody.scrollTop = 0;
+      if (rOverlay) rOverlay.scrollTop = 0;
+
+      rOverlay.style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeRitualModal() {
+      document.getElementById('ritual-overlay').style.display = 'none';
+      document.body.style.overflow = 'auto';
+    }
+
+    function handleRitualOverlayClick(e) {
+      if (e.target.id === 'ritual-overlay') closeRitualModal();
+    }
+
+    function shakeStick() {
+      const tube = document.getElementById('r-tube');
+      const btn = document.getElementById('btn-shake');
+      
+      btn.disabled = true;
+      btn.innerText = '搖籤中...';
+      tube.classList.add('tube-shake');
+
       setTimeout(() => {
-        tube.classList.remove('shaking');
-        const randomId = Math.floor(Math.random() * POEMS_DATA.length) + 1;
-        openModal(randomId);
+        tube.classList.remove('tube-shake');
+        document.getElementById('r-stick').classList.add('pulled');
+
+        setTimeout(() => {
+          const p = POEMS_DATA.find(x => x.id === drawnPoemId);
+          document.getElementById('r-drawn-header').innerText = `抽得 ${p.header}`;
+          document.getElementById('r-drawn-sub').innerText = `已為您抽出籤枝！請點擊「擲筊請示」，求賜【聖杯】...`;
+          
+          document.getElementById('r-step1').style.display = 'none';
+          document.getElementById('r-step2').style.display = 'flex';
+        }, 600);
       }, 1000);
     }
 
+    function castPoe() {
+      const poe1 = document.getElementById('poe1');
+      const poe2 = document.getElementById('poe2');
+      const btnPoe = document.getElementById('btn-poe');
+      const resText = document.getElementById('r-poe-result');
+
+      btnPoe.disabled = true;
+      resText.innerText = '擲筊中...';
+      poe1.classList.add('poe-spinning');
+      poe2.classList.add('poe-spinning');
+
+      setTimeout(() => {
+        poe1.classList.remove('poe-spinning');
+        poe2.classList.remove('poe-spinning');
+
+        // Traditional probability: 50% 聖杯, 25% 笑杯, 25% 陰杯
+        const rand = Math.random();
+
+        if (rand < 0.50) {
+          // 聖杯 (One round, One flat)
+          poe1.className = 'poe-block';
+          poe2.className = 'poe-block flat';
+          resText.innerHTML = '<span style="color: #2E7D32;">🔴🟡 【聖杯！】神明與大腦智慧賜予允籤！</span>';
+          btnPoe.style.display = 'none';
+          document.getElementById('btn-open-result').style.display = 'inline-block';
+        } else if (rand < 0.75) {
+          // 笑杯 (Both flat)
+          poe1.className = 'poe-block flat';
+          poe2.className = 'poe-block flat';
+          resText.innerHTML = '<span style="color: #B8860B;">🟡🟡 【笑杯】神明笑而不答～請深呼吸放鬆心情，再次擲筊請示！</span>';
+          btnPoe.innerText = '🔴🟡 再次擲筊請示';
+          btnPoe.disabled = false;
+          btnPoe.style.display = 'inline-block';
+        } else {
+          // 陰杯 (Both round)
+          poe1.className = 'poe-block';
+          poe2.className = 'poe-block';
+          resText.innerHTML = '<span style="color: #9E2A2B;">🔴🔴 【陰杯】時機未成熟～別著急，給自己與孩子一點喘息時間，重新搖籤再試！</span>';
+          btnPoe.innerText = '🎋 重新搖籤請示';
+          btnPoe.disabled = false;
+          btnPoe.onclick = startRitual;
+          btnPoe.style.display = 'inline-block';
+        }
+      }, 900);
+    }
+
+    function unlockPrescription() {
+      closeRitualModal();
+      openModal(drawnPoemId);
+    }
+
+    /* INTERPRETATION MODAL FUNCTIONS */
     function openModal(id) {
       const p = POEMS_DATA.find(x => x.id === id);
       if (!p) return;
@@ -576,6 +910,7 @@
       document.getElementById('m-cat').innerText = p.category;
       document.getElementById('m-header').innerText = p.header;
 
+      // Translations
       const transList = document.getElementById('m-trans');
       transList.innerHTML = p.orig.map((o, idx) => `
         <li class="trans-item">
@@ -584,22 +919,69 @@
         </li>
       `).join('');
 
+      // Core
       document.getElementById('m-core-title').innerText = p.core_title;
+      
+      const qBox = document.getElementById('m-quote-box');
+      if (p.quote_title || p.quote_text) {
+        qBox.style.display = 'block';
+        document.getElementById('m-quote-title').innerText = p.quote_title ? `【${p.quote_title}】` : '';
+        document.getElementById('m-quote-text').innerText = p.quote_text ? `「${p.quote_text}」` : '';
+      } else {
+        qBox.style.display = 'none';
+      }
+
       document.getElementById('m-core-desc').innerText = p.core_desc;
 
+      // Micro actions
+      const microBox = document.getElementById('m-micro');
+      if (p.micro_actions && p.micro_actions.length > 0) {
+        document.getElementById('m-micro-section').style.display = 'block';
+        microBox.innerHTML = p.micro_actions.map(m => `
+          <div class="micro-item">
+            <div class="micro-item-title">🔹 ${m.title}</div>
+            <div class="micro-item-desc">${m.desc}</div>
+          </div>
+        `).join('');
+      } else {
+        document.getElementById('m-micro-section').style.display = 'none';
+      }
+
+      // Articles
       const artBox = document.getElementById('m-articles');
       artBox.innerHTML = p.articles.map(a => `
         <div class="article-box">
-          <div class="article-title">📄 《${a.title}》 （${a.year}）</div>
+          <div class="article-title">📄 《${a.title}》（${a.year}）</div>
         </div>
       `).join('');
 
-      document.getElementById('modal-overlay').style.display = 'flex';
+      const modalOverlay = document.getElementById('modal-overlay');
+      modalOverlay.style.display = 'flex';
       document.body.style.overflow = 'hidden';
+
+      // Reset modal scroll position to top AFTER display = flex
+      const modalContent = modalOverlay.querySelector('.modal-content');
+      const modalBody = modalOverlay.querySelector('.modal-body');
+      const resetScroll = () => {
+        if (modalBody) modalBody.scrollTop = 0;
+        if (modalContent) modalContent.scrollTop = 0;
+        if (modalOverlay) modalOverlay.scrollTop = 0;
+      };
+      resetScroll();
+      requestAnimationFrame(resetScroll);
+      setTimeout(resetScroll, 0);
+      setTimeout(resetScroll, 20);
     }
 
     function closeModal() {
-      document.getElementById('modal-overlay').style.display = 'none';
+      const modalOverlay = document.getElementById('modal-overlay');
+      const modalContent = modalOverlay ? modalOverlay.querySelector('.modal-content') : null;
+      const modalBody = modalOverlay ? modalOverlay.querySelector('.modal-body') : null;
+      if (modalBody) modalBody.scrollTop = 0;
+      if (modalContent) modalContent.scrollTop = 0;
+      if (modalOverlay) modalOverlay.scrollTop = 0;
+
+      modalOverlay.style.display = 'none';
       document.body.style.overflow = 'auto';
     }
 
@@ -611,8 +993,11 @@
 
     function copyPrescription() {
       if (!currentPoem) return;
+      const transLines = currentPoem.orig.map((o, idx) => `• ${o} ➔ ${currentPoem.trans[idx] || ''}`).join('\n');
+      const microLines = currentPoem.micro_actions.map(m => `1. 【${m.title}】：${m.desc}`).join('\n');
       const articleLines = currentPoem.articles.map(a => `• 《${a.title}》（${a.year}）`).join('\n');
-      const text = `【${currentPoem.header}】 成人 ADHD 心智錦囊\n核心指引：${currentPoem.core_title}\n說明：${currentPoem.core_desc}\n\n建議延伸閱讀文章：\n` + articleLines;
+      
+      const text = `【${currentPoem.header}】 腦科學與成人ADHD解籤錦囊\n\n【籤詩原文與現代腦科學對譯】\n${transLines}\n\n【成人核心指南：${currentPoem.core_title}】\n${currentPoem.core_desc}\n\n【今晚可以試著做的微行動】\n${microLines}\n\n【延伸閱讀（314資料庫推薦）】\n${articleLines}`;
 
       navigator.clipboard.writeText(text).then(() => {
         const toast = document.getElementById('toast');

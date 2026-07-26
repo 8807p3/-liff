@@ -1046,13 +1046,19 @@
         document.getElementById('m-micro-section').style.display = 'none';
       }
 
-      // Articles
+      // Articles (Clickable Links to Blogger)
       const artBox = document.getElementById('m-articles');
-      artBox.innerHTML = p.articles.map(a => `
-        <div class="article-box">
-          <div class="article-title">📄 《${a.title}》（${a.year}）</div>
-        </div>
-      `).join('');
+      artBox.innerHTML = p.articles.map(a => {
+        const linkUrl = a.url || `https://goodadhd.blogspot.com/search?q=${encodeURIComponent(a.title)}`;
+        return `
+          <a href="${linkUrl}" target="_blank" rel="noopener noreferrer" style="text-decoration: none; color: inherit; display: block; margin-bottom: 8px;">
+            <div class="article-box" style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: all 0.2s ease; border: 1px solid var(--border-color); padding: 12px 16px; border-radius: 8px; background: var(--card-bg);">
+              <div class="article-title" style="color: var(--primary); font-weight: 600;">📄 《${a.title}》（${a.year}）</div>
+              <span style="font-size: 0.85em; color: white; background: var(--primary); padding: 4px 10px; border-radius: 12px; font-weight: 600; white-space: nowrap;">開啟文章 ↗</span>
+            </div>
+          </a>
+        `;
+      }).join('');
 
       const modalOverlay = document.getElementById('modal-overlay');
       modalOverlay.style.display = 'flex';

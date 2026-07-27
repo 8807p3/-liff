@@ -36,6 +36,49 @@
       padding-bottom: 60px;
     }
 
+    /* 籤條：四句由右向左直排，保留手寫紙籤的窄長比例。 */
+    .fortune-slip {
+      position: relative;
+      display: flex;
+      flex-direction: row-reverse;
+      justify-content: center;
+      gap: clamp(12px, 3vw, 28px);
+      width: fit-content;
+      min-height: 276px;
+      margin: 0 auto 30px;
+      padding: 28px 42px 22px;
+      background: linear-gradient(90deg, #fff9e9, #fffdf7 18%, #fffaf0 82%, #fff5e1);
+      border: 1px solid #dfc28d;
+      border-radius: 3px;
+      box-shadow: inset 7px 0 0 rgba(158,42,43,.08), inset -7px 0 0 rgba(158,42,43,.08), 0 10px 22px rgba(91,54,25,.14);
+    }
+    .fortune-slip::before {
+      content: '靈籤';
+      position: absolute;
+      top: 14px;
+      right: 12px;
+      writing-mode: vertical-rl;
+      color: rgba(158,42,43,.62);
+      font-family: 'Noto Serif TC', serif;
+      font-size: .75rem;
+      letter-spacing: .18em;
+    }
+    .fortune-line {
+      writing-mode: vertical-rl;
+      text-orientation: upright;
+      font-family: 'Noto Serif TC', serif;
+      font-size: clamp(1.3rem, 3.2vw, 1.72rem);
+      font-weight: 700;
+      letter-spacing: .17em;
+      line-height: 1.25;
+      color: #531c1c;
+      white-space: nowrap;
+    }
+    @media (max-width: 520px) {
+      .fortune-slip { min-height: 245px; gap: 10px; padding: 26px 28px 18px; }
+      .fortune-line { font-size: 1.18rem; letter-spacing: .1em; }
+    }
+
     header {
       min-height: 430px;
       background:
@@ -789,7 +832,7 @@
         
         <!-- 籤詩與正統典故展示區 -->
         <div class="poem-display-card" style="background: var(--card-bg); border: 1px solid var(--border-color); border-radius: var(--radius); box-shadow: var(--shadow); padding: 30px 20px; margin-bottom: 20px;">
-          <div id="m-poem-lines" style="font-family: 'Noto Serif TC', serif; font-size: 1.35rem; font-weight: 700; color: var(--text-main); line-height: 2.2; letter-spacing: 2px; margin-bottom: 30px; text-align: center; white-space: pre-line;">
+          <div id="m-poem-lines" class="fortune-slip" aria-label="籤詩原文">
             <!-- 詩句 -->
           </div>
           <div style="border-top: 1px dashed var(--border-color); padding-top: 20px; text-align: left;">
@@ -1041,7 +1084,7 @@
       "丁卯": { title: "孫悟空大難火災", desc: "比喻孩子成長發展課題，反映出當前神經成熟與『早期診斷與早療：建構跨系統家庭防護網』之現狀，給予安全陪伴自能安康。" },
       "丁巳": { title: "朱壽昌尋母在長亭", desc: "比喻孩子成長發展課題，反映出當前神經成熟與『聚光燈策略：用正向關注翻轉社交標籤』之現狀，給予安全陪伴自能安康。" },
       "丁未": { title: "周文王為姜太公拖車", desc: "比喻孩子成長發展課題，反映出當前神經成熟與『關注女性與成人 ADHD 的隱性困境：別讓默默忍耐掩蓋了需求』之現狀，給予安全陪伴自能安康。" },
-      "丁酉": { title: "欲去長江水闊茫", desc: "比喻孩子成長發展課題，反映出當前神經成熟與『拒學與社交焦慮：給予安全避風港，暫停無效強迫』之現狀，給予安全陪伴自能安康。" },
+      "丁酉": { title: "二度梅（周玉姐可遇陳春生）", desc: "《二度梅》寫陳春生家道中落、與周玉姐的緣分受阻，歷經等待後終能相會；這裡借它提醒我們：先保留準備與連結，別在時機未到時以強迫取代陪伴。" },
       "丁亥": { title: "月出光輝照天下", desc: "比喻孩子成長發展課題，反映出當前神經成熟與『保護孩子的探索本能：移除傷害學習動機的因子』之現狀，給予安全陪伴自能安康。" },
       "戊子": { title: "鳳嬌觀音庵問籤中奸臣計", desc: "比喻孩子成長發展課題，反映出當前神經成熟與『遺忘的藝術：主動過濾資訊，減輕大腦超載』之現狀，給予安全陪伴自能安康。" },
       "戊寅": { title: "選出牡丹第一枝", desc: "比喻孩子成長發展課題，反映出當前神經成熟與『適性發展：優點被看見，孩子就會自動前進』之現狀，給予安全陪伴自能安康。" },
@@ -1081,6 +1124,22 @@
       "癸亥": { title: "薛剛踢死太子驚崩聖駕 / 葛其量相會", desc: "比喻孩子成長發展課題，反映出當前神經成熟與『大圓滿結語：建立「愛與界線並存」的家庭防護網』之現狀，給予安全陪伴自能安康。" }
     };
 
+    // 公開對照：神酷整理、明載採用「泰安宮媽祖聖籤版」之卦頭故事。
+    // 以目前頁面使用的干支鍵值對應；不同宮廟可能保存不同的故事版本。
+    const PUBLIC_STORY_TITLES = {
+      "甲子":"包公（請雷驚仁宗／審張世真）", "甲戌":"二度梅", "甲申":"周德武入寺", "甲午":"柳毅傳書（盧龍王次子招親）", "甲辰":"韓愈藍關／韓湘子掃霜雪", "甲寅":"岳飛傳／精忠（烏靈聖母／岳飛掠秦檜）",
+      "乙丑":"薛仁貴征東", "乙卯":"薛仁貴征東", "乙巳":"龍虎鬥（龍虎相會）", "乙未":"岳飛傳／精忠（烏靈聖母／岳飛掠秦檜）", "乙酉":"韓愈藍關／韓湘子掃霜雪", "乙亥":"白兔記（劉智遠／李三娘／咬臍郎）",
+      "丙子":"撐渡伯行舟遇太歲", "丙寅":"三國（桃園結義／關公斬蔡陽／三顧茅廬／曹操潼關）", "丙辰":"姜太公／渭水遇文王", "丙午":"西遊記（遊地府／紅孩兒／孫悟空／豬八戒／劉全進瓜）", "丙申":"莊子試妻（大劈棺）", "丙戌":"隋唐（楊管醉玉仝坐馬／秦叔寶救李淵）",
+      "丁丑":"西遊記（遊地府／紅孩兒／孫悟空／豬八戒／劉全進瓜）", "丁卯":"西遊記（遊地府／紅孩兒／孫悟空／豬八戒／劉全進瓜）", "丁巳":"朱壽昌尋母（二十四孝）", "丁未":"姜太公／渭水遇文王", "丁酉":"周玉姊可遇陳春生（《二度梅》）", "丁亥":"隋唐（楊管醉玉仝坐馬／秦叔寶救李淵）",
+      "戊子":"薛剛反唐／薛丁山征西", "戊寅":"搜神記（范丹洗浴遇賢妻／宋定伯賣鬼）", "戊辰":"薛剛反唐／薛丁山征西", "戊午":"李存孝打虎", "戊申":"三國（桃園結義／關公斬蔡陽／三顧茅廬／曹操潼關）", "戊戌":"西遊記（遊地府／紅孩兒／孫悟空／豬八戒／劉全進瓜）",
+      "己丑":"孟姜女／七世夫妻", "己卯":"薛仁貴征東", "己巳":"銅銀買紙靴", "己未":"三國（桃園結義／關公斬蔡陽／三顧茅廬／曹操潼關）", "己酉":"吳漢殺妻為母救主", "己亥":"薛仁貴征東",
+      "庚子":"正德君戲李鳳姐", "庚寅":"三國（桃園結義／關公斬蔡陽／三顧茅廬／曹操潼關）", "庚辰":"楊文廣被困柳州城（楊家將）", "庚午":"三元會葛其量夫妻相會", "庚申":"西遊記（遊地府／紅孩兒／孫悟空／豬八戒／劉全進瓜）", "庚戌":"孟姜女／七世夫妻",
+      "辛丑":"白兔記（劉智遠／李三娘／咬臍郎）", "辛卯":"陳三五娘（荔鏡傳）", "辛巳":"孔子過番逢小兒", "辛未":"江中立欽賜狀元", "辛酉":"柳永謝天香", "辛亥":"蜻蜓誤入蜘蛛網",
+      "壬子":"東坡佛印稍婆答歌詩", "壬寅":"搜神記（范丹洗浴遇賢妻／宋定伯賣鬼）", "壬辰":"趙匡胤河東大戰龍虎關", "壬午":"薛仁貴征東", "壬申":"蘇秦夫妻相會（蘇秦假不第）", "壬戌":"胭脂記／郭華念月英",
+      "癸丑":"胭脂記／郭華念月英", "癸卯":"楊管得病在西軒", "癸巳":"白蛇傳", "癸未":"白蛇傳", "癸酉":"董永天仙配", "癸亥":"薛剛反唐／薛丁山征西"
+    };
+    Object.entries(PUBLIC_STORY_TITLES).forEach(([g, title]) => { if (STORIES_DB[g]) STORIES_DB[g].title = title; });
+
     /* INTERPRETATION MODAL FUNCTIONS */
     function openModal(id) {
       const p = POEMS_DATA.find(x => x.id === id);
@@ -1097,8 +1156,8 @@
       document.getElementById('m-badge').innerText = `${numberText}【${g}】`;
       document.getElementById('m-cat').innerText = p.category;
 
-      // Set centered poem lines
-      document.getElementById('m-poem-lines').innerText = p.orig.join('\n');
+      // 以傳統籤條的右起直排呈現四句籤詩。
+      document.getElementById('m-poem-lines').innerHTML = p.orig.map(line => `<span class="fortune-line">${line}</span>`).join('');
 
       // Set Story content
       document.getElementById('m-story-content').innerHTML = `<strong>${story.title}</strong>。${story.desc}`;

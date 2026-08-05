@@ -30,40 +30,92 @@
 
     body {
       font-family: 'Outfit', 'Noto Serif TC', -apple-system, sans-serif;
-      background-color: var(--bg);
+      background: radial-gradient(circle at 14% 8%, rgba(37, 99, 235, .12), transparent 25rem), var(--bg);
       color: var(--text-main);
       line-height: 1.6;
       padding-bottom: 60px;
     }
 
+    /* 籤條：四句由右向左直排，保留手寫紙籤的窄長比例。 */
+    .fortune-slip {
+      position: relative;
+      display: flex;
+      flex-direction: row-reverse;
+      justify-content: center;
+      gap: clamp(12px, 3vw, 28px);
+      width: fit-content;
+      min-height: 276px;
+      margin: 0 auto 30px;
+      padding: 28px 42px 22px;
+      background: linear-gradient(90deg, #f7f4ed, #fffefb 18%, #f8f6f1 82%, #f0ede5);
+      border: 1px solid #b7c4d6;
+      border-radius: 3px;
+      box-shadow: inset 7px 0 0 rgba(29,78,216,.06), inset -7px 0 0 rgba(29,78,216,.06), 0 10px 22px rgba(15,23,42,.13);
+    }
+    .fortune-slip::before {
+      content: '靈籤';
+      position: absolute;
+      top: 14px;
+      right: 12px;
+      writing-mode: vertical-rl;
+      color: rgba(29,78,216,.56);
+      font-family: 'Noto Serif TC', serif;
+      font-size: .75rem;
+      letter-spacing: .18em;
+    }
+    .fortune-line {
+      writing-mode: vertical-rl;
+      text-orientation: upright;
+      font-family: 'Noto Serif TC', serif;
+      font-size: clamp(1.3rem, 3.2vw, 1.72rem);
+      font-weight: 700;
+      letter-spacing: .17em;
+      line-height: 1.25;
+      color: #172b50;
+      white-space: nowrap;
+    }
+    @media (max-width: 520px) {
+      .fortune-slip { min-height: 245px; gap: 10px; padding: 26px 28px 18px; }
+      .fortune-line { font-size: 1.18rem; letter-spacing: .1em; }
+    }
+
     header {
-      background: linear-gradient(135deg, #0F172A, #1D4ED8);
+      min-height: 430px;
+      background: linear-gradient(90deg, rgba(10, 23, 46, .97) 0%, rgba(17, 51, 104, .90) 47%, rgba(18, 63, 128, .34) 79%), url('assets/60poems-hero-illustration.png') center / cover;
       color: white;
-      padding: 45px 20px 35px;
-      text-align: center;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      padding: 74px 20px 96px;
+      text-align: left;
+      box-shadow: 0 12px 30px rgba(15, 23, 42, .24);
       position: relative;
     }
 
+    .hero-inner { max-width: 1120px; margin: 0 auto; }
+    .hero-kicker { display: inline-flex; align-items: center; gap: 8px; color: #BFDBFE; font-size: .82rem; font-weight: 700; letter-spacing: .14em; margin-bottom: 16px; }
+
     header h1 {
       font-family: 'Noto Serif TC', serif;
-      font-size: 2.2rem;
+      font-size: clamp(2.25rem, 5vw, 3.7rem);
       font-weight: 900;
-      letter-spacing: 2px;
-      margin-bottom: 8px;
+      letter-spacing: .06em;
+      line-height: 1.18;
+      margin-bottom: 16px;
+      max-width: 700px;
     }
 
     header p {
-      font-size: 1rem;
-      opacity: 0.9;
-      max-width: 650px;
-      margin: 0 auto;
+      font-size: 1.06rem;
+      opacity: .94;
+      max-width: 560px;
+      margin: 0;
+      line-height: 1.85;
     }
+
+    .hero-promise { margin-top: 26px; padding: 14px 18px; width: fit-content; max-width: 560px; background: rgba(239, 246, 255, .12); border: 1px solid rgba(191, 219, 254, .42); border-radius: 12px; color: #EFF6FF; font-family: 'Noto Serif TC', serif; font-size: 1.02rem; }
 
     .container {
       max-width: 1200px;
       margin: 0 auto;
-      padding: 25px 20px;
+      padding: 0 20px 25px;
     }
 
     /* Controls Bar */
@@ -73,11 +125,11 @@
       gap: 15px;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 25px;
-      background: white;
+      margin: 0 auto 30px;
+      background: rgba(255, 255, 255, .95);
       padding: 18px 24px;
       border-radius: var(--radius);
-      box-shadow: var(--shadow);
+      box-shadow: 0 14px 34px rgba(15, 23, 42, .16);
       position: sticky;
       top: 15px;
       z-index: 100;
@@ -169,7 +221,7 @@
       border-radius: var(--radius);
       padding: 20px;
       box-shadow: var(--shadow);
-      border: 1px solid rgba(0,0,0,0.03);
+      border: 1px solid rgba(29, 78, 216, .10);
       cursor: pointer;
       transition: transform 0.3s, box-shadow 0.3s;
       display: flex;
@@ -184,14 +236,14 @@
       position: absolute;
       top: 0;
       left: 0;
-      width: 4px;
-      height: 100%;
-      background: var(--primary);
+      width: 100%;
+      height: 5px;
+      background: linear-gradient(90deg, #1D4ED8, #60A5FA);
     }
 
     .poem-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 15px 35px rgba(158, 42, 43, 0.15);
+      transform: translateY(-7px);
+      box-shadow: 0 18px 38px rgba(29, 78, 216, .18);
     }
 
     .card-header {
@@ -599,19 +651,63 @@
       75% { transform: rotate(12deg); }
     }
 
+    .entry-section { max-width: 1120px; margin: 34px auto 20px; display: grid; grid-template-columns: 1.25fr .75fr; gap: 20px; }
+    .entry-panel { background: rgba(255,255,255,.90); border: 1px solid rgba(29,78,216,.14); border-radius: 18px; padding: 24px; box-shadow: 0 10px 28px rgba(15,23,42,.07); }
+    .entry-eyebrow { color: var(--primary); font-size: .82rem; font-weight: 800; letter-spacing: .08em; margin-bottom: 6px; }
+    .entry-panel h2 { font-family: 'Noto Serif TC', serif; color: var(--primary-dark); font-size: 1.35rem; margin-bottom: 8px; }
+    .entry-panel p { color: var(--text-muted); font-size: .92rem; line-height: 1.65; }
+    .guide-buttons { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 18px; }
+    .guide-btn { background: #EFF6FF; border: 1px solid #BFDBFE; color: #1E3A8A; border-radius: 999px; padding: 9px 13px; cursor: pointer; font: inherit; font-size: .88rem; font-weight: 700; transition: .2s ease; }
+    .guide-btn:hover { background: var(--primary); border-color: var(--primary); color: white; transform: translateY(-1px); }
+    .not-list { list-style: none; display: grid; gap: 9px; margin-top: 16px; }
+    .not-list li { color: var(--text-main); font-size: .9rem; padding-left: 22px; position: relative; }
+    .not-list li::before { content: '✦'; color: #2563EB; position: absolute; left: 0; }
+
     @media (max-width: 768px) {
-      header h1 { font-size: 1.6rem; }
+      header { min-height: 385px; padding: 58px 24px 76px; background-position: 66% center; }
+      header h1 { font-size: 2.15rem; }
+      .hero-promise { font-size: .92rem; }
       .controls { flex-direction: column; align-items: stretch; }
       .draw-btn { justify-content: center; }
+      .entry-section { grid-template-columns: 1fr; margin-top: 24px; }
     }
   </style>
 </head>
 <body>
 
   <header>
-    <h1>六十甲子籤詩 × 314腦科學與成人ADHD解籤指南</h1>
-    <p>結合傳統求籤文化與 314 風神網精神醫學衛教資料庫，為成人 ADHD、職場工作者與心智成長者提供具備實證、溫暖且具體的解籤錦囊。</p>
+    <div class="hero-inner">
+      <div class="hero-kicker">✦ 六十甲子 · 成人 ADHD 自我整理</div>
+      <h1>當生活一團亂時，<br>先替自己留一點空間。</h1>
+      <p>從一首籤詩開始，整理此刻的壓力與感受，找到一個今天就能做到的調整行動。</p>
+      <div class="hero-promise">抽一首籤，帶走一個溫柔、具體的自我支持提醒。</div>
+    </div>
   </header>
+
+  <section class="entry-section" aria-label="開始使用">
+    <div class="entry-panel">
+      <div class="entry-eyebrow">不想抽籤，也可以直接開始</div>
+      <h2>依你現在的困擾找指引</h2>
+      <p>選一個最貼近當下的主題，直接閱讀對應的整理方式與今天可做的微行動。</p>
+      <div class="guide-buttons">
+        <button class="guide-btn" type="button" onclick="setCategory('💼 職場與工作執行')">職場與工作執行</button>
+        <button class="guide-btn" type="button" onclick="setCategory('⚡ 情緒調控與 RSD')">情緒調控與 RSD</button>
+        <button class="guide-btn" type="button" onclick="setCategory('🏡 生活管理與睡眠')">生活管理與睡眠</button>
+        <button class="guide-btn" type="button" onclick="setCategory('❤️ 伴侶與親密關係')">伴侶與親密關係</button>
+        <button class="guide-btn" type="button" onclick="setCategory('💭 走神恍神與專注')">走神恍神與專注</button>
+        <button class="guide-btn" type="button" onclick="setCategory('🧘 自我接納與冒牌者')">自我接納</button>
+      </div>
+    </div>
+    <aside class="entry-panel">
+      <div class="entry-eyebrow">使用說明</div>
+      <h2>這是什麼／不是什麼</h2>
+      <ul class="not-list">
+        <li>是用籤詩開啟自我整理與生活調整的工具。</li>
+        <li>不是命運預測，也不是成人 ADHD 的診斷。</li>
+        <li>內容可作為反思參考；持續困擾請尋求醫療或心理專業協助。</li>
+      </ul>
+    </aside>
+  </section>
 
   <div class="container">
     <div class="controls">
@@ -697,7 +793,7 @@
         
         <!-- 籤詩與正統典故展示區 -->
         <div class="poem-display-card" style="background: var(--card-bg); border: 1px solid var(--border-color); border-radius: var(--radius); box-shadow: var(--shadow); padding: 30px 20px; margin-bottom: 20px;">
-          <div id="m-poem-lines" style="font-family: 'Noto Serif TC', serif; font-size: 1.35rem; font-weight: 700; color: var(--text-main); line-height: 2.2; letter-spacing: 2px; margin-bottom: 30px; text-align: center; white-space: pre-line;">
+          <div id="m-poem-lines" class="fortune-slip" aria-label="籤詩原文">
             <!-- 詩句 -->
           </div>
           <div style="border-top: 1px dashed var(--border-color); padding-top: 20px; text-align: left;">
@@ -3182,7 +3278,7 @@
       "丁卯": { title: "孫悟空大難火災", desc: "比喻職場與生活課題，反映出當前『早一步尋求醫療評估：防範職場次發性焦慮與低潮』之現狀，順應特質調適自能清吉。" },
       "丁巳": { title: "朱壽昌尋母在長亭", desc: "比喻職場與生活課題，反映出當前『聚光燈策略：建立成人 ADHD 的正向職業名聲與品牌』之現狀，順應特質調適自能清吉。" },
       "丁未": { title: "周文王為姜太公拖車", desc: "比喻職場與生活課題，反映出當前『成人女性 ADHD 的隱性遮蔽 (Masking) 與診斷過遲議題』之現狀，順應特質調適自能清吉。" },
-      "丁酉": { title: "欲去長江水闊茫", desc: "比喻職場與生活課題，反映出當前『拒絕社交退縮與職場焦慮：建立安心喘息避風港』之現狀，順應特質調適自能清吉。" },
+      "丁酉": { title: "周玉姊可遇陳春生（《二度梅》）", desc: "《二度梅》寫陳春生家道中落、與周玉姊的緣分受阻，歷經等待後終能相會；這裡借它提醒我們：先保留準備與連結，別在時機未到時以強迫取代陪伴。" },
       "丁亥": { title: "月出光輝照天下", desc: "比喻職場與生活課題，反映出當前『保護好奇心與熱情：成人 ADHD 的超專注 (Hyperfocus) 引擎』之現狀，順應特質調適自能清吉。" },
       "戊子": { title: "鳳嬌觀音庵問籤中奸臣計", desc: "比喻職場與生活課題，反映出當前『大腦突觸修剪與學習可塑性：建立可持續的習慣』之現狀，順應特質調適自能清吉。" },
       "戊寅": { title: "選出牡丹第一枝", desc: "比喻職場與生活課題，反映出當前『適性職涯選擇：尋找符合神經多元優勢的職場賽道』之現狀，順應特質調適自能清吉。" },
@@ -3222,6 +3318,22 @@
       "癸亥": { title: "薛剛踢死太子驚崩聖駕 / 葛其量相會", desc: "比喻職場與生活課題，反映出當前『大圓滿：建立愛與界線並存的幸福防護網』之現狀，順應特質調適自能清吉。" }
     };
 
+    // 公開對照：神酷整理、明載採用「泰安宮媽祖聖籤版」之卦頭故事。
+    // 以目前頁面使用的干支鍵值對應；不同宮廟可能保存不同的故事版本。
+    const PUBLIC_STORY_TITLES = {
+      "甲子":"包公（請雷驚仁宗／審張世真）", "甲戌":"二度梅", "甲申":"周德武入寺", "甲午":"柳毅傳書（盧龍王次子招親）", "甲辰":"韓愈藍關／韓湘子掃霜雪", "甲寅":"岳飛傳／精忠（烏靈聖母／岳飛掠秦檜）",
+      "乙丑":"薛仁貴征東", "乙卯":"薛仁貴征東", "乙巳":"龍虎鬥（龍虎相會）", "乙未":"岳飛傳／精忠（烏靈聖母／岳飛掠秦檜）", "乙酉":"韓愈藍關／韓湘子掃霜雪", "乙亥":"白兔記（劉智遠／李三娘／咬臍郎）",
+      "丙子":"撐渡伯行舟遇太歲", "丙寅":"三國（桃園結義／關公斬蔡陽／三顧茅廬／曹操潼關）", "丙辰":"姜太公／渭水遇文王", "丙午":"西遊記（遊地府／紅孩兒／孫悟空／豬八戒／劉全進瓜）", "丙申":"莊子試妻（大劈棺）", "丙戌":"隋唐（楊管醉玉仝坐馬／秦叔寶救李淵）",
+      "丁丑":"西遊記（遊地府／紅孩兒／孫悟空／豬八戒／劉全進瓜）", "丁卯":"西遊記（遊地府／紅孩兒／孫悟空／豬八戒／劉全進瓜）", "丁巳":"朱壽昌尋母（二十四孝）", "丁未":"姜太公／渭水遇文王", "丁酉":"周玉姊可遇陳春生（《二度梅》）", "丁亥":"隋唐（楊管醉玉仝坐馬／秦叔寶救李淵）",
+      "戊子":"薛剛反唐／薛丁山征西", "戊寅":"搜神記（范丹洗浴遇賢妻／宋定伯賣鬼）", "戊辰":"薛剛反唐／薛丁山征西", "戊午":"李存孝打虎", "戊申":"三國（桃園結義／關公斬蔡陽／三顧茅廬／曹操潼關）", "戊戌":"西遊記（遊地府／紅孩兒／孫悟空／豬八戒／劉全進瓜）",
+      "己丑":"孟姜女／七世夫妻", "己卯":"薛仁貴征東", "己巳":"銅銀買紙靴", "己未":"三國（桃園結義／關公斬蔡陽／三顧茅廬／曹操潼關）", "己酉":"吳漢殺妻為母救主", "己亥":"薛仁貴征東",
+      "庚子":"正德君戲李鳳姐", "庚寅":"三國（桃園結義／關公斬蔡陽／三顧茅廬／曹操潼關）", "庚辰":"楊文廣被困柳州城（楊家將）", "庚午":"三元會葛其量夫妻相會", "庚申":"西遊記（遊地府／紅孩兒／孫悟空／豬八戒／劉全進瓜）", "庚戌":"孟姜女／七世夫妻",
+      "辛丑":"白兔記（劉智遠／李三娘／咬臍郎）", "辛卯":"陳三五娘（荔鏡傳）", "辛巳":"孔子過番逢小兒", "辛未":"江中立欽賜狀元", "辛酉":"柳永謝天香", "辛亥":"蜻蜓誤入蜘蛛網",
+      "壬子":"東坡佛印稍婆答歌詩", "壬寅":"搜神記（范丹洗浴遇賢妻／宋定伯賣鬼）", "壬辰":"趙匡胤河東大戰龍虎關", "壬午":"薛仁貴征東", "壬申":"蘇秦夫妻相會（蘇秦假不第）", "壬戌":"胭脂記／郭華念月英",
+      "癸丑":"胭脂記／郭華念月英", "癸卯":"楊管得病在西軒", "癸巳":"白蛇傳", "癸未":"白蛇傳", "癸酉":"董永天仙配", "癸亥":"薛剛反唐／薛丁山征西"
+    };
+    // 大類對照僅供資料稽核；畫面保留每首籤的具體故事名稱，避免故事標題重複。
+
     /* INTERPRETATION MODAL FUNCTIONS */
     function openModal(id) {
       const p = POEMS_DATA.find(x => x.id === id);
@@ -3238,8 +3350,8 @@
       document.getElementById('m-badge').innerText = `${numberText}【${g}】`;
       document.getElementById('m-cat').innerText = p.category;
 
-      // Set centered poem lines
-      document.getElementById('m-poem-lines').innerText = p.orig.join('\n');
+      // 以傳統籤條的右起直排呈現四句籤詩。
+      document.getElementById('m-poem-lines').innerHTML = p.orig.map(line => `<span class="fortune-line">${line}</span>`).join('');
 
       // Set Story content
       document.getElementById('m-story-content').innerHTML = `<strong>${story.title}</strong>。${story.desc}`;
